@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    th:fragment="header">
+<head>
+<meta charset="UTF-8">
+<title>header</title>
+</head>
+<body>
+    <!-- Navigation-->
+    <nav class="py-0 border-bottom">
+        <div class="container d-flex flex-wrap">
+            <ul class="nav me-auto">
+                <!--/* UserImpl 클래스 통해 회원 정보 호출 */-->
+                <li sec:authorize="isAuthenticated()" style="color: #6c757d; font-size: 12px;"><span
+                    sec:authentication="principal.name" id="isLoggedInAs"></span> 님 안녕하세요!</li>
+            </ul>
+            <ul class="nav" style="font-size: 12px;">
+                <!--/* 로그인(회원) */-->
+                <th:block sec:authorize="isAuthenticated()">
+                    <li class="nav-item"><a th:href="@{/member/signout}"
+                        class="nav-menu nav-link link-secondary px-3">로그아웃</a></li>
+                </th:block>
+                <!--/* 로그인(회원) */-->
+                <th:block sec:authorize="isAuthenticated()">
+                    <li class="nav-item"><a th:href="@{/mypage/main}"
+                        class="nav-menu nav-link link-secondary px-3">마이페이지</a></li>
+                </th:block>
+                <!--/* 비로그인 */-->
+                <th:block sec:authorize="isAnonymous()">
+                    <li class="nav-item"><a th:href="@{/member/signin}"
+                        class="nav-menu nav-link link-secondary px-3">로그인</a></li>
+                </th:block>
+                <th:block sec:authorize="permitAll">
+                    <li class="nav-item"><a th:href="@{/cart/mycart}"
+                        class="nav-menu nav-link link-secondary px-3">장바구니 <th:block
+                                th:if="${session.countCartItem} == null">
+                                <em class="cartCnt">0</em>
+                            </th:block> <th:block th:if="${session.countCartItem} != null">
+                                <em th:text="${session.countCartItem}" class="cartCnt">[[${session.countCartItem}]]</em>
+                            </th:block>
+                    </a></li>
+                </th:block>
+            </ul>
+        </div>
+    </nav>
+    <header class="py-3 mb-4 border-bottom">
+        <div class="container d-flex flex-wrap justify-content-center container-fluid ">
+            <a href="/"
+                class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-dark text-decoration-none">
+                <span class="fs-4">PAIR</span>
+            </a>
+            <ul class="nav me-auto">
+                <li class="nav-item"><a th:href="@{/product/list}"
+                    class="head-menu nav-link link-secondary px-3 active" aria-current="page"><b>전체
+                            상품</b></a></li>
+                <li class="nav-item"><a th:href="@{/product/list?section=접시&category=2}"
+                    class="head-menu nav-link link-secondary px-3">접시</a></li>
+                <li class="nav-item"><a th:href="@{/product/list?section=보울&category=3}"
+                    class="head-menu nav-link link-secondary px-3">보울</a></li>
+                <li class="nav-item"><a th:href="@{/product/list?section=커트러리&category=4}"
+                    class="head-menu nav-link link-secondary px-3">커트러리</a></li>
+                <li class="nav-item"><a th:href="@{/product/list?section=잔&category=5}"
+                    class="head-menu nav-link link-secondary px-3">잔</a></li>
+                <li class="nav-item"><a th:href="@{/product/list?section=키친크로스&category=6}"
+                    class="head-menu nav-link link-secondary px-3">키친크로스</a></li>
+                <li class="nav-item"><a th:href="@{/product/list?section=etc&category=7}"
+                    class="head-menu nav-link link-secondary px-3">etc</a></li>
+            </ul>
+            <form id="searchForm" name="searchForm" class="col-12 col-lg-auto mb-3 mb-lg-0"
+                th:action="@{/product/search}" method="get" onsubmit="checkKeywordToSearch()">
+                <div class="input-group">
+                    <input type="search" name="keyword" class="form-control" placeholder="검색"
+                        autocomplete="off">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </header>
+</body>
+</html>

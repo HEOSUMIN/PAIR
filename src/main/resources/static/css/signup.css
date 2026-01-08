@@ -1,0 +1,137 @@
+@charset "UTF-8";
+
+.title-wrapper{
+	margin-top: 60px;
+}
+
+.title-wrapper h2 {
+    font-size: 20px !important;
+    text-align: center;
+}
+
+/*본문*/
+.signin-wrapper {
+    width: 480px !important;
+}
+
+.signin-wrapper > form > .inputBox {
+    display: flexbox;
+    width: 100%;
+    margin-top: 50px;
+}
+
+.signin-wrapper > form > .inputBox > .required label {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.signin-wrapper > form > .inputBox > .form-floating {
+    position: relative;
+    display: flex;
+    margin: 14px auto;
+    padding-left: 0;
+}
+
+.signin-wrapper > form > .inputBox > .form-floating > .form-control:focus~label,
+.signin-wrapper > form > .inputBox > .form-floating > .form-control:not(:placeholder-shown)~label {
+    opacity: 1 !important;
+    color: #00008b !important;
+}
+
+
+.signin-wrapper > form > .inputBox > .required input {
+    width: 100%;
+    height: 40px;
+    align-items: center;
+}
+
+.signin-wrapper > form > .inputBox > .required > input[type="text"],
+.signin-wrapper > form > .inputBox > .required > input[type="password"] {
+    border: 0;
+    border-radius: 0;
+    border-bottom: 1px solid #ced4da;
+    width: 100%;
+    height: 100%;
+    font-size: 16px;
+  /*   color: #6c757d; */
+    padding-left: 20px;
+    padding-right: 20px;
+    margin: 6px 0;
+}
+
+.signin-wrapper > form > .inputBox > .required > input[type="button"]{
+    border: 0;
+    border-radius: 0;
+    font-size: 16px;
+    color: #6c757d;
+    padding-right: 20px;
+    margin: 6px 0;	
+}
+
+.signin-wrapper > form > .inputBox > .required > input[type="text"]:focus, input[type="password"]:focus {
+   /*  box-shadow: none; */
+    border-bottom: 1px solid #00008b;
+}
+
+.signin-wrapper > form > .inputBox > .required > input::placeholder {
+    opacity: 0;
+}
+
+.signin-wrapper > form > .inputBox > .required span {
+	font-size: 11px;
+	color : red;
+	
+}
+
+.signin-wrapper > form > .inputBox > .required > .visibility {
+    display: inline-block;
+    position: absolute;
+    background-color: transparent;
+    border: 0;
+    top: calc(50% - 8%);
+    right: 1%;
+}
+
+.address-group {
+    flex-direction: column;   /* 세로 정렬 */
+    gap: 10px;                /* input 간격 */
+}
+
+
+/*버튼*/
+.signin-wrapper > form > .buttonBox {
+	margin-top: 20px;
+    margin-block-end: 10%;
+    text-align: center;
+}
+
+.signin-wrapper > form > .buttonBox > button[type="submit"] {
+    width: 70%;
+    height: 44px;
+    box-shadow: none !important;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-inline-end: 12px;
+}
+
+.signin-wrapper > form > .buttonBox > .btn-dark:hover {
+	opacity: 93%;
+}
+
+
+/*전체 폰트 적용*/
+* {
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+/*추*/
+.signin-wrapper > form > .linkBox > .link-list {
+    display: flex;
+    list-style: none;
+    justify-content: center;
+    padding-inline-start: 10%;
+    padding-inline-end: 10%;
+    margin: 0 auto;
+    width: 400px;
+}
+

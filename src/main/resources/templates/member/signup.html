@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="layouts/default.html">
+<head>
+<title layout:fragment="title">회원가입</title>
+<th:block layout:fragment="css">
+    <link th:href="@{/css/signup.css}" rel="stylesheet">
+</th:block>
+</head>
+<body layout:fragment="content">
+    <div class="title-wrapper">
+        <h2>JOIN MEMBER</h2>
+    </div>
+    <div class="container content-wrapper signin-wrapper">
+        <form id="signupForm" name="signupForm" th:object="${member}" th:action="@{/member/signup}"
+            method="post">
+            <div class="inputBox">
+                <div class="form-floating required">
+                    <input type=text class="form-control" id="memberId" name="memberId"
+                        onkeyup="autoDomain('email', this.value)" autocomplete="off"
+                        placeholder="Email" title="Email 입력"
+                        oninvalid="this.setCustomValidity('Email 입력')" oninput="setCustomValidity('')"
+                        th:value="${ snsEmail != null } ? ${ snsEmail } : ''"> <label
+                        for="memberId">Email<b style="color: #ff0000;"> *</b></label> <span
+                        id="checkIdMsg" class="msg checkIdMsg"></span>
+                </div>
+                <div class="form-floating required">
+                    <input type="password" class="form-control" id=memberPwd name="memberPwd"
+                        autocomplete="off" placeholder="Password" title="Password 입력"
+                        oninvalid="this.setCustomValidity('Password 입력')"
+                        oninput="setCustomValidity('')"> <label for="memberPwd">Password<b
+                        style="color: #ff0000;"> *</b></label> <span id="checkPwdMsg" class="msg"></span>
+                </div>
+                <div class="form-floating required">
+                    <input type="password" class="form-control" id="confirmPwd" name="confirmPwd"
+                        autocomplete="off" placeholder="Password Check" title="Password Check 입력"
+                        oninvalid="this.setCustomValidity('Password Check 입력')"
+                        oninput="setCustomValidity('')"> <label for="confirmPwd">Password
+                        Check<b style="color: #ff0000;"> *</b>
+                    </label> <span id="confirmPwdMsg" class="msg"></span>
+                    <button type="button" class="visibility" tabindex="-1">
+                        <i class="fa-solid fa-eye-slash"
+                            style="filter: invert(47%) sepia(2%) saturate(2314%) hue-rotate(167deg) brightness(95%) contrast(80%);"></i>
+                    </button>
+                </div>
+                <div class="form-floating required">
+                    <input type="text" class="form-control" id="name" name="name" autocomplete="off"
+                        placeholder="Name" title="Name 입력"
+                        oninvalid="this.setCustomValidity('Name 입력')" oninput="setCustomValidity('')">
+                    <label for="name">Name<b style="color: #ff0000;"> *</b></label> <span
+                        id="checkNameMsg" class="msg"></span>
+                </div>
+                <div class="form-floating required">
+                    <input type="text"
+                        onKeyup="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
+                        class="form-control" id="phoneA" name="phoneA" autocomplete="off"
+                        placeholder="Mobile" title="Mobile 입력"
+                        oninvalid="this.setCustomValidity('Mobile 입력')"
+                        oninput="setCustomValidity('')" maxlength="3">
+                    <p class="dash"></p>
+                    <input type="text"
+                        onKeyup="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
+                        class="form-control" id="phoneB" name="phoneB" autocomplete="off"
+                        placeholder="Mobile" title="Mobile 입력"
+                        oninvalid="this.setCustomValidity('Mobile 입력')"
+                        oninput="setCustomValidity('')" maxlength="4">
+                    <p class="dash"></p>
+                    <input type="text"
+                        onKeyup="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
+                        class="form-control" id="phoneC" name="phoneC" autocomplete="off"
+                        placeholder="Mobile" title="Mobile 입력"
+                        oninvalid="this.setCustomValidity('Mobile 입력')"
+                        oninput="setCustomValidity('')" maxlength="4">
+                    <p class="dash"></p>
+                    <label for="phone">Mobile<b style="color: #ff0000;"> *</b></label>
+                </div>
+                <div class="form-floating required">
+                    <input type="text" class="form-control" id="postalCode" name="postalCode"
+                        autocomplete="off" placeholder="Zipcode" title="postalCode 입력"
+                        oninvalid="this.setCustomValidity('Zipcode 입력')"
+                        oninput="setCustomValidity('')" readonly> <label for="postalCode">postalCode<b
+                        style="color: #ff0000;"> *</b></label> <input type="button" onclick="DaumPostcode()"
+                        class="" id="searchPostalCode" style="width: 40%;" value="우편번호검색"></input>
+                </div>
+                <div class="form-floating required address-group">
+                    <input type="text" class="form-control" id="address" name="address"
+                        autocomplete="off" placeholder="Address" title="Address 입력"
+                        oninvalid="this.setCustomValidity('Address 입력')"
+                        oninput="setCustomValidity('')" readonly> <label for="address">Address<b
+                        style="color: #ff0000;"> *</b></label> <input type="text" class="form-control"
+                        id="detailAddress" name="detailAddress" autocomplete="off" placeholder="상세 주소"
+                        title="상세 주소 입력" oninvalid="this.setCustomValidity('주소 입력')"
+                        oninput="setCustomValidity('')">
+                </div>
+            </div>
+            <div class="buttonBox">
+                <button type="submit" class="btn-dark" id="registBtn">Create Account</button>
+            </div>
+        </form>
+    </div>
+    <!--JS -->
+    <th:block layout:fragment="script">
+        <script th:src="@{/js/signup.js}" type="text/javascript"></script>
+        <!-- 이메일 자동완성 -->
+        <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+        <!-- 주소 API -->
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    </th:block>
+</body>
+</html>
