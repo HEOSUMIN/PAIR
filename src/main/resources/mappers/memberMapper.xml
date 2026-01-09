@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pro.pair.member.model.dao.MemberMapper">
+
+	<!-- 회원 조회용 -->
+	<resultMap id="memberResultMap"
+		type="com.pro.pair.member.model.dto.MemberDTO">
+		<id property="memberId" column="MEMBER_ID" />
+		<result property="memberPwd" column="MEMBER_PWD" />
+		<result property="email" column="EMAIL" />
+		<result property="name" column="Name" />
+		<result property="status" column="STATUS" />
+		<result property="insDt" column="INS_DT" />
+		<result property="upDt" column="UP_DT" />
+		<result property="lastLoginDt" column="LAST_LOGIN_DT" />
+		<result property="address" column="ADDRESS" />
+		<result property="phone" column="PHONE" />
+		<collection property="roleList" resultMap="roleResultMap"/>
+	</resultMap>
+	
+	<resultMap id="roleResultMap" type="com.pro.pair.member.model.dto.RoleDTO">
+		<id property="memberId" column="REF_MEMBER_ID"/>
+		<id property="authorityCode" column="REF_AUTHORITY_CODE"/>
+		<association property="authority" resultMap="authorityResultMap"/> <!-- 1:1 -->
+	</resultMap>
+
+	<resultMap id="authorityResultMap" type="com.pro.pair.member.model.dto.AuthorityDTO">
+		<id property="authCode" column="AUTHORITY_CODE"/>
+		<result property="authName" column="AUTHORITY_NAME"/>
+		<result property="authDesc" column="AUTHORITY_DESC"/>
+	</resultMap>
+	
+ 	<select id="findMemberById" resultMap="memberResultMap">
+		SELECT A.MEMBER_ID
+				  , A.MEMBER_PWD
+				  , A.EMAIL
+				  , A.NAME
+				  , A.STATUS
+				  , A.INS_DT
+				  , A.UP_DT
+				  , A.LAST_LOGIN_DT
+				  , A.ADDRESS
+				  , A.PHONE
+				  , B.MEMBER_ID AS REF_MEMBER_ID
+				  , B.AUTHORITY_CODE AS REF_AUTH_CODE
+				  , C.AUTHORITY_NAME 
+				  , C.AUTHORITY_DESC
+		FROM TBL_MEMBER A
+		INNER JOIN TBL_ROLE B ON A.MEMBER_ID = B.MEMBER_ID
+		INNER JOIN TBL_AUTHORITY C ON C.AUTHORITY_CODE = B.AUTHORITY_CODE
+	   WHERE A.MEMBER_ID = #{ username }
+	</select>
+	
+	<!-- 회원가입 중 아이디 중복 검사 -->
+	<select id="checkId" parameterType="String" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM TBL_MEMBER
+		WHERE MEMBER_ID = #{ memberId }
+	</select>
+
+	<!-- 회원가입 -->
+	<insert id="insertMember">
+		INSERT
+		INTO TBL_MEMBER
+		(
+		MEMBER_ID
+		, MEMBER_PWD
+		, EMAIL
+		, NAME
+		, STATUS
+		, INS_DT
+		, UP_DT
+		, LAST_LOGIN_DT
+		, ADDRESS
+		, PHONE
+		)
+		VALUES
+		(
+		#{ memberId }
+		, #{ memberPwd }
+		, #{ memberId }
+		, #{ name }
+		, #{ status }
+		, SYSDATE
+		, NULL
+		, SYSDATE
+		, #{ address }
+		, #{ phone }
+		)
+	</insert>
+	
+	<insert id="insertRole">
+		INSERT
+		INTO TBL_ROLE
+		(
+		   MEMBER_ID
+		 , AUTHORITY_CODE
+		)
+		VALUES
+		(
+		   #{ memberId }
+		 , #{ authorityCode }
+		)
+	</insert>
+	
+	<!-- 로그인 성공 시 최근 로그인 일시 업데이트 -->
+	<update id="updateLatestLoginDate">
+		UPDATE TBL_MEMBER
+		   SET LATEST_LOGIN_DT = SYSDATE
+		 WHERE MEMBER_ID = #{ memberId }
+	</update>
+
+
+</mapper>

@@ -2,21 +2,6 @@
  * 회원가입 
  */
 
-/*주소 api */
-function DaumPostcode() {
-    new daum.Postcode({
-        oncomplete: function(data) {
-            let detail = document.getElementById('detailAddress').value;
-            document.getElementById('postalCode').value = data.zonecode;
-            document.getElementById('address').value = data.roadAddress;
-            if(data.buildingName != '') {
-                document.getElementById('detailAddress').value = data.buildingName;
-            }
-            document.getElementById('detailAddress').focus();
-        }
-    }).open();
-}
-
 /* 아이디 유효성 검사 및 중복 확인 */
 $('#memberId').on('propertychange change keyup paste input focusout', function(){
 	const regexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -91,6 +76,7 @@ function isValidPwd() {
 	return count > 0 ? true : false;
 }
 
+
 /* 비밀번호 입력란과 확인란 일치 여부 확인 */
 $('#confirmPwd').on('propertychange change keyup paste input', function(){
 	if($('#memberPwd').val() != $(this).val()) {
@@ -120,7 +106,6 @@ $('.visibility i').click(function(){
     }
 });
 
-
 /* 이름 유효성 검사 */
 $('#name').focusout(function(){
 	const regexp = /^[가-힣]{2,6}$/;
@@ -140,12 +125,88 @@ $('#name').focusout(function(){
 	}
 });
 
+/* 이메일 유효성 검사 */
+$('#email').on('propertychange change keyup paste input focusout', function(){
+	const regexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+	const email = $('[name=email]').val();
+	
+	if(email != '') {
+		
+		$.ajax({
+			url : '/member/checkEmail',
+			type : 'post',
+			data : {'email' : email},
+			success : function(result){
+				console.log(result);
+				if(result > 0) {
+					$('#checkEmailMsg').text('이미 가입된 이메일입니다');
+					$('#registBtn').attr('disabled', true);
+				} else {
+					if(!regexp.test(email)) {
+						$('#checkEmailMsg').text('이메일 형식이 올바르지 않습니다');
+						$('#registBtn').attr('disabled', true);
+					} else {
+						$('#checkEmailMsg').text('');
+						$('#registBtn').attr('disabled', false);
+					}
+				}
+			},
+			error : function(status, error){ console.log(status, error); }
+		});
+	} else {
+		$('#checkEmailMsg').text('이메일은 필수 입력 항목입니다');
+		$('#registBtn').attr('disabled', true);
+	}
+});
+
+/* 이메일 자동완성 */
+function autoDomain(email, value){
+    let emailId = value.split('@');
+    let domainList = ['naver.com','gmail.com','hanmail.net','kakao.com','hotmail.com','nate.com','msn.com'];
+    let availableBox = new Array; // 자동완성 키워드 리스트
+    for(let i=0; i < domainList.length; i++ ){
+        availableBox.push( emailId[0] +'@'+ domainList[i] );
+    }
+    $("#memberId").autocomplete({
+        source: availableBox,
+        focus: function(event, ui) {
+            return false;
+        }
+    });
+}
+
+/*주소 api */
+function DaumPostcode() {
+    new daum.Postcode({
+        oncomplete: function(data) {
+            let detail = document.getElementById('detailAddress').value;
+            document.getElementById('postalCode').value = data.zonecode;
+            document.getElementById('address').value = data.roadAddress;
+            if(data.buildingName != '') {
+                document.getElementById('detailAddress').value = data.buildingName;
+            }
+            document.getElementById('detailAddress').focus();
+        }
+    }).open();
+}
+
+
 
 /* 양식 제출 전 필수 입력값 확인 */
-function submitForm(form) {
+$('#signupForm').on('submit', function (event) {
 	event.preventDefault();
+	const form = this; 
+	console.log($('#phoneA').val().length);
 	
-	if(!($('#name').val().trim().length > 0 && $('#phoneA').val().length > 0 && $('#phoneB').val().length > 0 && $('#phoneC').val().length > 0 && $('#memberId').val().trim().length > 0 && $('#postalCode').val().length > 0)) {
+	if(!($('#memberId').val().trim().length > 0 && 
+	$('#memberPwd').val().length > 0 && 
+	$('#confirmPwd').val().length > 0 && 
+	$('#name').val().length > 0 && 
+	$('#phoneA').val().length > 0 && 
+	$('#phoneB').val().length > 0 && 
+	$('#phoneC').val().length > 0 && 
+	$('#postalCode').val().length > 0 && 
+	$('#address').val().trim().length > 0)){
 		Swal.fire({
 			icon: 'error',
 			title: '필수 입력 항목을 작성하세요',
@@ -179,6 +240,6 @@ function submitForm(form) {
 			}
 		});
 	}
-}
+});
 
 

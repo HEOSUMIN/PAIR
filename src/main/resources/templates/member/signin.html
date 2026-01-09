@@ -3,9 +3,9 @@
     layout:decorate="layouts/default.html">
 <head>
 <title layout:fragment="title">로그인</title>
-    <th:block layout:fragment="css">
-        <link th:href="@{/css/signin.css}" rel="stylesheet">
-    </th:block>
+<th:block layout:fragment="css">
+    <link th:href="@{/css/signin.css}" rel="stylesheet">
+</th:block>
 </head>
 <body layout:fragment="content">
     <div class="title-wrapper">
@@ -30,6 +30,7 @@
                             style="filter: invert(47%) sepia(2%) saturate(2314%) hue-rotate(167deg) brightness(95%) contrast(80%);"></i>
                     </button>
                 </div>
+                <p th:if="${errorTitle}" style="color: #ff0000;" th:text="${errorTitle}"></p>
             </div>
             <div class="buttonBox">
                 <div class="remember-wrapper">

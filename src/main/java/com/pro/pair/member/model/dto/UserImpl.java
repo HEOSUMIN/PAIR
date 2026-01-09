@@ -15,25 +15,22 @@ import lombok.ToString;
 @Getter
 @ToString
 public class UserImpl extends User {
-	private String memberId;		//회원 id
-	private String memberPwd;		//회원비밀번호 
-	private String name;			//이름 
-	private String phone;			//전화번호 
-	private String email;			//이메일 
-	private String address;			//주소 
-	private String nickname;		//닉네임
-	private char status;			//계정탈퇴여부상태
 	
+	private String memberId;
+	private String memberPwd;
+	private String email;
+	private String name;
+	private char status;
+	private String address;
+	private String phone;
+
 	private Date InsDt;				//가입일자
 	private Date UpDt;				//수정일자
-	private Date latestLoginDate;	//최근로그인일시
+	private Date lastLoginDt;	//최근로그인일시
 
+	private List<RoleDTO> roleList;
 	
-	//private List<RoleDTO> roleList;
 	
-	/*
-	 * User로부터 상속 받은 생성자 
-	 */
 	public UserImpl(String username, String password, Collection<? extends GrantedAuthority> authorities) {
 		
 		super(username, password, authorities);
@@ -49,11 +46,10 @@ public class UserImpl extends User {
 		this.phone = member.getPhone();
 		this.email = member.getEmail();
 		this.address = member.getAddress();
-		this.nickname = member.getNickname();
 		this.status = member.getStatus();
 		this.InsDt = member.getInsDt();
 		this.UpDt = member.getUpDt();
-		this.latestLoginDate = member.getLatestLoginDate();
+		this.lastLoginDt = member.getLastLoginDt();
 	}
 
 

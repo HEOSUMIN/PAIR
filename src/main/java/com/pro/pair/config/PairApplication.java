@@ -1,4 +1,4 @@
-package com.pro.pair;
+package com.pro.pair.config;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

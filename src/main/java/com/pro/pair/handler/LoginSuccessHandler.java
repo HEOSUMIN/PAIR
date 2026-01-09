@@ -28,13 +28,13 @@ import lombok.extern.slf4j.Slf4j;
 @SessionAttributes("loginMember")
 public class LoginSuccessHandler implements AuthenticationSuccessHandler{
 	
-	/*private MemberMapper memberMapper;
+	private MemberMapper memberMapper;
 	
 	@Autowired
 	public LoginSuccessHandler(MemberMapper memberMapper) {
 		this.memberMapper = memberMapper;
 	}
-*/
+
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
@@ -72,10 +72,10 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler{
 		
 		log.info("요청 uri : {}", uri);
 		
-		//response.sendRedirect("/");
+		response.sendRedirect("/");
 		
 		
-		
+		/*
 		Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
 		log.info("ROLE : {}", roles);
 		
@@ -83,7 +83,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler{
 			response.sendRedirect("/admin/dashboard");
 		}else {
 			response.sendRedirect("/");
-		}
+		}*/
 		
 	}
 	
