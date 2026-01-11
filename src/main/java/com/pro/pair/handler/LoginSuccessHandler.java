@@ -67,23 +67,19 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler{
 			
 		} else if(prevPage != null) { //상황B. 사용자가 직접 로그인페이지를 요청한 경우
 			uri = prevPage;
-			log.info("prevPage : {}", prevPage);
 		}
 		
 		log.info("요청 uri : {}", uri);
 		
-		response.sendRedirect("/");
 		
 		
-		/*
 		Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-		log.info("ROLE : {}", roles);
 		
 		if(roles.contains("ROLE_ADMIN")) {
 			response.sendRedirect("/admin/dashboard");
 		}else {
 			response.sendRedirect("/");
-		}*/
+		}
 		
 	}
 	
