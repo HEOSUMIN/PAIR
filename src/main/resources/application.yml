@@ -16,7 +16,6 @@
 #mybatis.mapper-locations=/mappers/**/*.xml
 #
 
-
 spring:
   application:
     name: pair
@@ -30,10 +29,13 @@ spring:
     username: pair
     password: pair
     driver-class-name: oracle.jdbc.OracleDriver
-
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+        
+        
 # mybatis config
 mybatis:
   mapper-locations: /mappers/**/*.xml
-  
-
   

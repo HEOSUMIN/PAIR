@@ -6,6 +6,7 @@
 <title>관리자페이지-PAIR</title>
 <th:block layout:fragment="css">
     <link th:href="@{/css/customtable.css?after}" rel="stylesheet">
+    <link th:href="@{/css/thumbnail.css}" rel="stylesheet">
 </th:block>
 </head>
 <body layout:fragment="content">
@@ -17,106 +18,42 @@
                 <hr>
                 <ul>
                     <li class="th"><p>분류</p></li>
-                    <!--    <li class="td">
-                        <select id="roomCategoryName" name="roomCategoryName" class="dataTable-selector selector" onchange="roomCategory();">
+                    <li class="td"><select id="category" name="category"
+                        class="dataTable-selector selector" onchange="changeCategory();">
                             <option selected disabled hidden>선택</option>
-                            <option th:each="category : ${ category }" th:if="${category.depth == 1}" th:value="${category.categoryNo }" th:text="${ category.categoryName }"></option>
-                        </select>
-                        <select id="mainCategoryName" name="mainCategoryName" class="dataTable-selector selector" onchange="mainCategory();">
-                             <option  selected disabled hidden>선택</option>
-                        </select>
-                        <select id="subCategoryName" name="subCategoryName" class="dataTable-selector selector">
-                             <option selected disabled hidden>선택</option>
-                        </select>
-                    </li> -->
+                            <option th:each="category : ${ category }" th:if="${category.lvl == 1}"
+                                th:value="${category.categoryNo }" th:text="${ category.categoryNm }"></option>
+                    </select> <select id="subCategory" name="subCategory" class="dataTable-selector selector">
+                            <option selected disabled hidden>선택</option>
+                    </select></li>
                 </ul>
-                <!-- 현재 등록돼 있는 브랜드 목록 호출, 사용자가 추가 가능 -->
                 <ul>
                     <li class="th"><p>브랜드</p></li>
-                    <li class="td"><select id="brandName" name="brandName"
+                    <li class="td"><select id="brand" name="brand"
                         class="dataTable-selector selector" onchange="addABrand();">
-                            <!--  <option th:each="brand : ${ brand }" th:value="${ brand.brandName }" th:text="${ brand.brandName }"></option>
-                            <option value="etc">새 브랜드 추가</option> -->
-                    </select> <input type="text" id="addNewBrand" name="addNewBrand" disabled></li>
+                            <option selected disabled hidden>선택</option>
+                            <option th:each="brand : ${ brand }" th:value="${ brand.brandCd }"
+                                th:text="${ brand.brandNm }"></option>
+                    </select>
                 </ul>
                 <ul>
                     <li class="th"><p>상품명</p></li>
-                    <li class="td"><input type="text" id="prodName" name="prodName"><input
-                        type="text" id="prodNo" name="prodNo" readonly></li>
+                    <li class="td"><input type="text" id="prodNm" name="prodNm">
                 </ul>
                 <!-- DiscountRate ENUM 호출 -->
                 <ul>
                     <li class="th"><p>판매가 및 할인율</p></li>
                     <li class="td"><select id="discount" name="discount"
                         class="dataTable-selector selector">
-                            <!-- <option th:each="rate : ${T(com.pro.shop.product.model.dto.DiscountRate).values()}" th:value="${ rate.getValue() }" th:text="|${ rate.getValue() }%|"></option> -->
+                            <option
+                                th:each="rate : ${T(com.pro.pair.product.model.dto.DiscountRate).values()}"
+                                th:value="${ rate.getValue() }" th:text="|${ rate.getValue() }%|"></option>
                     </select> <input type="number" id="prodPrice" name="prodPrice"> 원</li>
                 </ul>
                 <ul>
                     <li class="th"><p>상품 설명</p></li>
                     <li class="td"><input type="text" id="prodDesc" name="prodDesc"></li>
                 </ul>
-                <ul>
-                    <li class="option_li"><span>이 상품에 다양한 크기, 색상과 같은 옵션이 있나요?&nbsp;&nbsp;</span>
-                        <a style="color: #2f89d8;" onclick="optionOpen()">옵션 열기</a></li>
-                </ul>
-                <div class="optionAdd" style="display: none">
-                    <span id="optionAddBtn" onclick="optionAdd()">+옵션추가</span>
-                </div>
-                <div class="optionDetailBtn" style="display: none">
-                    <input type="button" value="세부사항 입력하기" onclick="optionDetailBtn()"> <input
-                        type="button" value="test" onclick="test()">
-                    <div class="optionDetailChk">
-                        <input type="checkbox" id="combineYn">&nbsp;조합형옵션
-                    </div>
-                </div>
-                <div class="optionDetailDiv" style="display: none"></div>
-                <!-- <div class="optionBox">
-                  <ul>
-                    <li class="th" style="width:500px;"><p>옵션추가 (*색상, 사이즈 등 옵션이 여러개인 경우 추가 등록 해주세요.)</p></li>
-                    <li>
-                        <input type="button" value="행삭제" id="delRow">
-                        <input type="button" value="행추가" id="addRow">
-                    </li>
-                  </ul>
-                  <div class="optionBox_Table">
-                     <table class="optionTable" id="optionTable">
-                        <thead>
-                          <tr>
-                            <th>checkBox</th>
-                            <th>옵션명</th>
-                            <th>옵션값</th>
-                            <th>옵션추가금액</th>
-                            <th>재고</th>
-                          </tr>
-                        </thead>
-                        <tbody id="table_body">
-                          <tr>
-                           <td>
-                              <input type="checkbox" name="chkbox"  class="form_control">
-                            </td>
-                            <td>
-                               <input type="text" id="optionCategoryNo" name="optionCategoryNo" class="form_control">
-                               <select id="optionCategoryNo" name="optionCategoryNo" class="form_control" onchange="addOptionCategry();">
-                                    <option selected disabled hidden>선택</option>
-                                    <option th:each="optCategory : ${ optCategory }" th:value="${optCategory.optCategoryNo }" th:text="${ optCategory.optCategoryNm }"></option>
-                                    <option value="etc">옵션 추가</option>
-                              </select>
-                            </td>
-                            <td>
-                              <input type="text" id="optionValue" name="optionValue">
-                            </td>
-                            <td>
-                              <input type="text" id="optionExtChrg" name="optionExtChrg" oninput="onlyNumberWithComma(this);">
-                            </td>
-                             <td>
-                              <input type="text" id="optionExtChrg" name="">
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                  </div>
-                </div>  -->
                 <hr>
                 <div class="contentBox">
                     <ul>
