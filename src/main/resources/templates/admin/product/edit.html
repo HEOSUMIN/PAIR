@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/admin}">
+<head>
+<meta charset="UTF-8">
+<title>관리자페이지-PAIR</title>
+<th:block layout:fragment="css">
+	<link th:href="@{/css/customtable.css?after}" rel="stylesheet">
+	<link th:href="@{/css/thumbnail.css}" rel="stylesheet">
+</th:block>
+</head>
+<body layout:fragment="content">
+	<div class="container content-wrapper">
+		<h1>상품 수정</h1>
+		<div class="infoBox">
+			<form id="editForm" name="editForm" class="edit-form" th:action="@{/admin/product/edit}" method="post" enctype="multipart/form-data">
+				<hr>
+				<ul>
+					<li class="th">
+						<p>판매여부</p>
+					</li>
+					<li class="td" th:switch="${ detail.useYn }">
+						<input th:case="Y" type="text" id="isOnSale" name="isOnSale" th:value="판매중" readonly>
+						<input th:case="N" type="text" id="stoppedSelling" name="stoppedSelling" th:value="판매중지" readonly>
+					</li>
+				</ul>
+				<hr>
+				<ul>
+					<li class="th">
+						<p>상품번호</p>
+					</li>
+					<li class="td">
+						<input type="text" id="prodNo" name="prodNo" th:value="${ detail.prodNo }" style="width: 40.5%;" readonly>
+						<input type="text" id="prodInstDate" name="prodInstDate" th:value="'등록일 : ' + ${#dates.format(detail.InsDt, 'yyyy-MM-dd')}" style="width: 58%; margin-left: 2.5%;" disabled>
+						<input type="hidden" id="today" name="today" disabled>
+					</li>
+				</ul>
+				<!-- 현재 등록돼 있는 카테고리 목록을 선택지로 호출, 사용자가 추가 가능 -->
+				<ul>
+					<li class="th">
+						<p>카테고리</p>
+					</li>
+					<li class="td">
+						<select id="category" name="category" class="dataTable-selector selector" onchange="changeCategory();">
+							<option th:each="category : ${ category }" th:if="${category.lvl == 1}" th:selected="${category.categoryNo} == ${detail.category.upCategoryNo}" th:value="${category.categoryNo }" th:text="${ category.categoryNm }"></option>
+						</select>
+						<select id="subCategory" name="subCategory" class="dataTable-selector selector">
+							<option th:each="category : ${category}" th:if="${category.upCategoryNo} == ${detail.category.upCategoryNo}" th:value="${category.categoryNo}" th:text="${category.categoryNm}" th:selected="${category.categoryNo} == ${detail.categoryNo}"></option>
+						</select>
+					</li>
+				</ul>
+				<ul>
+					<li class="th">
+						<p>상품명</p>
+					</li>
+					<li class="td">
+						<input type="text" id="prodName" name="prodName" th:value="${ detail.prodNm }">
+					</li>
+				</ul>
+				<ul>
+					<li class="th">
+						<p>상품 설명</p>
+					</li>
+					<li class="td">
+						<input type="text" id="prodDesc" name="prodDesc" th:value="${ detail.prodDesc }">
+					</li>
+				</ul>
+				<!-- DiscountRate ENUM 호출 -->
+				<ul>
+					<li class="th">
+						<p>할인율 및 원가</p>
+					</li>
+					<li class="td">
+						<select id="discount" name="discount" class="dataTable-selector selector">
+							<option th:each="rate : ${T(com.pro.pair.product.model.dto.DiscountRate).values()}" th:value="${ rate.getValue() }" th:text="|${ rate.getValue() }%|" th:selected="${ detail.discountRate }"></option>
+						</select>
+						<input type="number" id="price" name="price" th:value="${ detail.price }">
+					</li>
+				</ul>
+				<!-- 현재 등록돼 있는 브랜드 목록 호출, 사용자가 추가 가능 -->
+				<ul>
+					<li class="th">
+						<p>브랜드</p>
+					</li>
+					<li class="td">
+						<select id="brandNm" name="brandNm" class="dataTable-selector selector" onchange="addABrand();">
+							<option th:each="brand : ${ brand }" th:value="${ brand.brandNm }" th:text="${ brand.brandNm }" th:selected="${brand.brandNm}==${ detail.brandNm }"></option>
+							<option value="etc">새 브랜드 추가</option>
+						</select>
+						<input type="text" id="addNewBrand" name="addNewBrand" disabled>
+					</li>
+				</ul>
+				<hr>
+				<div class="contentBox">
+					<ul>
+						<li class="th">
+							<p>상세 내용</p>
+						</li>
+					</ul>
+					<textarea id="prodDetailContent" name="prodDetailContent" th:text="${ detail.prodDetailContent }"></textarea>
+				</div>
+				<div class="thumbnailBox">
+					<ul>
+						<li class="th">
+							<p>대표 썸네일</p>
+						</li>
+						<li class="thumbTd">
+							<div class="imageBox">
+								<th:block th:if="${ mainThumb }">
+									<img th:src="${ mainThumb.thumbnailPath }">
+								</th:block>
+								<th:block th:if="!${ mainThumb }">
+									<label for="mainThumb" class="thumbLabel"> <i class="fa-solid fa-image" style="font-size: 300%;"></i>
+									</label>
+								</th:block>
+							</div>
+						</li>
+					</ul>
+					<ul>
+						<li class="th">
+							<p>서브 썸네일</p>
+						</li>
+						<li class="thumbTd">
+							<div class="imageBox">
+								<th:block th:if="${ subThumb }">
+									<img th:src="${ subThumb.thumbnailPath }">
+								</th:block>
+								<th:block th:if="!${ subThumb }">
+									<label for="subThumb" class="thumbLabel"> <i class="fa-solid fa-image" style="font-size: 300%;"></i>
+									</label>
+								</th:block>
+							</div>
+						</li>
+					</ul>
+					<input type="file" id="mainThumb" name="files" class="files" accept="image/gif,image/jpeg,image/png" style="display: none;">
+					<input type="file" id="subThumb" name="files" class="files" accept="image/gif,image/jpeg,image/png" style="display: none;">
+				</div>
+				<div class="buttonBox">
+					<button type="button" class="btn btn-dark" onclick="submitEditProdForm()">상품수정</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<th:block layout:fragment="script">
+		<script th:src="@{/js/product.js}" type="text/javascript"></script>
+		<!-- CKEditor4 -->
+		<script src="//cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+		<!--       <script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script> -->
+		<script type="text/javascript">
+			$(function() {
+				let ckeditor_config = {
+					filebrowserUploadMethod : 'form',
+					filebrowserUploadUrl : '/admin/product/add/contentImageUpload',
+					language : 'ko'
+				};
+				CKEDITOR.replace('prodDetailContent', ckeditor_config);
+			});
+		</script>
+	</th:block>
+</body>
+</html>

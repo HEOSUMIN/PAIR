@@ -2,6 +2,7 @@ package com.pro.pair.product.model.service;
 
 import java.util.List;
 
+import com.pro.pair.paging.model.dto.Criteria;
 import com.pro.pair.product.model.dto.BrandDTO;
 import com.pro.pair.product.model.dto.CategoryDTO;
 import com.pro.pair.product.model.dto.ProductDTO;
@@ -19,5 +20,23 @@ public interface ProductService {
 	
 	int attachProdThumbnail(AttachmentDTO attachment);		//상품 썸네일 등록
 	
-	int addProduct(ProductDTO product);
+	int addProduct(ProductDTO product);				//상품등록
+	
+	int getTotalNumber(Criteria criteria);		//전체상품개수
+	
+	int getOnSaleNumber(Criteria criteria);		//판매중인상품개수
+	
+	//상품목록조회 
+	List<ProductDTO> getProductList(Criteria criteria);
+		
+	List<ProductDTO> getOnSaleOnly(Criteria criteria);
+	
+	//상품상세조회
+	ProductDTO getProductDetails(int prodNo);
+	
+	AttachmentDTO getMainThumbnailByProdNo(int prodNo);
+	
+	AttachmentDTO getSubThumbnailByProdNo(int prodNo);
+	
+	
 }

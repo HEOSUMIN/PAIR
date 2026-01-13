@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pro.pair.paging.model.dto.Criteria;
 import com.pro.pair.product.model.dao.ProductMapper;
 import com.pro.pair.product.model.dto.BrandDTO;
 import com.pro.pair.product.model.dto.CategoryDTO;
@@ -52,6 +53,43 @@ public class ProductServiceImpl implements ProductService{
 		
 		return result;
 	}
+
+	@Override
+	public int getTotalNumber(Criteria criteria) {
+		return productMapper.getTotalNumber(criteria);
+	}
+
+	@Override
+	public int getOnSaleNumber(Criteria criteria) {
+		return productMapper.getOnSaleNumber(criteria);
+	}
+
+	@Override
+	public List<ProductDTO> getProductList(Criteria criteria) {
+		return productMapper.getProductList(criteria);
+	}
+
+	@Override
+	public List<ProductDTO> getOnSaleOnly(Criteria criteria) {
+		return productMapper.getOnSaleOnly(criteria);
+	}
+
+	@Override
+	public ProductDTO getProductDetails(int prodNo) {
+		return productMapper.getProductDetails(prodNo);
+	}
+
+	@Override
+	public AttachmentDTO getMainThumbnailByProdNo(int prodNo) {
+		return productMapper.getMainThumbnailByProdNo(prodNo);
+	}
+
+	@Override
+	public AttachmentDTO getSubThumbnailByProdNo(int prodNo) {
+		return productMapper.getMainThumbnailByProdNo(prodNo);
+	}
+	
+	
 
 	
 

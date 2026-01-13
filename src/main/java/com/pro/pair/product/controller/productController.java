@@ -15,7 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -24,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import com.pro.pair.paging.model.dto.Criteria;
 import com.pro.pair.product.model.dto.BrandDTO;
 import com.pro.pair.product.model.dto.CategoryDTO;
 import com.pro.pair.product.model.dto.ProductDTO;
@@ -32,6 +35,7 @@ import com.pro.pair.upload.model.dto.AttachmentDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 
@@ -108,6 +112,7 @@ public class productController {
 		product.setProdNm(prodNm);
 		product.setProdDesc(prodDesc);
 		product.setPrice(price);
+		product.setDiscountRate(discountRate);
 		product.setSalePrice(salePrice);
 		product.setProdDetailContent(prodDetailContent);
 
@@ -204,5 +209,57 @@ public class productController {
 
 		return mv;
 	}
+	
+	/*
+	 * 관리자-상품목록
+	 */
+	@GetMapping("admin/product/list")
+	public void getProductList(@Valid @ModelAttribute("criteria")Criteria criteria, BindingResult bindingResult, HttpServletRequest request, Model model) {
+		log.info("상품 목록 조회 - 관리자 ");
+		int total = productService.getTotalNumber(criteria); //전체
+		int onSale = productService.getOnSaleNumber(criteria); //판매중
+		
+		List<ProductDTO> productList = productService.getProductList(criteria);
+		List<ProductDTO> onSaleOnly = productService.getOnSaleOnly(criteria); //판매중
+		
+		model.addAttribute("total", total);
+		model.addAttribute("onSale", onSale);
+		
+		model.addAttribute("productList", productList);
+		model.addAttribute("onSaleOnly", onSaleOnly);
+		
+	}
+	
+	/*
+	 * 관리자-상품상세정보 조회 및 수정 
+	 */
+	@GetMapping("/admin/product/edit")
+	public void editProductDetails(@RequestParam("no") int prodNo, Model model) {
+		
+		// 카테고리 리스트 출력
+		List<CategoryDTO> category = productService.getCategoryList();
+		model.addAttribute("category", category);
+
+		// 브랜드 리스트 출력
+		List<BrandDTO> brand = productService.getBrandList();
+		model.addAttribute("brand", brand);
+				
+		/* 상품 상세 호출 */
+		ProductDTO detail = productService.getProductDetails(prodNo);
+		
+		/* 상품 썸네일 조회 */
+		AttachmentDTO mainThumb = productService.getMainThumbnailByProdNo(prodNo);
+		AttachmentDTO subThumb = productService.getSubThumbnailByProdNo(prodNo);
+		
+		log.info("detail {}",detail);
+		model.addAttribute("category", category);
+		model.addAttribute("brand", brand);
+		model.addAttribute("detail", detail);
+		model.addAttribute("mainThumb", mainThumb);
+		model.addAttribute("subThumb", subThumb);
+		
+		
+	}
+	
 
 }

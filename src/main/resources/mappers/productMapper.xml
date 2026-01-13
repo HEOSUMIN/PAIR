@@ -9,13 +9,14 @@
 		<result property="brandCd" column="BRAND_CD" />
 		<result property="categoryNo" column="CATEGORY_NO" />
 		<result property="price" column="PRICE" />
+		<result property="discountRate" column="DISCOUNT_RATE" />
 		<result property="salePrice" column="SALE_PRICE" />
 		<result property="prodDesc" column="PROD_DESC" />
 		<result property="prodDetailContent"
 			column="PROD_DETAIL_CONTENT" />
 		<result property="insDt" column="INS_DT" />
 		<result property="uptDt" column="UPT_DT" />
-		<result property="prodAvailYn" column="PROD_AVAIL_YN" />
+		<result property="useYn" column="USE_YN" />
 		<association property="category"
 			resultMap="categoryResultMap" /> <!-- 1:1 -->
 		<association property="brand" resultMap="brandResultMap" /> <!-- 1:1 -->
@@ -89,69 +90,239 @@
 		FROM DUAL
 	</select>
 
-	<!-- 상품 등록 -->
-	<insert id="addProduct">
-		INSERT
-		INTO TBL_PRODUCT
-		(
+	<!-- 상품 목록 검색 *대시보드* -->
+	<sql id="dashboardProductSearch">
+		<trim prefix="AND">
+			<if test="keyword != null and condition eq 'prodNm'">
+				A.PROD_NM LIKE '%' || #{ keyword } || '%'
+			</if> 
+			<if test="keyword != null and condition eq 'brand'">
+				C.BRAND_NM LIKE '%' || #{ keyword } || '%'
+			</if>
+			<if test="keyword != null and condition eq 'category'">
+				B.CATEGORY_NM LIKE '%' || #{ keyword } || '%'
+			</if><!-- 
+			<if test="keyword != null and condition eq 'bodyColor'">
+				O.OPT_BODY_COLOR LIKE '%' || #{ keyword } || '%'
+			</if>
+			<if test="keyword != null and condition eq 'inkColor'">
+				O.OPT_INK_COLOR LIKE '%' || #{ keyword } || '%'
+			</if>
+			<if test="keyword != null and condition eq 'pointSize'">
+				O.OPT_POINT_SIZE LIKE TO_NUMBER(#{ keyword })
+			</if> -->
+			<!-- <if test="keyword != null and condition eq 'tag'">
+				A.PRODUCT_TAG LIKE '%' || #{ keyword } || '%'
+			</if>  -->
+		</trim>
+	</sql>
+
+	<!-- 전체상품 개수 조회 -->
+	<select id="getTotalNumber"
+		parameterType="com.pro.pair.paging.model.dto.Criteria"
+		resultType="_int">
+		SELECT COUNT(DISTINCT A.PROD_NO)
+		FROM TBL_PRODUCT A
+		LEFT JOIN TBL_CATEGORY B ON A.CATEGORY_NO = B.CATEGORY_NO
+		LEFT JOIN TBL_BRAND C ON A.BRAND_CD = C.BRAND_CD
+		WHERE 1 = 1
+		<include refid="dashboardProductSearch" />
+	</select>
+
+	<!-- 판매중 상품 개수 조회 -->
+	<select id="getOnSaleNumber"
+		parameterType="com.pro.pair.paging.model.dto.Criteria"
+		resultType="_int">
+		SELECT
+		COUNT(DISTINCT A.PROD_NO)
+		FROM TBL_PRODUCT A
+		LEFT JOIN TBL_CATEGORY B ON(A.CATEGORY_NO = B.CATEGORY_NO)
+		LEFT JOIN TBL_BRAND C ON(A.BRAND_CD = C.BRAND_CD)
+		WHERE A.USE_YN = 'Y'
+		<include refid="dashboardProductSearch" />
+	</select>
+
+	<!-- 전체상품 목록 조회 *페이징* -->
+	<select id="getProductList"
+		parameterType="com.pro.pair.paging.model.dto.Criteria"
+		resultMap="productResultMap">
+		<![CDATA[
+		SELECT *
+		FROM(
+		        SELECT D.RANK AS RK, D.* 
+		          FROM( SELECT DENSE_RANK() OVER (ORDER BY A.INS_DT DESC, A.PROD_NO DESC) RANK
+		          			 , A.PROD_NO
+		                     , A.PROD_NM
+		                     , A.PRICE
+		                     , A.DISCOUNT_RATE
+		                     , A.SALE_PRICE
+		                     , A.PROD_DESC
+		                     , A.PROD_DETAIL_CONTENT
+		                     , A.INS_DT
+		                     , A.UPT_DT
+		                     , A.USE_YN
+		                     , B.CATEGORY_NM
+		                     , C.BRAND_NM
+		                  FROM TBL_PRODUCT A 
+		                    INNER JOIN TBL_CATEGORY B ON A.CATEGORY_NO = B.CATEGORY_NO 
+		                    INNER JOIN TBL_BRAND C ON A.BRAND_CD = C.BRAND_CD 
+		                  WHERE 1 = 1
+		]]>
+		<include refid="dashboardProductSearch"></include>
+		) D
+		<![CDATA[
+         		 WHERE D.RANK <= #{ currentPageNo } * #{ recordsPerPage }
+        )E
+		WHERE E.RK > (#{ currentPageNo } - 1) * #{ recordsPerPage }
+		]]>
+		</select>
+		
+	<!-- 판매중 상품 목록 조회 *페이징* -->
+	<select id="getOnSaleOnly"
+		parameterType="com.pro.pair.paging.model.dto.Criteria"
+		resultMap="productResultMap">
+		<![CDATA[
+		SELECT *
+		FROM(
+		        SELECT D.RANK AS RK, D.* 
+		          FROM( SELECT DENSE_RANK() OVER (ORDER BY A.INS_DT DESC, A.PROD_NO DESC) RANK
+		                     , A.PROD_NM
+		                     , A.PRICE
+		                     , A.DISCOUNT_RATE
+		                     , A.SALE_PRICE
+		                     , A.PROD_DESC
+		                     , A.PROD_DETAIL_CONTENT
+		                     , A.INS_DT
+		                     , A.UPT_DT
+		                     , A.USE_YN
+		                     , B.CATEGORY_NM
+		                     , C.BRAND_NM
+		                  FROM TBL_PRODUCT A 
+		                    INNER JOIN TBL_CATEGORY B ON A.CATEGORY_NO = B.CATEGORY_NO 
+		                    INNER JOIN TBL_BRAND C ON A.BRAND_CD = C.BRAND_CD 
+		                  WHERE A.USE_YN = 'Y'
+		]]>
+		<include refid="dashboardProductSearch"></include>
+		) D
+		<![CDATA[
+         		 WHERE D.RANK <= #{ currentPageNo } * #{ recordsPerPage }
+        )E
+		WHERE E.RK > (#{ currentPageNo } - 1) * #{ recordsPerPage }
+		]]>
+		</select>
+		
+	<!-- 상품 상세정보 조회 -->
+	<select id="getProductDetails" resultMap="productResultMap">
+		SELECT
+               A.PROD_NO
+             , A.PROD_NM
+             , A.CATEGORY_NO
+             , B.CATEGORY_NM
+             , B.UP_CATEGORY_NO
+             , A.BRAND_CD
+             , C.BRAND_NM
+             , A.PROD_DESC
+             , A.DISCOUNT_RATE
+             , A.PRICE
+             , A.PROD_DETAIL_CONTENT
+             , A.INS_DT
+             , A.UPT_DT
+             , A.USE_YN
+          FROM TBL_PRODUCT A
+          LEFT JOIN TBL_CATEGORY B ON(A.CATEGORY_NO = B.CATEGORY_NO)
+          LEFT JOIN TBL_BRAND C ON(A.BRAND_CD = C.BRAND_CD)
+          WHERE A.PROD_NO = #{ prodNo }
+	</select>
+		
+	<!-- 상품별 메인썸네일 조회 -->
+	<select id="getMainThumbnailByProdNo" resultMap="thumbnailResultMap">
+		SELECT
+			   REF_PROD_NO
+			 , THUMBNAIL_PATH
+			 , SAVE_PATH
+		  FROM TBL_ATTACHMENT
+		 WHERE ATTACH_STATUS_YN = 'Y'
+		   AND FILE_TYPE = 'THUMB_MAIN'
+		   AND REF_PROD_NO = #{ prodNo }
+	</select>
+
+	<!-- 상품별 서브썸네일 조회 -->
+	<select id="getSubThumbnailByProdNo" resultMap="thumbnailResultMap">
+		SELECT
+			   REF_PROD_NO
+			 , THUMBNAIL_PATH
+			 , SAVE_PATH
+		  FROM TBL_ATTACHMENT
+		 WHERE ATTACH_STATUS_YN = 'Y'
+		   AND FILE_TYPE = 'THUMB_SUB'
+		   AND REF_PROD_NO = #{ prodNo }
+	</select>
+	
+		<!-- 상품 등록 -->
+		<insert id="addProduct">
+			INSERT
+			INTO TBL_PRODUCT
+			(
 			PROD_NO
 			,PROD_NM
 			,BRAND_CD
 			,CATEGORY_NO
 			,PRICE
+			,DISCOUNT_RATE
 			,SALE_PRICE
 			,PROD_DESC
 			,PROD_DETAIL_CONTENT
 			,INS_DT
 			,UPT_DT
 			,USE_YN
-		)
-		VALUES
-		(
-		SEQ_PROD_NO.NEXTVAL
-		, #{ prodNm }
-		, #{ brandCd }
-		, #{ categoryNo }
-		, #{ price }
-		, #{ salePrice }
-		, #{ prodDesc }
-		, #{ prodDetailContent }
-		, SYSDATE
-		, SYSDATE
-		, DEFAULT
-		)
-	</insert>
+			)
+			VALUES
+			(
+			SEQ_PROD_NO.NEXTVAL
+			, #{ prodNm }
+			, #{ brandCd }
+			, #{ categoryNo }
+			, #{ price }
+			, #{ discountRate }
+			, #{ salePrice }
+			, #{ prodDesc }
+			, #{ prodDetailContent }
+			, SYSDATE
+			, SYSDATE
+			, DEFAULT
+			)
+		</insert>
 
-	<!-- 상품 썸네일 등록 -->
-	<insert id="attachProdThumbnail">
-		INSERT
-		INTO TBL_ATTACHMENT
-		(
-		ATTACHMENT_NO
-		, REF_PROD_NO
-		, REF_REVW_NO
-		, REF_INQ_NO
-		, ORIG_FILE_NM
-		, SAVE_FILE_NM
-		, SAVE_PATH
-		, THUMBNAIL_PATH
-		, FILE_TYPE
-		, ATTACH_STATUS_YN
-		)
-		VALUES
-		(
-		SEQ_ATTACH_NO.NEXTVAL
-		, #{ refProdNo }
-		, NULL
-		, NULL
-		, #{ origFileNm }
-		, #{ saveFileNm }
-		, #{ savePath }
-		, #{ thumbnailPath }
-		, #{ fileType }
-		, DEFAULT
-		)
-	</insert>
+		<!-- 상품 썸네일 등록 -->
+		<insert id="attachProdThumbnail">
+			INSERT
+			INTO TBL_ATTACHMENT
+			(
+			ATTACHMENT_NO
+			, REF_PROD_NO
+			, REF_REVW_NO
+			, REF_INQ_NO
+			, ORIG_FILE_NM
+			, SAVE_FILE_NM
+			, SAVE_PATH
+			, THUMBNAIL_PATH
+			, FILE_TYPE
+			, ATTACH_STATUS_YN
+			)
+			VALUES
+			(
+			SEQ_ATTACH_NO.NEXTVAL
+			, #{ refProdNo }
+			, NULL
+			, NULL
+			, #{ origFileNm }
+			, #{ saveFileNm }
+			, #{ savePath }
+			, #{ thumbnailPath }
+			, #{ fileType }
+			, DEFAULT
+			)
+		</insert>
 
 
 </mapper>

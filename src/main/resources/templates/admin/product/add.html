@@ -17,9 +17,9 @@
                 method="post" enctype="multipart/form-data">
                 <hr>
                 <ul>
-                    <li class="th"><p>분류</p></li>
-                    <li class="td"><select id="category" name="category"
-                        class="dataTable-selector selector" onchange="changeCategory();">
+                    <li class="th"><p>카테고리</p></li>
+                    <li class="td">
+                        <select id="category" name="category" class="dataTable-selector selector" onchange="changeCategory();">
                             <option selected disabled hidden>선택</option>
                             <option th:each="category : ${ category }" th:if="${category.lvl == 1}"
                                 th:value="${category.categoryNo }" th:text="${ category.categoryNm }"></option>
