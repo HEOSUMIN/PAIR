@@ -60,6 +60,183 @@ function onlyNumberWithComma(obj) {
   obj.value = Number(obj.value.replace(/[^0-9]/g,'')).toLocaleString();
 }
 
+//==============옵션관리=======================
+/* 옵션 열기 클릭 시 */
+function optionOpen(){
+	if ($('.optionAdd').css('display') == 'none') {
+		$('.optionAdd').show();  
+		$('.optionDetailBtn').show();  
+		$('.optionDetailDiv').show(); 
+		
+	} else {
+		$('.optionAdd').hide();
+		$('.optionDetailBtn').hide();  
+		$('.optionDetailDiv').hide(); 
+	}
+}
+
+/* 옵션 추가 버튼 클릭 시 */
+let idNum = 0;
+function optionAdd(){
+	$('.optionAdd').append(
+		'<div class="optionForm" id="optionForm'+ idNum +'">'+
+			'<ul>'+
+				'<li style="width:40%"><p>옵션명</p></li>'+
+				'<li><p>옵션값 ( ,로 옵션값을 구분하여 입력해 주세요.)</p></li>'+
+				'<li style="width:30%"></li>'+
+				'<li style="width:10%"></li>'+
+			'</ul>'+
+			'<ul class="option111">'+
+				'<li style="width:40%"><input type="text" class="optCategoryNm" name="optCategoryNm" id="optCategoryNm"></li>'+
+				'<li><input type="text" name="optNm" id="optNm"></li>'+
+				'<li style="width:30%"><input type="checkbox" id="combYn"><span style="color:#82888d;font-weight:400;">필수</span></li>'+
+				'<li style="width:10%" id="optionDelBtn"><span>&times;</span></li>'+				
+			'</ul>'+
+		'</div>'
+	)
+	idNum++;
+	
+	$('.optionDetailBtn').show();  
+}
+
+
+/* 세부사항 입력 버튼 클릭 시 */
+var combineYn = '';
+function optionDetailBtn(){
+	
+	$('.optionTable').remove();
+	
+	var combineYn = document.getElementById('combineYn').value;
+	console.log("combineYn::"+combineYn);
+	
+	/* 조합형 */  
+	if(combineYn == "Y"){		//수정
+	
+		/* thead 구성 */
+		var textThead="";
+		for(var i=0; i< optCategory.length; i++){
+			textThead += '<th>'+optCategory[i]+'</th>'
+		}
+				
+		$('.optionDetailDiv').append(
+			'<table class="optionTable" id="optionTable">'+
+				'<thead>'+
+			    	'<tr>'+
+				      	'<th>checkBox</th>'+
+						textThead+
+						'<th>옵션추가금액</th>'+
+				       	'<th>재고</th>'+
+				        '<th>재고추가</th>'+
+				        '<th>상태</th>'+
+					'</tr>'+
+				'</thead>'+
+				'<tbody id="table_body">'+
+				'</tbody>'+
+			'</table>'	
+		)
+		
+		var textTbody="";
+		for(let i=0; i< optValue.length; i++){	//우선 옵션 2개까지만 가능하도록. 후에 수정 
+			for(let j=0; j< optValue[i].length; j++){
+				textTbody += '<tr>'+
+								'<td>'+
+									'<input type="checkbox" name="chkbox"  class="form_control">'+
+								'</td>'+
+								'<td>'+
+									'<p>'+optValue[i][j]+'</p>'+
+								'</td>'+
+								'<td>'+
+									'<p>'+optValue[i+1][j]+'</p>'+
+								'</td>'+
+								'<td>'+
+									'<input type="text"  class="form_control">'+
+								'</td>'+
+								'<td>'+
+									'<input type="text"   class="form_control">'+
+								'</td>'+
+								'<td>'+
+									'<input type="text"   class="form_control">'+
+								'</td>'+
+								'<td>'+
+									'<input type="text"   class="form_control">'+
+								'</td>'+					
+							'</tr>'
+			}
+		}
+		/* tbody 구성 */
+		$('#table_body').append(
+			textTbody
+		)
+					
+	}else{
+	/* 비조합형 */
+		let optCategory = new Array(); //옵션명 담을 배열 
+		let optValue = new Array();		//옵션값 담을 배열
+	
+		for(var i=0; i< $('.option111').length ; i++){
+			var optCategoryNm = $('.option111:eq('+i+') > li:eq(0)').children('#optCategoryNm').val();	//옵션명
+			var optNm = $('.option111:eq('+i+') > li:eq(1)').children('#optNm').val()					//옵션값
+			optCategory.push(optCategoryNm);
+			optValue.push(optNm);
+		}
+	
+	
+		let optNmArry = new Array();
+		var text="";
+		for(var i=0; i< optCategory.length; i++){
+			optNmArry = optValue[i].split(",");	// optValue배열에 담긴값 텍스트로 저장 
+		
+			for(var j=0; j<optNmArry.length; j++){
+				text += '<tr>'+
+							'<td>'+
+								'<input type="checkbox" name="chkbox"  class="form_control">'+
+							'</td>'+
+							'<td>'+
+								'<p>'+optCategory[i]+'</p>'+
+							'</td>'+
+							'<td>'+
+								'<p>'+optNmArry[j]+'</p>'+
+							'</td>'+
+							'<td>'+
+								'<input type="text" id="optionExtChrg"  class="form_control">'+
+							'</td>'+
+							'<td>'+
+								'<input type="text" id="optionStock"  class="form_control">'+
+							'</td>'+
+							'<td>'+
+								'<input type="text"   class="form_control">'+
+							'</td>'+
+							'<td>'+
+								'<input type="text"   class="form_control">'+
+							'</td>'+					
+						'</tr>'
+			}
+		}
+		
+		$('.optionDetailDiv').show();  
+		
+		$('.optionDetailDiv').append(
+			'<table class="optionTable" id="optionTable">'+
+				'<thead>'+
+			    	'<tr>'+
+				      	'<th>checkBox</th>'+
+						'<th>옵션명</th>'+
+						'<th>옵션값</th>'+
+						'<th>옵션추가금액</th>'+
+				       	'<th>재고</th>'+
+				        '<th>재고추가</th>'+
+				        '<th>상태</th>'+
+					'</tr>'+
+				'</thead>'+
+				'<tbody id="table_body">'+
+				text+
+				'</tbody>'+
+			'</table>'
+		)
+	}
+}
+
+//==========================================
 
 /* 상품등록 폼 제출 */
 function submitProductForm(){

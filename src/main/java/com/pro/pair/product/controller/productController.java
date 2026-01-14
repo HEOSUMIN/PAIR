@@ -35,6 +35,7 @@ import com.pro.pair.upload.model.dto.AttachmentDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -257,9 +258,16 @@ public class productController {
 		model.addAttribute("detail", detail);
 		model.addAttribute("mainThumb", mainThumb);
 		model.addAttribute("subThumb", subThumb);
+	}
+	
+	/*
+	 * 상품목록 
+	 */
+	@GetMapping("/product/list")
+	public void getProductListByCategory(HttpSession session, Model model) {
+		//카테고리별 리스트 호출 
 		
 		
 	}
-	
 
 }
