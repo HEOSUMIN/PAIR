@@ -58,18 +58,33 @@
 				<ul>
 					<li class="option_li"><span>이 상품에 다양한 크기, 색상과 같은 옵션이 있나요?&nbsp;&nbsp;</span> <a style="color: #2f89d8;" onclick="optionOpen()">옵션 열기</a></li>
 				</ul>
-				<div class="optionAdd" style="display: none">
-					<span id="optionAddBtn" onclick="optionAdd()">+옵션추가</span>
+				<hr>
+				<div class="optionForm" id="optionForm" style="display: none;">
+					<ul>
+						<li class="th">
+							<p>옵션명 개수</p>
+						</li>
+						<li class="td"><select id="optionCount" name="optionCount" class="dataTable-selector selector">
+								<!-- 기본 선택값 -->
+								<option value="" th:text="'--선택--'" th:selected="${optionCount == null}"></option>
+								<!-- 실제 옵션들 -->
+								<option th:each="i : ${#numbers.sequence(1,3)}" th:value="${i}" th:text="${i + '개'}" th:selected="${i == optionCount}"></option>
+						</select></li>
+					</ul>
+					<ul>
+						<li class="th">
+							<p>옵션입력</p>
+						</li>
+						<li class="td"></li>
+					</ul>
+					<!-- 옵션 row 들어갈 곳 -->
+					<div id="optionInputs"></div>
+					<button type="button" id="applyOptionBtn" class="btn-apply" onclick="optionDetail()">옵션목록으로 적용 ↓</button>
+					<table id="optionTable" class="option-table" style="display: none;">
+						<thead id="optionTableHead"></thead>
+						<tbody id="optionTableBody"></tbody>
+					</table>
 				</div>
-				<div class="optionDetailBtn" style="display: none">
-					<input type="button" value="세부사항 입력하기" onclick="optionDetailBtn()">
-					<input type="button" value="test" onclick="test()">
-					<div class="optionDetailChk">
-						<input type="checkbox" id="combineYn">
-						&nbsp;조합형옵션
-					</div>
-				</div>
-				<div class="optionDetailDiv" style="display: none"></div>
 				<hr>
 				<div class="contentBox">
 					<ul>

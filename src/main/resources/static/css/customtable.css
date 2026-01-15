@@ -1,121 +1,5 @@
 @charset "UTF-8";
 
-
-.optionTable{
-	margin-top : 5px;
-	table-layout:fixed;
-    width: 100%;
-	
-}
-
-.optionBox li{
-	display : flex;
-	flex-direction: row-reverse;
-}
-
-.optionBox li > input[type="button"]{
-	width: 100px;
-	background-color: #fff;
-	border: 1px solid #E5E5E5;
-}
-
-#table_body input[type="text"], select{
-	display: block;
-    border: 1px solid #E5E5E5;
-    width: 100%;
-    height: 100%;
-    padding-left: 20px;
-    padding-right: 20px;
-    margin: 6px 0;
-} 
-
-.option_li > span{
-	width: 100%;
-    text-align: start;
-    font-weight: 500;
-    vertical-align: middle;
-    margin-bottom: 0 !important;
-    color : #61686e;
-}
-
-.option_li > a {
-	width: 100%;
-    text-align: start;
-    font-weight: 500;
-    font-size: 15px;
-    vertical-align: middle;
-    margin-bottom: 0 !important;
-}
-
-.optionAdd{
-	margin-top: 20px;
-	margin-bottom: 20px;
-}
-
-
-.optionAdd > span {
-    text-align: start;
-    font-weight: 400;
-    font-size: 15px;
-	color: #495057;
-}
-
-.optionForm{
-	margin: 10px !important;
-}
-
-.optionForm:not(.content-wrapper) ul {
-    position: relative;
-    width: 100%;
-    height: 25px;
-    align-items: center;
-    margin: 1px auto;
-    padding-inline-start: 0;
-    margin-block-end: 0;
-}
-
-.optionForm > ul > li{
-    display: block;
-    width: 100%;
-    height: 100%;
-    padding-right: 10px;
-    margin: 1px 0;
-	
-}
-
-.optionForm > ul > li > p{
-    width: 100%;
-    text-align: start;
-    font-weight: 400;
-    font-size: 15px;
-    vertical-align: middle;
-    margin-bottom: 0 !important;
-    color: #82888d;
-}
-
-.optionForm > ul > li > input[type="text"]{
-    display: block;
-    border-width: 0 0 1px; 
-    width: 100%;
-    height: 100%;
-}
-
-.optionForm > ul > li > span{
-    width: 100%;
-    text-align: start;
-    font-weight: 400;
-    margin-bottom: 0 !important;
-    padding-left: 5px;
-    color : #82888d;
-}
-
-.optionDetailBtn {
-	display: flex;
-	justify-content: space-between;
-}
-
-
-
 * {
 	font-family: 'Noto Sans KR', sans-serif;
 	font-size: 12px;
@@ -128,7 +12,7 @@ h1 {
 	text-align: start;
 }
 
-.infoBox, .addBox, .contentBox, .thumbnailBox {
+.infoBox, .addBox, .optionForm, .contentBox, .thumbnailBox {
 	/* 	width: 100%;
     border-top: 3px solid #000; */
 	margin-top: 10px;
@@ -175,7 +59,7 @@ h1 {
 }
 
 .td input[type="text"], input[type="number"], input[type="email"],
-	select {
+	selectm {
 	display: block;
 	border: 1px solid #E5E5E5;
 	width: 100%;
@@ -198,6 +82,84 @@ h1 {
 .td select:focus {
 	border-color: #E5E5E5 !important;
 }
+
+/* 옵션 row */
+.option-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr 36px 36px;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+/* 입력창 */
+.opt-name,
+.opt-values {
+  height: 35px;
+  padding: 0 10px;
+  border: 1px solid #dcdcdc;
+  background: #fff;
+  font-size: 12px;
+}
+
+/* + / × 버튼 */
+.btn-add,
+.btn-remove {
+  height: 35px;
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.btn-add {
+  background: #4a4f55;
+  color: #fff;
+  border-color: #4a4f55;
+}
+
+.btn-remove {
+  color: #999;
+}
+
+/* 옵션목록으로 적용 버튼 */
+.btn-apply {
+  margin-top: 12px;
+  width: 100%;
+  height: 35px;
+  background: #c1c1c1;  
+  color: #fff;
+  border: none;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-apply:hover {
+  background: #18b400;
+}
+
+.option-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.option-table th,
+.option-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.option-table th {
+    background-color: #f5f5f5;
+}
+
+
+
+
 
 /* 버튼 */
 .card-body>button {
