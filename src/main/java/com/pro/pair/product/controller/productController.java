@@ -29,6 +29,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import com.pro.pair.paging.model.dto.Criteria;
 import com.pro.pair.product.model.dto.BrandDTO;
 import com.pro.pair.product.model.dto.CategoryDTO;
+import com.pro.pair.product.model.dto.OptionDTO;
 import com.pro.pair.product.model.dto.ProductDTO;
 import com.pro.pair.product.model.service.ProductService;
 import com.pro.pair.upload.model.dto.AttachmentDTO;
@@ -88,9 +89,12 @@ public class productController {
 			MediaType.MULTIPART_FORM_DATA_VALUE })
 	@ResponseBody
 	public ModelAndView addProduct(@RequestPart("params") Map<String, Object> params,
+			@RequestPart("optionList") Map<String, Object> optionList,
 			@RequestParam(value = "files", required = false) List<MultipartFile> files, HttpServletRequest request,
 			HttpServletResponse response, Locale locale) {
+		
 		log.info("params: {}", params);
+		
 		/* jsonView 적용 */
 		ModelAndView mv = new ModelAndView();
 		MappingJackson2JsonView jsonView = new MappingJackson2JsonView();
@@ -118,8 +122,16 @@ public class productController {
 		product.setProdDetailContent(prodDetailContent);
 
 		log.info("product: {}", product);
+		int addProdRslt = productService.addProduct(product);
 		
-		int addresult = productService.addProduct(product);
+		log.info("optionList: {}", optionList);
+		//optionList: {optionNames=[색상, 사이즈], optionValues=[[우드, 스테인리스], [s, l]]}
+		// 현재 상품번호 조회
+		int currProdNo = productService.checkCurrProdNo();
+		//옵션 등록
+		int addOptRslt = productService.addOption(currProdNo, optionList);
+		
+		
 		log.info("상품 옵션 insert end");
 
 		/* 썸네일 추가 */
@@ -169,10 +181,6 @@ public class productController {
 																										// 경로 작성
 
 				fileList.add(fileMap);
-
-				// 현재 상품번호 조회
-				int currProdNo = productService.checkCurrProdNo();
-
 				// product 객체의 AttachmentList 설정
 				product.setAttachmentList(new ArrayList<AttachmentDTO>());
 				List<AttachmentDTO> list = product.getAttachmentList();
@@ -200,7 +208,7 @@ public class productController {
 			}
 		}
 
-		if (addresult == 1) {
+		if (addProdRslt == 1 && addOptRslt == 1) {
 			String successMessage = messageSource.getMessage("productAddedSuccessfully", null, locale);
 			mv.addObject("successMessage", successMessage);
 		} else {

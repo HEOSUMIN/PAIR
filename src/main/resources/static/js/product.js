@@ -336,7 +336,7 @@ function submitProductForm() {
 	
 	//옵션값 
 	const { optionNames, optionValues } = getOptionData();
-		formData.append("options", new Blob([JSON.stringify({ optionNames, optionValues })], { type: 'application/json' }));
+		formData.append("optionList", new Blob([JSON.stringify({ optionNames, optionValues })], { type: 'application/json' }));
 
 	for (let value of formData.values()) {
 		console.log(value);

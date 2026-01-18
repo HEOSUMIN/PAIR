@@ -3,11 +3,11 @@ package com.pro.pair.product.model.dto;
 import lombok.Data;
 
 @Data
-public class OptionDTO {
-
+public class OptionValueDTO {
+	private int optValueNo;
+	private String optValueNm;
 	private int optNameNo;
-	private String optNameNm;
-	private int prodNo;
 	private int sortOrder;
+	
 	
 }

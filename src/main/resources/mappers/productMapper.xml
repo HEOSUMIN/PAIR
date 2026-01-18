@@ -294,7 +294,7 @@
 		</insert>
 
 		<!-- 상품 썸네일 등록 -->
-		<insert id="attachProdThumbnail">
+		<insert id="attachProdThumbnail" >
 			INSERT
 			INTO TBL_ATTACHMENT
 			(
@@ -324,5 +324,44 @@
 			)
 		</insert>
 
-
+		<!-- 상품 등록 -->
+		<insert id="insertOptionName" useGeneratedKeys="true" keyProperty="optNameNo">
+		 <selectKey keyProperty="optNameNo" resultType="int" order="BEFORE">
+	        SELECT SEQ_OPT_NAME_NO.NEXTVAL FROM DUAL
+	    </selectKey>
+			INSERT
+			INTO TBL_OPTION_NAME
+			(
+			OPT_NAME_NO
+			,PROD_NO
+			,OPT_NAME_NM
+			,SORT_ORDER
+			)
+			VALUES
+			(
+			  #{optNameNo}
+			, #{prodNo, jdbcType=INTEGER}
+			, #{ optNameNm }
+			, #{ sortOrder }
+			)
+		</insert>
+		
+		<!-- 상품 등록 -->
+		<insert id="insertOptionValue">
+			INSERT
+			INTO TBL_OPTION_VALUE
+			(
+			OPT_VALUE_NO
+			,OPT_NAME_NO
+			,OPT_VALUE_NM
+			,SORT_ORDER
+			)
+			VALUES
+			(
+			SEQ_OPT_VALUE_NO.NEXTVAL
+			, #{optNameNo, jdbcType=INTEGER}
+			, #{ optValueNm }
+			, #{ sortOrder }
+			)
+		</insert>
 </mapper>

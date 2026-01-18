@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Mapper;
 import com.pro.pair.paging.model.dto.Criteria;
 import com.pro.pair.product.model.dto.BrandDTO;
 import com.pro.pair.product.model.dto.CategoryDTO;
+import com.pro.pair.product.model.dto.OptionDTO;
+import com.pro.pair.product.model.dto.OptionValueDTO;
 import com.pro.pair.product.model.dto.ProductDTO;
 import com.pro.pair.upload.model.dto.AttachmentDTO;
 
@@ -37,5 +39,11 @@ public interface ProductMapper {
 	AttachmentDTO getMainThumbnailByProdNo(int prodNo);
 	
 	AttachmentDTO getSubThumbnailByProdNo(int prodNo);
+	
+	int addOption(List<OptionDTO> optionList);
+
+	int insertOptionName(OptionDTO option);
+	
+	int insertOptionValue(OptionValueDTO optionValue);
 	
 }
