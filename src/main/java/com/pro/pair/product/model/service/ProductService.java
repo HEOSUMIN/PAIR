@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.pro.pair.paging.model.dto.Criteria;
+import com.pro.pair.paging.model.dto.ItemCriteria;
 import com.pro.pair.product.model.dto.BrandDTO;
 import com.pro.pair.product.model.dto.CategoryDTO;
-import com.pro.pair.product.model.dto.OptionDTO;
 import com.pro.pair.product.model.dto.ProductDTO;
 import com.pro.pair.upload.model.dto.AttachmentDTO;
 
@@ -40,6 +40,7 @@ public interface ProductService {
 	
 	AttachmentDTO getSubThumbnailByProdNo(int prodNo);
 	
-	int addOption(int productNo, Map<String, Object> optionList);
+	int addOption(int productNo, Map<String, Object> optionData);
 	
+	List<ProductDTO> getProductListByCategorySection(ItemCriteria itemCriteria);
 }

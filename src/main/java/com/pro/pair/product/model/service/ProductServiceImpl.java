@@ -5,11 +5,14 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pro.pair.paging.model.dto.Criteria;
+import com.pro.pair.paging.model.dto.ItemCriteria;
 import com.pro.pair.product.model.dao.ProductMapper;
 import com.pro.pair.product.model.dto.BrandDTO;
 import com.pro.pair.product.model.dto.CategoryDTO;
+import com.pro.pair.product.model.dto.OptionCombDTO;
 import com.pro.pair.product.model.dto.OptionDTO;
 import com.pro.pair.product.model.dto.OptionValueDTO;
 import com.pro.pair.product.model.dto.ProductDTO;
@@ -96,38 +99,61 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public int addOption(int prodNo, Map<String, Object> optionList) {
+	@Transactional
+	public int addOption(int prodNo, Map<String, Object> optionData) {
 		int result =0;
+		List<String> optionNames = (List<String>) optionData.get("optionNames");
+		List<List<String>> optionValues = (List<List<String>>) optionData.get("optionValues");
+		List<Map<String, Object>> optionCombinations =
+		        (List<Map<String, Object>>) optionData.get("optionCombinations");
 		
-		List<String> optionNames = (List<String>) optionList.get("optionNames");
-		List<List<String>> optionValues = (List<List<String>>) optionList.get("optionValues");
-		
-		for (int i = 0; i < optionNames.size(); i++) {
+		//옵션명 등록
+		for (int i=0; i<optionNames.size(); i++) {
 			String optName = optionNames.get(i);
-
+		
 			OptionDTO option = new OptionDTO();
-			option.setOptNameNm(optName);
-			option.setProdNo(prodNo);
-			option.setSortOrder(i);
-
-			//옵션명 등록 
+			option.setOptNameNm(optName); 	//옵션명이름
+			option.setProdNo(prodNo);		//상품번호 
+			option.setSortOrder(i);			//정렬순서
+			//옵션명 테이블 등록 
 			productMapper.insertOptionName(option);
 
+			//옵션값 등록
 			List<String> optValues = optionValues.get(i);
 			int optNameNo = option.getOptNameNo();
-
-			 for (int j = 0; j < optValues.size(); j++) {
+			 for (int j=0; j<optValues.size(); j++) {
 			        String optValueNm = optValues.get(j);
 			        
 			        OptionValueDTO optionValue = new OptionValueDTO();
-			        optionValue.setOptNameNo(optNameNo);
-			        optionValue.setOptValueNm(optValueNm);
-			        optionValue.setSortOrder(j);  // 옵션값 정렬 순서
-
-			        //옵션값 등록 
+			        optionValue.setOptNameNo(optNameNo);		//옵션명번호
+			        optionValue.setOptValueNm(optValueNm);		//옵션값이름
+			        optionValue.setSortOrder(j);				//정렬순서
+			        //옵션값 테이블 등록 
 			        result = productMapper.insertOptionValue(optionValue);
 			    }
 		}
+		
+		//옵션 조합 등록
+		for(int i=0; i<optionCombinations.size(); i++) {
+			Map<String, Object> comb = optionCombinations.get(i);
+			int addPrice = Integer.parseInt(comb.get("optionPrice").toString());
+		    int stockQty    = Integer.parseInt(comb.get("stockQty").toString());
+		   // String saleStatus = comb.get("saleStatus").toString();
+		    String manageCode = comb.get("manageCode").toString();
+		    
+			OptionCombDTO optComb = new OptionCombDTO();
+			optComb.setProdNo(prodNo);
+			optComb.setOptAddPrice(addPrice);
+			optComb.setOptStockQty(stockQty);
+			optComb.setOptManageNm(manageCode);
+			//옵션값 테이블 등록 
+	        result = productMapper.insertOptionComb(optComb);
+		}
 		return result;
+	}
+
+	@Override
+	public List<ProductDTO> getProductListByCategorySection(ItemCriteria itemCriteria) {
+		return productMapper.getProductListByCategorySection(itemCriteria);
 	}
 }

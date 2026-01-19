@@ -249,7 +249,7 @@ function changeCategory() {
 	let categoryNo = document.getElementById('category').value;
 
 	$('#subCategory').children('option').remove();
-	$('#subCategory').prepend('<option selected disabled hidden >선택</option>');
+	$('#subCategory').prepend('<option selected disabled hidden value="" >선택</option>');
 
 	$.ajax({
 		url: '/option',
@@ -277,19 +277,59 @@ function optionOpen() {
 	$('.optionForm').toggle();
 }
 
+/* 옵션테이블 정보 가져오기 */
+function getOptionCombData() {
+	const rows = document.querySelectorAll('#optionTableBody tr');
+	const optionRows = [];
+
+	rows.forEach(row => {
+		const optionValues = [];
+		// 옵션값들이 td 첫 번째 칸부터 optionNames.length 칸까지라고 가정
+		// 예: 색상, 사이즈 순서대로
+		const optionCount = document.querySelectorAll('#optionTableHead tr:nth-child(2) th').length;
+
+		for (let i = 1; i <= optionCount; i++) {
+			optionValues.push(row.children[i].textContent.trim());
+		}
+
+		const optionPrice = parseInt(row.children[optionCount + 1].querySelector('input').value);
+		const stockQty = parseInt(row.children[optionCount + 2].querySelector('input').value);
+		const saleStatus = row.children[optionCount + 3].textContent.trim();
+		const manageCode = row.children[optionCount + 4].textContent.trim();
+		const useYn = row.children[optionCount + 5].textContent.trim();
+
+		optionRows.push({
+			optionPrice,
+			stockQty,
+			saleStatus,
+			manageCode,
+			useYn
+		});
+	});
+
+	return optionRows;
+}
+
 
 /* 상품등록 폼 제출 */
 function submitProductForm() {
+	
+	//옵션개수
+	let optionCount = document.getElementById('optionCount').value;
 
 	//하위 카테고리 
 	let subCategory = document.getElementById('subCategory').value;
 	//카테고리 
 	let category = document.getElementById('category').value;
-
-	if (subCategory != "" || subCategory != null) {
-		category = document.getElementById('subCategory').value;	//최하위 카테고리로 들어가야함 
+	
+	// 하위 카테고리가 "선택 안 됐을 때"
+	if (!subCategory) {
+	    category = category;   // 상위 사용
+	} else {
+	    category = subCategory; // 하위 사용
 	}
 
+	console.log("2category: ", category);
 	//브랜드
 	let brand = document.getElementById('brand').value;
 
@@ -308,7 +348,7 @@ function submitProductForm() {
 	//상세내용
 	let prodDetailContent = CKEDITOR.instances['prodDetailContent'].getData();
 	console.log(prodDetailContent);
-	
+
 	//FormData 객체 생성
 	let formData = new FormData();
 
@@ -323,7 +363,8 @@ function submitProductForm() {
 	}
 
 	let params = {
-		category: category
+		optionCount: optionCount
+		,category: category
 		, brand: brand
 		, prodNm: prodNm
 		, prodDesc: prodDesc
@@ -334,9 +375,24 @@ function submitProductForm() {
 
 	formData.append("params", new Blob([JSON.stringify(params)], { type: 'application/json' }));
 	
-	//옵션값 
 	const { optionNames, optionValues } = getOptionData();
-		formData.append("optionList", new Blob([JSON.stringify({ optionNames, optionValues })], { type: 'application/json' }));
+	    const optionCombData = getOptionCombData();
+	    
+	    const optionData = {
+	        optionNames: optionNames,           // ["색상", "사이즈"]
+	        optionValues: optionValues,         // [["화이트", "블랙"], ["l", "s"]]
+	        optionCombinations: optionCombData  // 테이블의 모든 행 데이터
+	    };
+		formData.append("optionData", new Blob([JSON.stringify(optionData)], { type: 'application/json' }));
+
+		
+	//옵션데이터
+	//const { optionNames, optionValues } = getOptionData();
+	//formData.append("optionList", new Blob([JSON.stringify({ optionNames, optionValues })], { type: 'application/json' }));
+	
+	//옵션 테이블 데이터
+	//const getOptionCombData = getOptionCombData();
+	//formData.append("getOptionCombData", new Blob([JSON.stringify(getOptionCombData)], { type: "application/json" }));
 
 	for (let value of formData.values()) {
 		console.log(value);

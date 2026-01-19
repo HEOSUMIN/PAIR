@@ -5,8 +5,10 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.pro.pair.paging.model.dto.Criteria;
+import com.pro.pair.paging.model.dto.ItemCriteria;
 import com.pro.pair.product.model.dto.BrandDTO;
 import com.pro.pair.product.model.dto.CategoryDTO;
+import com.pro.pair.product.model.dto.OptionCombDTO;
 import com.pro.pair.product.model.dto.OptionDTO;
 import com.pro.pair.product.model.dto.OptionValueDTO;
 import com.pro.pair.product.model.dto.ProductDTO;
@@ -45,5 +47,9 @@ public interface ProductMapper {
 	int insertOptionName(OptionDTO option);
 	
 	int insertOptionValue(OptionValueDTO optionValue);
+	
+	int insertOptionComb(OptionCombDTO optionComb);
+	
+	List<ProductDTO> getProductListByCategorySection(ItemCriteria itemCriteria);
 	
 }
