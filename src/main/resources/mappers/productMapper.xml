@@ -11,16 +11,13 @@
 		<result property="price" column="PRICE" />
 		<result property="discountRate" column="DISCOUNT_RATE" />
 		<result property="prodDesc" column="PROD_DESC" />
-		<result property="prodDetailContent"
-			column="PROD_DETAIL_CONTENT" />
+		<result property="prodDetailContent" column="PROD_DETAIL_CONTENT" />
 		<result property="insDt" column="INS_DT" />
 		<result property="uptDt" column="UPT_DT" />
 		<result property="useYn" column="USE_YN" />
-		<association property="category"
-			resultMap="categoryResultMap" /> <!-- 1:1 -->
+		<association property="category" resultMap="categoryResultMap" /> <!-- 1:1 -->
 		<association property="brand" resultMap="brandResultMap" /> <!-- 1:1 -->
-		<association property="attachmentList"
-			resultMap="thumbnailResultMap" />
+		<association property="attachmentList" resultMap="thumbnailResultMap" />
 		<!-- <collection property="option" resultMap="optionResultMap"/> 1:N -->
 	</resultMap>
 
@@ -94,25 +91,19 @@
 		<trim prefix="AND">
 			<if test="keyword != null and condition eq 'prodNm'">
 				A.PROD_NM LIKE '%' || #{ keyword } || '%'
-			</if> 
+			</if>
 			<if test="keyword != null and condition eq 'brand'">
 				C.BRAND_NM LIKE '%' || #{ keyword } || '%'
 			</if>
 			<if test="keyword != null and condition eq 'category'">
 				B.CATEGORY_NM LIKE '%' || #{ keyword } || '%'
-			</if><!-- 
-			<if test="keyword != null and condition eq 'bodyColor'">
-				O.OPT_BODY_COLOR LIKE '%' || #{ keyword } || '%'
-			</if>
-			<if test="keyword != null and condition eq 'inkColor'">
-				O.OPT_INK_COLOR LIKE '%' || #{ keyword } || '%'
-			</if>
-			<if test="keyword != null and condition eq 'pointSize'">
-				O.OPT_POINT_SIZE LIKE TO_NUMBER(#{ keyword })
-			</if> -->
-			<!-- <if test="keyword != null and condition eq 'tag'">
-				A.PRODUCT_TAG LIKE '%' || #{ keyword } || '%'
-			</if>  -->
+			</if><!-- <if test="keyword != null and condition eq 'bodyColor'"> O.OPT_BODY_COLOR 
+				LIKE '%' || #{ keyword } || '%' </if> <if test="keyword != null and condition 
+				eq 'inkColor'"> O.OPT_INK_COLOR LIKE '%' || #{ keyword } || '%' </if> <if 
+				test="keyword != null and condition eq 'pointSize'"> O.OPT_POINT_SIZE LIKE 
+				TO_NUMBER(#{ keyword }) </if> -->
+			<!-- <if test="keyword != null and condition eq 'tag'"> A.PRODUCT_TAG 
+				LIKE '%' || #{ keyword } || '%' </if> -->
 		</trim>
 	</sql>
 
@@ -122,8 +113,10 @@
 		resultType="_int">
 		SELECT COUNT(DISTINCT A.PROD_NO)
 		FROM TBL_PRODUCT A
-		LEFT JOIN TBL_CATEGORY B ON A.CATEGORY_NO = B.CATEGORY_NO
-		LEFT JOIN TBL_BRAND C ON A.BRAND_CD = C.BRAND_CD
+		LEFT JOIN
+		TBL_CATEGORY B ON A.CATEGORY_NO = B.CATEGORY_NO
+		LEFT JOIN TBL_BRAND C
+		ON A.BRAND_CD = C.BRAND_CD
 		WHERE 1 = 1
 		<include refid="dashboardProductSearch" />
 	</select>
@@ -135,8 +128,10 @@
 		SELECT
 		COUNT(DISTINCT A.PROD_NO)
 		FROM TBL_PRODUCT A
-		LEFT JOIN TBL_CATEGORY B ON(A.CATEGORY_NO = B.CATEGORY_NO)
-		LEFT JOIN TBL_BRAND C ON(A.BRAND_CD = C.BRAND_CD)
+		LEFT JOIN
+		TBL_CATEGORY B ON(A.CATEGORY_NO = B.CATEGORY_NO)
+		LEFT JOIN TBL_BRAND C
+		ON(A.BRAND_CD = C.BRAND_CD)
 		WHERE A.USE_YN = 'Y'
 		<include refid="dashboardProductSearch" />
 	</select>
@@ -154,7 +149,6 @@
 		                     , A.PROD_NM
 		                     , A.PRICE
 		                     , A.DISCOUNT_RATE
-		                     , A.SALE_PRICE
 		                     , A.PROD_DESC
 		                     , A.PROD_DETAIL_CONTENT
 		                     , A.INS_DT
@@ -174,8 +168,8 @@
         )E
 		WHERE E.RK > (#{ currentPageNo } - 1) * #{ recordsPerPage }
 		]]>
-		</select>
-		
+	</select>
+
 	<!-- 판매중 상품 목록 조회 *페이징* -->
 	<select id="getOnSaleOnly"
 		parameterType="com.pro.pair.paging.model.dto.Criteria"
@@ -188,7 +182,6 @@
 		                     , A.PROD_NM
 		                     , A.PRICE
 		                     , A.DISCOUNT_RATE
-		                     , A.SALE_PRICE
 		                     , A.PROD_DESC
 		                     , A.PROD_DETAIL_CONTENT
 		                     , A.INS_DT
@@ -208,58 +201,77 @@
         )E
 		WHERE E.RK > (#{ currentPageNo } - 1) * #{ recordsPerPage }
 		]]>
-		</select>
-		
+	</select>
+
 	<!-- 상품 상세정보 조회 -->
 	<select id="getProductDetails" resultMap="productResultMap">
 		SELECT
-               A.PROD_NO
-             , A.PROD_NM
-             , A.CATEGORY_NO
-             , B.CATEGORY_NM
-             , B.UP_CATEGORY_NO
-             , A.BRAND_CD
-             , C.BRAND_NM
-             , A.PROD_DESC
-             , A.DISCOUNT_RATE
-             , A.PRICE
-             , A.PROD_DETAIL_CONTENT
-             , A.INS_DT
-             , A.UPT_DT
-             , A.USE_YN
-          FROM TBL_PRODUCT A
-          LEFT JOIN TBL_CATEGORY B ON(A.CATEGORY_NO = B.CATEGORY_NO)
-          LEFT JOIN TBL_BRAND C ON(A.BRAND_CD = C.BRAND_CD)
-          WHERE A.PROD_NO = #{ prodNo }
+		A.PROD_NO
+		,
+		A.PROD_NM
+		, A.CATEGORY_NO
+		, B.CATEGORY_NM
+		, B.UP_CATEGORY_NO
+		, A.BRAND_CD
+		, C.BRAND_NM
+		, A.PROD_DESC
+		, A.DISCOUNT_RATE
+		, A.PRICE
+		,
+		A.PROD_DETAIL_CONTENT
+		, A.INS_DT
+		, A.UPT_DT
+		, A.USE_YN
+		FROM TBL_PRODUCT A
+		LEFT JOIN TBL_CATEGORY B ON(A.CATEGORY_NO = B.CATEGORY_NO)
+		LEFT JOIN
+		TBL_BRAND C ON(A.BRAND_CD = C.BRAND_CD)
+		WHERE A.PROD_NO = #{ prodNo }
 	</select>
-		
+
 	<!-- 상품별 메인썸네일 조회 -->
-	<select id="getMainThumbnailByProdNo" resultMap="thumbnailResultMap">
+	<select id="getMainThumbnailByProdNo"
+		resultMap="thumbnailResultMap">
 		SELECT
-			   REF_PROD_NO
-			 , THUMBNAIL_PATH
-			 , SAVE_PATH
-		  FROM TBL_ATTACHMENT
-		 WHERE ATTACH_STATUS_YN = 'Y'
-		   AND FILE_TYPE = 'THUMB_MAIN'
-		   AND REF_PROD_NO = #{ prodNo }
+		REF_PROD_NO
+		, THUMBNAIL_PATH
+		, SAVE_PATH
+		FROM
+		TBL_ATTACHMENT
+		WHERE ATTACH_STATUS_YN = 'Y'
+		AND FILE_TYPE = 'THUMB_MAIN'
+		AND REF_PROD_NO = #{ prodNo }
 	</select>
 
 	<!-- 상품별 서브썸네일 조회 -->
-	<select id="getSubThumbnailByProdNo" resultMap="thumbnailResultMap">
+	<select id="getSubThumbnailByProdNo"
+		resultMap="thumbnailResultMap">
 		SELECT
-			   REF_PROD_NO
-			 , THUMBNAIL_PATH
-			 , SAVE_PATH
-		  FROM TBL_ATTACHMENT
-		 WHERE ATTACH_STATUS_YN = 'Y'
-		   AND FILE_TYPE = 'THUMB_SUB'
-		   AND REF_PROD_NO = #{ prodNo }
+		REF_PROD_NO
+		, THUMBNAIL_PATH
+		, SAVE_PATH
+		FROM
+		TBL_ATTACHMENT
+		WHERE ATTACH_STATUS_YN = 'Y'
+		AND FILE_TYPE = 'THUMB_SUB'
+		AND REF_PROD_NO = #{ prodNo }
 	</select>
-	
-	
+
+
+	<!-- 상품 정렬 --> <!-- sql 구문은 사용하고자 하는 쿼리 이전에 선언되어야 함 -->
+	<sql id="sortBy">
+		<if test="sortBy == null">D.PROD_NO DESC</if>
+		<if test="sortBy == 'popularity'">D.PROD_DETAIL_VIEW_COUNT DESC</if>
+		<if test="sortBy == 'lowest'">D.PROD_PRICE ASC</if>
+		<if test="sortBy == 'latest'">D.PROD_ENROLL_DATE DESC, D.PROD_NO DESC</if>
+		<if test="sortBy == 'reviewed'">D.PROD_REVIEW_COUNT DESC</if>
+		<if test="sortBy == 'rated'">D.PROD_RATINGS DESC</if>
+	</sql>
+
 	<!-- 필터별 상품 목록 조회 -->
-	<select id="getProductListByCategorySection" parameterType="com.pro.pair.paging.model.dto.ItemCriteria" resultMap="productResultMap">
+	<select id="getProductListByCategorySection"
+		parameterType="com.pro.pair.paging.model.dto.ItemCriteria"
+		resultMap="productResultMap">
 	<![CDATA[
 		SELECT F.*
 		  FROM(SELECT
@@ -267,7 +279,9 @@
 					, E.*
 				 FROM (SELECT
 	]]>
-		  					   ROW_NUMBER() OVER (ORDER BY <include refid="sortBy"/>) RANK
+		ROW_NUMBER() OVER (ORDER BY
+		<include refid="sortBy" />)
+		RANK
 	<![CDATA[
 							 , D.*
 						 FROM (SELECT
@@ -280,149 +294,154 @@
                                  LEFT JOIN TBL_BRAND C ON(A.BRAND_CD = C.BRAND_CD)
                                 WHERE A.USE_YN = 'Y'
     ]]>
-                                <if test="section != null and section != ''">AND B.CATEGORY_NM = #{ section }</if>
-                                <if test="category != null and category != ''">AND B.CATEGORY_NM = #{ category }</if>
-                                <if test="brand != null and brand != ''">AND C.BRAND_NM = #{ brand }</if>
-                                <if test="min == 0 and max == 0">AND A.PRICE = A.PRICE</if>
-                                <if test="min != null and min != 0 and max == 0">AND (A.PRICE - A.PRICE * A.DISCOUNT_RATE / 100) >= #{ min }</if>
-                                <if test="min == 0 and max != null and max != 0">AND #{ max } > (A.PRICE - A.PRICE * A.DISCOUNT_RATE / 100)</if>
-                                <if test="min != null and min != 0 and max != null and max != 0">AND (A.PRICE - A.PRICE * A.DISCOUNT_RATE / 100) >= #{ min } AND #{ max } > (A.PRICE - A.PRICE * A.DISCOUNT_RATE / 100)</if>
-							    ) D
-					    ) E
+		<if test="category != null and category != ''">AND B.CATEGORY_NO IN (SELECT CATEGORY_NO
+																				FROM TBL_CATEGORY
+																				START WITH CATEGORY_NO = #{ category }
+																				CONNECT BY PRIOR CATEGORY_NO = UP_CATEGORY_NO)
+		</if>
+		) D
+		) E
 	<![CDATA[
 				WHERE E.RANK <= #{ page } * #{ items }) F
 				WHERE F.RK > (#{ page } - 1) * #{ items }
 	]]>
 	</select>
-	
-	
-		<!-- 상품 등록 -->
-		<insert id="addProduct">
-			INSERT
-			INTO TBL_PRODUCT
-			(
-			PROD_NO
-			,PROD_NM
-			,BRAND_CD
-			,CATEGORY_NO
-			,PRICE
-			,DISCOUNT_RATE
-			,SALE_PRICE
-			,PROD_DESC
-			,PROD_DETAIL_CONTENT
-			,INS_DT
-			,UPT_DT
-			,USE_YN
-			)
-			VALUES
-			(
-			SEQ_PROD_NO.NEXTVAL
-			, #{ prodNm }
-			, #{ brandCd }
-			, #{ categoryNo }
-			, #{ price }
-			, #{ discountRate }
-			, #{ salePrice }
-			, #{ prodDesc }
-			, #{ prodDetailContent }
-			, SYSDATE
-			, SYSDATE
-			, DEFAULT
-			)
-		</insert>
 
-		<!-- 상품 썸네일 등록 -->
-		<insert id="attachProdThumbnail" >
-			INSERT
-			INTO TBL_ATTACHMENT
-			(
-			ATTACHMENT_NO
-			, REF_PROD_NO
-			, REF_REVW_NO
-			, REF_INQ_NO
-			, ORIG_FILE_NM
-			, SAVE_FILE_NM
-			, SAVE_PATH
-			, THUMBNAIL_PATH
-			, FILE_TYPE
-			, ATTACH_STATUS_YN
-			)
-			VALUES
-			(
-			SEQ_ATTACH_NO.NEXTVAL
-			, #{ refProdNo }
-			, NULL
-			, NULL
-			, #{ origFileNm }
-			, #{ saveFileNm }
-			, #{ savePath }
-			, #{ thumbnailPath }
-			, #{ fileType }
-			, DEFAULT
-			)
-		</insert>
 
-		<!-- 상품 옵션명 등록 -->
-		<insert id="insertOptionName" useGeneratedKeys="true" keyProperty="optNameNo">
-		 <selectKey keyProperty="optNameNo" resultType="int" order="BEFORE">
-	        SELECT SEQ_OPT_NAME_NO.NEXTVAL FROM DUAL
-	    </selectKey>
-			INSERT
-			INTO TBL_OPTION_NAME
-			(
-			OPT_NAME_NO
-			,PROD_NO
-			,OPT_NAME_NM
-			,SORT_ORDER
-			)
-			VALUES
-			(
-			  #{optNameNo}
-			, #{prodNo, jdbcType=INTEGER}
-			, #{ optNameNm }
-			, #{ sortOrder }
-			)
-		</insert>
-		
-		<!-- 상품 옵션값 등록 -->
-		<insert id="insertOptionValue">
-			INSERT
-			INTO TBL_OPTION_VALUE
-			(
-			OPT_VALUE_NO
-			,OPT_NAME_NO
-			,OPT_VALUE_NM
-			,SORT_ORDER
-			)
-			VALUES
-			(
-			SEQ_OPT_VALUE_NO.NEXTVAL
-			, #{optNameNo, jdbcType=INTEGER}
-			, #{ optValueNm }
-			, #{ sortOrder }
-			)
-		</insert>
-		
-		<!-- 상품 옵션 조합 등록 -->
-		<insert id="insertOptionComb">
-			INSERT
-			INTO TBL_OPTION_COMB
-			(
-				OPT_COMB_NO
-				,PROD_NO
-				,OPT_ADD_PRICE
-				,OPT_STOCK_QTY
-				,OPT_MANAGE_NM
-				,OPT_SALE_STATUS
-			)
-			VALUES
-			(
-			SEQ_OPT_COMB_NO.NEXTVAL
-			, #{ prodNo }
-			, #{ optAddPrice }
-			, #{ optStockQty }
-			, #{ optManageNm }
-			, 'Y'
-			)
-		</insert>
+	<!-- 상품 등록 -->
+	<insert id="addProduct">
+		INSERT
+		INTO TBL_PRODUCT
+		(
+		PROD_NO
+		,PROD_NM
+		,BRAND_CD
+		,CATEGORY_NO
+		,PRICE
+		,DISCOUNT_RATE
+		,PROD_DESC
+		,PROD_DETAIL_CONTENT
+		,INS_DT
+		,UPT_DT
+		,USE_YN
+		)
+		VALUES
+		(
+		SEQ_PROD_NO.NEXTVAL
+		,
+		#{ prodNm }
+		, #{ brandCd }
+		, #{ categoryNo }
+		, #{ price }
+		, #{ discountRate }
+		, #{ prodDesc }
+		, #{ prodDetailContent }
+		, SYSDATE
+		, SYSDATE
+		, DEFAULT
+		)
+	</insert>
+
+	<!-- 상품 썸네일 등록 -->
+	<insert id="attachProdThumbnail">
+		INSERT
+		INTO TBL_ATTACHMENT
+		(
+		ATTACHMENT_NO
+		, REF_PROD_NO
+		, REF_REVW_NO
+		, REF_INQ_NO
+		, ORIG_FILE_NM
+		, SAVE_FILE_NM
+		, SAVE_PATH
+		,
+		THUMBNAIL_PATH
+		, FILE_TYPE
+		, ATTACH_STATUS_YN
+		)
+		VALUES
+		(
+		SEQ_ATTACH_NO.NEXTVAL
+		, #{ refProdNo }
+		, NULL
+		, NULL
+		, #{ origFileNm }
+		, #{
+		saveFileNm }
+		, #{ savePath }
+		, #{ thumbnailPath }
+		, #{ fileType }
+		,
+		DEFAULT
+		)
+	</insert>
+
+	<!-- 상품 옵션명 등록 -->
+	<insert id="insertOptionName" useGeneratedKeys="true"
+		keyProperty="optNameNo">
+		<selectKey keyProperty="optNameNo" resultType="int"
+			order="BEFORE">
+			SELECT SEQ_OPT_NAME_NO.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT
+		INTO TBL_OPTION_NAME
+		(
+		OPT_NAME_NO
+		,PROD_NO
+		,OPT_NAME_NM
+		,SORT_ORDER
+		)
+		VALUES
+		(
+		#{optNameNo}
+		, #{prodNo, jdbcType=INTEGER}
+		, #{ optNameNm }
+		, #{
+		sortOrder }
+		)
+	</insert>
+
+	<!-- 상품 옵션값 등록 -->
+	<insert id="insertOptionValue">
+		INSERT
+		INTO TBL_OPTION_VALUE
+		(
+		OPT_VALUE_NO
+		,OPT_NAME_NO
+		,OPT_VALUE_NM
+		,SORT_ORDER
+		)
+		VALUES
+		(
+		SEQ_OPT_VALUE_NO.NEXTVAL
+		, #{optNameNo,
+		jdbcType=INTEGER}
+		, #{ optValueNm }
+		, #{ sortOrder }
+		)
+	</insert>
+
+	<!-- 상품 옵션 조합 등록 -->
+	<insert id="insertOptionComb">
+		INSERT
+		INTO TBL_OPTION_COMB
+		(
+		OPT_COMB_NO
+		,PROD_NO
+		,OPT_ADD_PRICE
+		,OPT_STOCK_QTY
+		,OPT_MANAGE_NM
+		,OPT_SALE_STATUS
+		)
+		VALUES
+		(
+		SEQ_OPT_COMB_NO.NEXTVAL
+		, #{ prodNo }
+		, #{ optAddPrice }
+		, #{ optStockQty
+		}
+		, #{ optManageNm }
+		, 'Y'
+		)
+	</insert>
 </mapper>

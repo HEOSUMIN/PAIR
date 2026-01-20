@@ -24,25 +24,7 @@
 					
 				</div>
 			</div>
-			<div class="product-filter">
-				<div class="filter filter-price">
-					<ul>
-						<li class="th"><p>가격범위</p></li>
-						<li class="td"><span class="price-span" data-target="all"><a href="#">전체보기</a></span> <span class="price-span" data-target="10000"><a href="#">~10,000원</a></span> <span class="price-span" data-target="30000"><a href="#">10,000~30,000원</a></span> <span class="price-span"
-							data-target="50000"
-						><a href="#">30,000~50,000원</a></span> <span class="price-span" data-target="80000"><a href="#">50,000~80,000원</a></span> <span class="price-span" data-target="over"><a href="#">80,000원~</a></span></li>
-					</ul>
-				</div>
-				<div class="filter filter-tag">
-					<ul>
-						<li class="th"><p>인기태그</p></li>
-						<li class="td"><span class="tag-span" data-target="드로잉"><a href="#">드로잉</a></span> <span class="tag-span" data-target="선물용"><a href="#">선물용</a></span> <span class="tag-span" data-target="세밀한필기용"><a href="#">세밀한필기용</a></span> <span class="tag-span" data-target="중간굵기필기용"><a href="#">중간굵기필기용</a></span>
-							<span class="tag-span" data-target="컬러링용"><a href="#">컬러링용</a></span></li>
-					</ul>
-				</div>
-			</div>
 		</th:block>
-
 		<div class="sorting">
 			<form id="sortingForm" name="sortingForm" class="sorting-form" th:object="${itemCriteria}" th:action="@{/product/list}" method="get">
 				<!--/* 폼 제출용 */-->
@@ -95,40 +77,43 @@
 		</div>
 		<section class="product-section">
 			<div class="product-list row">
-				<!-- <div class="col mb-5" th:each="product : ${ productList }" style="flex: none;">
-					<div class="card" th:data-id="|${product.productTag},${product.brand.brandName}$${ product.option.inkColor }$${product.category.categoryName}|">
-						<a th:href="@{/product/details(no=${product.prodNo})}"> Product image
+				 <div class="col mb-5" th:each="product : ${ productList }" style="flex: none;">
+					<div class="card" th:data-id="|${product.brand.brandNm}$${product.category.categoryNm}|"> 
+						<a th:href="@{/product/details(no=${product.prodNo})}"> 
+							<!-- Product image -->
 							<div class="card-img-wrapper" th:each="thumbnail : ${ thumbnailList }" th:if="${product.prodNo == thumbnail.refProdNo}">
 								<img class="card-img-top" th:src="${ thumbnail.thumbnailPath }">
-							</div> Product details
+							</div> 
+							<!-- Product details -->
 							<div class="card-body">
-								<div class="text-left" th:value="${ product.prodPrice - (product.prodPrice * product.discountRate / 100) }">
-									<small>[[${ product.brand.brandName }]]</small>
-									<h6>[[${ product.prodName }]]</h6>
-									판매가A. 할인 대상이 아닌 경우 원가 그대로 출력
+								<div class="text-left" th:value="${ product.price - (product.price * product.discountRate / 100) }">
+									<small>[[${ product.brand.brandNm }]]</small>
+									<h6>[[${ product.prodNm }]]</h6>
+									<!-- 판매가A. 할인 대상이 아닌 경우 원가 그대로 출력 -->
 									<th:block th:if="${product.discountRate} == 0">
-										<b class="price">[[${#numbers.formatInteger(product.prodPrice, 3, 'COMMA')}]]원</b>
+										<b class="price">[[${#numbers.formatInteger(product.price, 3, 'COMMA')}]]원</b>
 									</th:block>
-									판매가B. 적용된 할인율이 0% 이상인 경우 판매가 산정하여 출력
+									<!-- 판매가B. 적용된 할인율이 0% 이상인 경우 판매가 산정하여 출력 -->
 									<th:block th:if="${product.discountRate} > 0">
-										<b class="price"> [[${#numbers.formatInteger(product.prodPrice - (product.prodPrice * product.discountRate / 100), 3, 'COMMA')}]]원 </b>
-										<del>[[${#numbers.formatInteger(product.prodPrice, 3, 'COMMA')}]]</del>
+										<b class="price"> [[${#numbers.formatInteger(product.price - (product.price * product.discountRate / 100), 3, 'COMMA')}]]원 </b>
+										<del>[[${#numbers.formatInteger(product.price, 3, 'COMMA')}]]</del>
 										<b>&nbsp;[[${ product.discountRate }]]%</b>
 									</th:block>
-									<span> 리뷰수&nbsp;<b>[[${ reviewNumberMap.get(product.prodNo) }]]</b>&nbsp;&#8729; 평점&nbsp;<b>[[${ reviewRatingMap.get(product.prodNo) }]]</b>/<b>5</b>
+									<span> 리뷰수&nbsp;<b>[리뷰수]</b>&nbsp;&#8729;
+									 평점&nbsp;<b>[평점]</b>/<b>5</b>
 									</span>
 								</div>
 								<div class="text-right" th:unless="${ memberWishItem }">
 									<i class="fa-regular fa-heart"></i>
 								</div>
-								회원의 경우 위시리스트 상품은 별도 표시
+								<!-- 회원의 경우 위시리스트 상품은 별도 표시 -->
 								<div class="text-right" th:if="${ memberWishItem }">
 									<i th:if="${#lists.contains(memberWishItem, product.prodNo)}" style="color: #ff0000;" class="fa-solid fa-heart"></i> <i th:unless="${#lists.contains(memberWishItem, product.prodNo)}" class="fa-regular fa-heart"></i>
 								</div>
 							</div>
 						</a>
-					</div>
-				</div> -->
+					 </div> 
+				</div> 
 			</div>
 		</section>
 	</div>

@@ -284,9 +284,24 @@ public class productController {
 		itemCriteria.setSection(section); //대분류 카테고리 섹션
 		
 		List<ProductDTO> sortedList = productService.getProductListByCategorySection(itemCriteria);
+		List<ProductDTO> productList = new ArrayList<>();
+		List<AttachmentDTO> thumbnailList = new ArrayList<>();
+		
+		for(int i=0; i<sortedList.size(); i++) {
+			int prodNo = sortedList.get(i).getProdNo();
+			ProductDTO prodDetails = productService.getProductDetails(prodNo);
+			productList.add(prodDetails);
+			AttachmentDTO mainThumb = productService.getMainThumbnailByProdNo(prodNo);
+			thumbnailList.add(mainThumb);
+		}
+		
+		log.info("productList : {}", productList);
+		
 		
 		model.addAttribute("section", section == null || section == "" ? "전체 상품" : section);
 		model.addAttribute("total",10);
+		model.addAttribute("productList",productList);
+		model.addAttribute("thumbnailList",thumbnailList);
 		
 
 	}

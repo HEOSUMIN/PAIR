@@ -56,18 +56,18 @@
             <ul class="nav me-auto">
                 <li class="nav-item"><a th:href="@{/product/list}"
                     class="head-menu nav-link link-secondary px-3 active" aria-current="page"><b>전체상품</b></a></li>
-                <li class="nav-item"><a th:href="@{/product/list?section=접시&category=2}"
+                <li class="nav-item"><a th:href="@{/product/list?section=접시&category=1}"
                     class="head-menu nav-link link-secondary px-3">접시</a></li>
-                <li class="nav-item"><a th:href="@{/product/list?section=보울&category=3}"
+                <li class="nav-item"><a th:href="@{/product/list?section=보울&category=2}"
                     class="head-menu nav-link link-secondary px-3">보울</a></li>
-                <li class="nav-item"><a th:href="@{/product/list?section=커트러리&category=4}"
+                <li class="nav-item"><a th:href="@{/product/list?section=커트러리&category=3}"
                     class="head-menu nav-link link-secondary px-3">커트러리</a></li>
-                <li class="nav-item"><a th:href="@{/product/list?section=잔&category=5}"
+                <li class="nav-item"><a th:href="@{/product/list?section=잔&category=4}"
                     class="head-menu nav-link link-secondary px-3">잔</a></li>
-                <li class="nav-item"><a th:href="@{/product/list?section=키친크로스&category=6}"
+                <li class="nav-item"><a th:href="@{/product/list?section=키친크로스&category=5}"
                     class="head-menu nav-link link-secondary px-3">키친크로스</a></li>
-                <li class="nav-item"><a th:href="@{/product/list?section=etc&category=7}"
-                    class="head-menu nav-link link-secondary px-3">etc</a></li>
+                <li class="nav-item"><a th:href="@{/product/list?section=etc.&category=6}"
+                    class="head-menu nav-link link-secondary px-3">etc.</a></li>
             </ul>
             <form id="searchForm" name="searchForm" class="col-12 col-lg-auto mb-3 mb-lg-0"
                 th:action="@{/product/search}" method="get" onsubmit="checkKeywordToSearch()">

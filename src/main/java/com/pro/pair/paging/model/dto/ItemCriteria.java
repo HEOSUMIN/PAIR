@@ -10,7 +10,7 @@ public class ItemCriteria {
 	private int page;
 	private int items; //per page
 	private String section;
-	private String category;
+	private int category;
 	private String brand;
 	private int min; //min price
 	private int max; //max price
