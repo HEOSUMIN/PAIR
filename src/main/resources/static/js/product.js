@@ -1,27 +1,28 @@
-/* ===상품등록=== */
+/* ================================관리자-상품등록================================ */
 const optionCountSelect = document.getElementById("optionCount");
 const optionForm = document.getElementById("optionForm");
 const optionInputs = document.getElementById("optionInputs");
 
 /*옵션명, 옵션값 입력란 생성 */
-optionCountSelect.addEventListener("change", function() {
-	const count = parseInt(this.value);
+if (optionCountSelect) { // 엘리먼트가 있으면
+	optionCountSelect.addEventListener("change", function() {
+		const count = parseInt(this.value);
 
-	if (!count) {
-		optionForm.style.display = "none";
+		if (!count) {
+			optionForm.style.display = "none";
+			optionInputs.innerHTML = "";
+			return;
+		}
+
+		// 폼 표시
+		optionForm.style.display = "block";
 		optionInputs.innerHTML = "";
-		return;
-	}
 
-	// 폼 표시
-	optionForm.style.display = "block";
-	optionInputs.innerHTML = "";
-
-	// 개수만큼 옵션 입력 row 생성
-	for (let i = 0; i < count; i++) {
-		const row = document.createElement("div");
-		row.className = "option-row";
-		row.innerHTML = `
+		// 개수만큼 옵션 입력 row 생성
+		for (let i = 0; i < count; i++) {
+			const row = document.createElement("div");
+			row.className = "option-row";
+			row.innerHTML = `
       <input type="text"
              class="opt-name"
              name="optionList[${i}].optionName"
@@ -32,27 +33,31 @@ optionCountSelect.addEventListener("change", function() {
              placeholder="옵션값 (예: 화이트,블랙)">
       <button type="button" class="btn-remove">×</button>
     `;
-		optionInputs.appendChild(row);
-	}
-});
+			optionInputs.appendChild(row);
+		}
+	});
+
+}
 
 /*옵션명, 옵션값 입력란 삭제시*/
-optionInputs.addEventListener("click", function(e) {
-	if (e.target.classList.contains('btn-remove')) {
-		const row = e.target.closest('.option-row');
-		row.remove();
+if (optionInputs) { // 엘리먼트가 있으면
+	optionInputs.addEventListener("click", function(e) {
+		if (e.target.classList.contains('btn-remove')) {
+			const row = e.target.closest('.option-row');
+			row.remove();
 
-		const rowCount = document.querySelectorAll(".option-row").length;
+			const rowCount = document.querySelectorAll(".option-row").length;
 
-		// select 값 갱신
-		optionCountSelect.value = rowCount;
+			// select 값 갱신
+			optionCountSelect.value = rowCount;
 
-		// 전부 삭제된 경우
-		if (rowCount === 0) {
-			optionForm.style.display = "none";
+			// 전부 삭제된 경우
+			if (rowCount === 0) {
+				optionForm.style.display = "none";
+			}
 		}
-	}
-});
+	});
+}
 
 /* 옵션 입력란 빈값 체크 */
 function validateOptionInputs() {
@@ -313,7 +318,7 @@ function getOptionCombData() {
 
 /* 상품등록 폼 제출 */
 function submitProductForm() {
-	
+
 	//옵션개수
 	let optionCount = document.getElementById('optionCount').value;
 
@@ -321,12 +326,12 @@ function submitProductForm() {
 	let subCategory = document.getElementById('subCategory').value;
 	//카테고리 
 	let category = document.getElementById('category').value;
-	
+
 	// 하위 카테고리가 "선택 안 됐을 때"
 	if (!subCategory) {
-	    category = category;   // 상위 사용
+		category = category;   // 상위 사용
 	} else {
-	    category = subCategory; // 하위 사용
+		category = subCategory; // 하위 사용
 	}
 
 	console.log("2category: ", category);
@@ -364,7 +369,7 @@ function submitProductForm() {
 
 	let params = {
 		optionCount: optionCount
-		,category: category
+		, category: category
 		, brand: brand
 		, prodNm: prodNm
 		, prodDesc: prodDesc
@@ -374,22 +379,22 @@ function submitProductForm() {
 	};
 
 	formData.append("params", new Blob([JSON.stringify(params)], { type: 'application/json' }));
-	
-	const { optionNames, optionValues } = getOptionData();
-	    const optionCombData = getOptionCombData();
-	    
-	    const optionData = {
-	        optionNames: optionNames,           // ["색상", "사이즈"]
-	        optionValues: optionValues,         // [["화이트", "블랙"], ["l", "s"]]
-	        optionCombinations: optionCombData  // 테이블의 모든 행 데이터
-	    };
-		formData.append("optionData", new Blob([JSON.stringify(optionData)], { type: 'application/json' }));
 
-		
+	const { optionNames, optionValues } = getOptionData();
+	const optionCombData = getOptionCombData();
+
+	const optionData = {
+		optionNames: optionNames,           // ["색상", "사이즈"]
+		optionValues: optionValues,         // [["화이트", "블랙"], ["l", "s"]]
+		optionCombinations: optionCombData  // 테이블의 모든 행 데이터
+	};
+	formData.append("optionData", new Blob([JSON.stringify(optionData)], { type: 'application/json' }));
+
+
 	//옵션데이터
 	//const { optionNames, optionValues } = getOptionData();
 	//formData.append("optionList", new Blob([JSON.stringify({ optionNames, optionValues })], { type: 'application/json' }));
-	
+
 	//옵션 테이블 데이터
 	//const getOptionCombData = getOptionCombData();
 	//formData.append("getOptionCombData", new Blob([JSON.stringify(getOptionCombData)], { type: "application/json" }));
@@ -437,10 +442,9 @@ function submitProductForm() {
 		error: function(status, error) { console.log(status, error); }
 	});
 }
-/* ============ */
+/* =========================================================================== */
 
-
-/* ===상품수정=== */
+/* ================================관리자-상품수정================================ */
 
 /* 상품수정 폼 제출 */
 function submitEditProdForm() {
@@ -541,3 +545,50 @@ function submitEditProdForm() {
 		error: function(status, error) { console.log(status, error); }
 	});
 }
+/* =========================================================================== */
+
+/* ================================상품상세페이지================================= */
+
+function handleOptionChange(current) {
+	var selects = document.getElementsByClassName("selector");
+	var lastSelect = selects[selects.length - 1];
+
+	//마지막 select 선택시 
+	if (current === lastSelect) {
+		const row = document.createElement("div");
+					row.innerHTML = 					'<div class="selectedInfo">' +
+								'<div id="selectedName" class="selectedName selectedName></div>' +
+								'<div class="countBox">' +
+									'<button type="button" class="button-down" disabled><i class="fa-solid fa-minus"></i></button>' +
+									'<input type="number" class="selectedAmount" name="selectedAmount" value="1">' +
+									'<button type="button" class="button-up"><i class="fa-solid fa-plus"></i></button>' +
+								'</div>' +
+								'<div class="selectedPrice"></div>' +
+								'<a href="#" class="button-delete" onclick="reset(); return false;"><i class="fa-solid fa-xmark"></i></a>' +
+							'</div>';
+					document.getElementById("selectedOption").appendChild(row);
+	}
+}
+
+
+
+
+
+/* ============================================================================ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

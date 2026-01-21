@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layouts/default.html">
+<head>
+<meta charset="UTF-8">
+<title layout:fragment="title">pair</title>
+<!-- CSS -->
+<th:block layout:fragment="css">
+	<link th:href="@{/css/product.css}" rel="stylesheet">
+</th:block>
+</head>
+<body layout:fragment="content">
+	<!-- thumbnail -->
+	<div class="container content-wrapper">
+		<div class="thumbnailBox">
+			<div class="zoom-wrapper">
+				<img id="thumbnail" th:src="${ mainThumb.thumbnailPath }" th:data-zoom-image="${ mainThumb.savePath }">
+			</div>
+			<div class="thumbs-wrapper" id="thumbs-gallery">
+				<a href="#" class="elevatezoom-gallery active" th:data-image="${ mainThumb.thumbnailPath }" th:data-zoom-image="${ mainThumb.savePath }"> <img
+					id="thumbs" th:src="${ mainThumb.thumbnailPath }" width="50"
+				>
+				</a> <a href="#" class="elevatezoom-gallery" th:data-image="${ subThumb.thumbnailPath }" th:data-zoom-image="${ subThumb.savePath }"> <img
+					id="thumbs" th:src="${ subThumb.thumbnailPath }" width="50"
+				>
+				</a>
+			</div>
+		</div>
+		<div class="infoBox">
+			<div class="shareBox">
+				<ul>
+					<li><a href="#" onclick="shareCurrentPage(); return false;"><i class="fa-solid fa-link"></i> URL</a></li>
+				</ul>
+			</div>
+			<div class="title-wrapper">
+				<a href="#">[[${ detail.brand.brandNm }]] <i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+				<h2 style="margin-bottom: 0;">[[${ detail.prodNm }]]</h2>
+			</div>
+			<div class="price-wrapper">
+				<ul>
+					<li class="th"><p>판매가</p></li>
+					<!-- 판매가A. 할인 대상이 아닌 경우 원가 그대로 출력 -->
+					<li class="td" th:if="${detail.discountRate} == 0"><span>[[${#numbers.formatInteger(detail.price, 3, 'COMMA')}]]원</span> <!-- 세 자리마다 구분자 삽입 --></li>
+					<!-- 판매가B. 적용된 할인율이 0% 이상인 경우 판매가 산정하여 출력 -->
+					<li class="td" th:if="${detail.discountRate} > 0"><del>
+							<span>[[${#numbers.formatInteger((detail.price), 3, 'COMMA')}]]원</span>
+						</del> <span>&nbsp;&nbsp;[[${#numbers.formatInteger(detail.price - (detail.price * detail.discountRate / 100), 3, 'COMMA')}]]원</span> <span>&nbsp;&nbsp;[[${
+							detail.discountRate }]]%</span></li>
+				</ul>
+			</div>
+			<div class="delivery-wrapper">
+				<ul>
+					<li class="th"><p>배송 정보</p></li>
+					<li class="td"><span>16시 이전 주문 시 당일출고(공휴일,토/일요일제외)</span></li>
+				</ul>
+				<ul>
+					<li class="th"><p>배송비</p></li>
+					<li class="td"><span>3,000원 (2만원 이상 주문 시 무료 배송)</span></li>
+				</ul>
+			</div>
+			<div class="option-wrapper">
+				<ul th:if="${#lists.size(option) > 0}">
+					<li class="th"><p>옵션</p></li>
+					<li class="td">
+						<div class="option-selector" th:each="opt, stat : ${option}">
+							<!-- 옵션 select -->
+							<select class="selector" th:data-opt-name-no="${opt.optNameNo}" th:onchange="handleOptionChange(this)">
+								<option selected disabled hidden th:text="${opt.optNameNm}"></option>
+								<option th:each="val : ${opt.values}" th:value="${val.optValueNo}" th:text="${val.optValueNm}"></option>
+							</select>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<form id="productOrderForm" name="productOrderForm" action="">
+				<div id="selectedOption">
+					<div class="getHiddenPrice" th:value="${ detail.price - (detail.price * detail.discountRate / 100) }"
+						th:text="|${#numbers.formatInteger((detail.price - (detail.price * detail.discountRate / 100)), 3, 'COMMA')}원|" hidden="hidden"
+					></div>
+				</div>
+				<div id="sumTotal">
+					<span>총 상품금액</span> <span id="totalPrice">0</span> 원
+				</div>
+				<div class="buttonBox">
+					<button type="button" class="btn" id="cartBtn" onclick="addToCart()">장바구니</button>
+					<button type="button" class="btn btn-dark" id="orderBtn" onclick="orderProduct()">바로구매</button>
+					<!-- <button type="button" class="btn" id="wishBtn" th:unless="${ memberWishItem }"> -->
+				</div>
+			</form>
+		</div>
+	</div>
+	<!-- JS -->
+	<th:block layout:fragment="script">
+		<script th:src="@{/js/product.js}" type="text/javascript"></script>
+		<script>
+			/* 썸네일박스 상단 고정 */
+			$(window).scroll(
+					function() {
+						let contentTop = $('.thumbnailBox').outerHeight()
+								- $('.infoBox').outerHeight();
+						let scrollTop = $(this).scrollTop();
+						if (scrollTop > contentTop) {
+							$('.thumbnailBox').css('position', 'absolute');
+						}
+					});
+		</script>
+		<!-- ElevateZoom-Plus -->
+		<script type="text/javascript" src="https://cdn.rawgit.com/igorlino/elevatezoom-plus/1.1.6/src/jquery.ez-plus.js"></script>
+		<script>
+			$('#thumbnail').ezPlus({
+				gallery : 'thumbs-gallery',
+				cursor : 'pointer',
+				galleryActiveClass : 'active',
+				imageCrossFade : true,
+				scrollZoom : true
+			});
+			$('#thumbnail').bind('click', function(e) {
+				var ez = $('#thumbnail').data('ezPlus');
+				$.fancyboxPlus(ez.getGalleryList());
+				return false;
+			});
+		</script>
+	</th:block>
+</body>
+</html>

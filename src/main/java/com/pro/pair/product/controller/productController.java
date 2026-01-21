@@ -305,5 +305,47 @@ public class productController {
 		
 
 	}
+	
+	/*
+	 * 상품상세페이지
+	 */
+	@GetMapping("product/details")
+	public void getProductDetails(@RequestParam("no") int prodNo, HttpSession session, Model model) {
+		/* 상품 상세 정보 호출 */
+		ProductDTO detail = productService.getProductDetails(prodNo); //getProductDetails()는 전역적으로 사용되고 있어 상세페이지 조회용을 별도로 구분
+		
+		/* 상품 썸네일 조회 */
+		AttachmentDTO mainThumb = productService.getMainThumbnailByProdNo(prodNo);
+		AttachmentDTO subThumb = productService.getSubThumbnailByProdNo(prodNo);
+		
+		/* 옵션 조회 */
+		List<OptionDTO> option = productService.getOptionListByProdNo(prodNo);
+		
+		
+		
+		
+		
+		log.info("option: {}" ,option);
+		
+		
+		model.addAttribute("detail", detail);
+		model.addAttribute("mainThumb", mainThumb);
+		model.addAttribute("subThumb", subThumb);
+		model.addAttribute("option", option);
+		
+	}
+	
 
 }
+
+
+
+
+
+
+
+
+
+
+
+

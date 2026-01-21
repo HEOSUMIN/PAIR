@@ -156,4 +156,9 @@ public class ProductServiceImpl implements ProductService {
 	public List<ProductDTO> getProductListByCategorySection(ItemCriteria itemCriteria) {
 		return productMapper.getProductListByCategorySection(itemCriteria);
 	}
+
+	@Override
+	public List<OptionDTO> getOptionListByProdNo(int prodNo) {
+		return productMapper.getOptionListByProdNo(prodNo);
+	}
 }

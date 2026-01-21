@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layouts/default.html">
 <head>
+<meta charset="UTF-8">
 <title layout:fragment="title">pair</title>
 <!-- CSS -->
 <th:block layout:fragment="css">
@@ -20,9 +21,7 @@
 		<th:block th:unless="${ section == '전체 상품' }">
 			<div class="classification">
 				<h2 class="classify-title">[[${ section }]]</h2>
-				<div class="classify-list">
-					
-				</div>
+				<div class="classify-list"></div>
 			</div>
 		</th:block>
 		<div class="sorting">
@@ -77,14 +76,12 @@
 		</div>
 		<section class="product-section">
 			<div class="product-list row">
-				 <div class="col mb-5" th:each="product : ${ productList }" style="flex: none;">
-					<div class="card" th:data-id="|${product.brand.brandNm}$${product.category.categoryNm}|"> 
-						<a th:href="@{/product/details(no=${product.prodNo})}"> 
-							<!-- Product image -->
+				<div class="col mb-5" th:each="product : ${ productList }" style="flex: none;">
+					<div class="card" th:data-id="|${product.brand.brandNm}$${product.category.categoryNm}|">
+						<a th:href="@{/product/details(no=${product.prodNo})}"> <!-- Product image -->
 							<div class="card-img-wrapper" th:each="thumbnail : ${ thumbnailList }" th:if="${product.prodNo == thumbnail.refProdNo}">
 								<img class="card-img-top" th:src="${ thumbnail.thumbnailPath }">
-							</div> 
-							<!-- Product details -->
+							</div> <!-- Product details -->
 							<div class="card-body">
 								<div class="text-left" th:value="${ product.price - (product.price * product.discountRate / 100) }">
 									<small>[[${ product.brand.brandNm }]]</small>
@@ -99,8 +96,7 @@
 										<del>[[${#numbers.formatInteger(product.price, 3, 'COMMA')}]]</del>
 										<b>&nbsp;[[${ product.discountRate }]]%</b>
 									</th:block>
-									<span> 리뷰수&nbsp;<b>[리뷰수]</b>&nbsp;&#8729;
-									 평점&nbsp;<b>[평점]</b>/<b>5</b>
+									<span> 리뷰수&nbsp;<b>[리뷰수]</b>&nbsp;&#8729; 평점&nbsp;<b>[평점]</b>/<b>5</b>
 									</span>
 								</div>
 								<div class="text-right" th:unless="${ memberWishItem }">
@@ -112,8 +108,8 @@
 								</div>
 							</div>
 						</a>
-					 </div> 
-				</div> 
+					</div>
+				</div>
 			</div>
 		</section>
 	</div>

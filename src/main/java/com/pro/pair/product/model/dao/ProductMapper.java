@@ -52,4 +52,5 @@ public interface ProductMapper {
 	
 	List<ProductDTO> getProductListByCategorySection(ItemCriteria itemCriteria);
 	
+	List<OptionDTO> getOptionListByProdNo(int prodNo);
 }
