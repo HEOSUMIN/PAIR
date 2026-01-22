@@ -549,25 +549,46 @@ function submitEditProdForm() {
 
 /* ================================상품상세페이지================================= */
 
+let prodName = document.getElementsByClassName("prodNm") + " + ";
 function handleOptionChange(current) {
+	
 	var selects = document.getElementsByClassName("selector");
 	var lastSelect = selects[selects.length - 1];
-
-	//마지막 select 선택시 
+	let currentValue = current.options[current.selectedIndex].text;
+	console.log("currentValue:", currentValue); 
+	prodName += currentValue;
+	console.log("prodName:", prodName); 
+	//selectedOptions.push(currentValue);
+	
 	if (current === lastSelect) {
+		//마지막 select 선택시 
 		const row = document.createElement("div");
-					row.innerHTML = 					'<div class="selectedInfo">' +
-								'<div id="selectedName" class="selectedName selectedName></div>' +
-								'<div class="countBox">' +
-									'<button type="button" class="button-down" disabled><i class="fa-solid fa-minus"></i></button>' +
-									'<input type="number" class="selectedAmount" name="selectedAmount" value="1">' +
-									'<button type="button" class="button-up"><i class="fa-solid fa-plus"></i></button>' +
-								'</div>' +
-								'<div class="selectedPrice"></div>' +
-								'<a href="#" class="button-delete" onclick="reset(); return false;"><i class="fa-solid fa-xmark"></i></a>' +
-							'</div>';
-					document.getElementById("selectedOption").appendChild(row);
+		row.innerHTML = '<div class="selectedInfo">' +
+			'<div class="selectedName"></div>' +
+			'<div class="countBox">' +
+			'<button type="button" class="button-down" disabled><i class="fa-solid fa-minus"></i></button>' +
+			'<input type="number" class="selectedAmount" name="selectedAmount" value="1">' +
+			'<button type="button" class="button-up"><i class="fa-solid fa-plus"></i></button>' +
+			'</div>' +
+			'<div class="selectedPrice"></div>' +
+			'<a href="#" class="button-delete" onclick="reset(); return false;"><i class="fa-solid fa-xmark"></i></a>' +
+			'</div>';
+		document.getElementById("selectedOption").appendChild(row);
+
+		//let prodName = selectedOptions.join(" + ");
+		//console.log(prodName); // "화이트 + 블랙 + 레드" 형태
+		//$(row).find('.selectedName').text(prodName);
+
+		let hiddenPriceValue = $('.getHiddenPrice').attr('value'); // 판매가 value
+		let hiddenPriceText = $('.getHiddenPrice').text(); // 판매가 text
+		$(row).find('.selectedPrice').text(hiddenPriceText);
+		$(row).find('.selectedPrice').attr('value', hiddenPriceValue);
+	} else{
+		
 	}
+
+
+	
 }
 
 
