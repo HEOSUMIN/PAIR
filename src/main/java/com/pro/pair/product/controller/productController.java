@@ -30,6 +30,7 @@ import com.pro.pair.paging.model.dto.Criteria;
 import com.pro.pair.paging.model.dto.ItemCriteria;
 import com.pro.pair.product.model.dto.BrandDTO;
 import com.pro.pair.product.model.dto.CategoryDTO;
+import com.pro.pair.product.model.dto.OptionCombDTO;
 import com.pro.pair.product.model.dto.OptionDTO;
 import com.pro.pair.product.model.dto.ProductDTO;
 import com.pro.pair.product.model.service.ProductService;
@@ -321,20 +322,29 @@ public class productController {
 		/* 옵션 조회 */
 		List<OptionDTO> option = productService.getOptionListByProdNo(prodNo);
 		
-		
-		
+		/* 옵션 상세 조회 */
+		List<OptionCombDTO> optionDetails = productService.getOptionDetailsListByProdNo(prodNo);
 		
 		
 		log.info("option: {}" ,option);
+		log.info("optionDetails: {}" ,optionDetails);
 		
 		
 		model.addAttribute("detail", detail);
 		model.addAttribute("mainThumb", mainThumb);
 		model.addAttribute("subThumb", subThumb);
 		model.addAttribute("option", option);
+		model.addAttribute("optionDetails", optionDetails);
 		
 	}
 	
+	
+	@GetMapping("/product/option-combination")
+	@ResponseBody
+	public OptionCombDTO getOptionCombination(@RequestParam int prodNo,
+	                                          @RequestParam String combName) {
+	    return productService.findOptionCombByName(prodNo, combName);
+	}
 
 }
 

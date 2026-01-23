@@ -345,7 +345,23 @@
 		WHERE A.PROD_NO = #{ prodNo }
 		ORDER BY A.SORT_ORDER, B.SORT_ORDER
 	</select>
-
+	
+	<!-- 상품별 옵션 디테일 조회 -->
+	<select id="getOptionDetailsListByProdNo" resultMap="optionCombResultMap">
+         SELECT OPT_ADD_PRICE
+		         , OPT_STOCK_QTY
+		         , OPT_MANAGE_NM
+		FROM TBL_OPTION_COMB
+		WHERE prod_no = #{ prodNo }
+		AND OPT_SALE_STATUS = 'Y'
+	</select>
+	
+	
+	<!-- 상품별 옵션 디테일 조회 -->
+	<select id="selectOptionCombByName" resultMap="optionCombResultMap">
+ 		SELECT * FROM TBL_OPTION_COMB WHERE PROD_NO = #{prodNo} AND OPT_MANAGE_NM  = #{combName}
+	</select>
+	
 	<!-- 상품 등록 -->
 	<insert id="addProduct">
 		INSERT

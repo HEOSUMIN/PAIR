@@ -53,4 +53,8 @@ public interface ProductMapper {
 	List<ProductDTO> getProductListByCategorySection(ItemCriteria itemCriteria);
 	
 	List<OptionDTO> getOptionListByProdNo(int prodNo);
+	
+	List<OptionCombDTO> getOptionDetailsListByProdNo(int prodNo);
+	
+	OptionCombDTO selectOptionCombByName(int prodNo, String combName);
 }

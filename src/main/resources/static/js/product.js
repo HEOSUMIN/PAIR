@@ -550,14 +550,26 @@ function submitEditProdForm() {
 
 let preSelectOptions = new Array();	// 이전에 담은 옵션
 let selectOptions = new Array();	// 현재 담은 옵션
-let prodName = "";
+
+
+/* 옵션 선택시 */
 function handleOptionChange(current) {
-	let prodNm = document.getElementById("prodNm").value;
 	let selects = document.getElementsByClassName("selector");
 	let lastSelect = selects[selects.length - 1];
 
 	//현재 선택한 옵션값
 	let currentValue = current.options[current.selectedIndex].text;
+
+	//이전의 옵션값 선택 안한 경우 
+	const currentIndex = Array.from(selects).indexOf(current);
+	for (let i = 0; i < currentIndex; i++) {
+		if (selects[i].selectedIndex === 0) { // placeholder 선택 상태
+			alert("먼저 이전 옵션을 선택해주세요!");
+			current.selectedIndex = 0; // 선택 초기화
+			return; // 함수 종료
+		}
+	}
+
 	selectOptions.push(currentValue);
 
 	//마지막 select 선택시 
@@ -568,48 +580,171 @@ function handleOptionChange(current) {
 		// 이미 선택된 옵션인지 체크
 		if (preSelectOptions.includes(prodText)) {
 			alert("이미 선택한 옵션입니다!");
+
+			for (let i = 0; i < selects.length; i++) {
+				selects[i].selectedIndex = 0; // 첫 번째 option이 placeholder이므로 초기값
+			}
+
 			selectOptions = []; // 초기화
+
 			return;
+		} else {
+
+			// 선택되지 않은 새로운 옵션이면 추가
+			preSelectOptions.push(prodText);
+
+			const row = document.createElement("div");
+			row.innerHTML = '<div class="selectedInfo">' +
+				'<div class="selectedName"></div>' +
+				'<div class="countBox">' +
+				'<button type="button" class="button-down" disabled><i class="fa-solid fa-minus"></i></button>' +
+				'<input type="number" class="selectedAmount" name="selectedAmount" value="1">' +
+				'<button type="button" class="button-up"><i class="fa-solid fa-plus"></i></button>' +
+				'</div>' +
+				'<div class="selectedPrice"></div>' +
+				'<a href="#" class="button-delete" onclick="reset(); return false;"><i class="fa-solid fa-xmark"></i></a>' +
+				'</div>';
+			document.getElementById("selectedOption").appendChild(row);
+
+			let combinationStr = selectOptions.join(" + ");
+			let dbFormat = combinationStr.replace(/\s*\+\s*/g, "_");
+
+			let prodNo = document.getElementById("prodNo").value;
+			console.log("prodNo: ", prodNo);
+			fetch(`/product/option-combination?prodNo=${prodNo}&combName=${encodeURIComponent(dbFormat)}`)
+				.then(res => res.json())
+				.then(data => {
+					if (data) {
+						// 조합 정보 화면에 출력
+						document.getElementById("combinationName").innerText = combinationStr;
+						document.getElementById("combinationStock").innerText = `재고: ${data.optStockQty}`;
+						document.getElementById("combinationPrice").innerText = `추가금액: ${data.optAddPrice}원`;
+
+						// 조합 정보 화면에 출력 재고, 추가금액 
+						document.getElementById("combinationName").value = combinationStr;
+						document.getElementById("combinationStock").value = data.optStockQty;
+						document.getElementById("combinationPrice").value = data.optAddPrice;
+						
+//재고, 추가금액 받아오는거 까지 하고 금액 찍는거 하면됨
+
+						let basePrice = parseInt($('.getHiddenPrice').attr('value')); // 1000 숫자로 변환
+						let addPrice = parseInt(data.optAddPrice); // 조합 추가금액
+						let totalPrice = basePrice + addPrice; // 숫자 계산 가능
+						let combinationName = prodText; // "블랙 + M"
+
+						$(row).find('.selectedPrice').text(totalPrice.toLocaleString() + "원");
+						$(row).find('.selectedPrice').attr('value', hiddenPriceValue);
+						
+
+					} else {
+						alert("해당 옵션 조합은 존재하지 않습니다.");
+					}
+				});
+
+
+			/*
+						$(row).find('.selectedName').text(prodText);
+			
+						let hiddenPriceValue = $('.getHiddenPrice').attr('value') + document.getElementById("combinationName").value; // 판매가 value
+						let hiddenPriceText = $('.getHiddenPrice').text() + document.getElementById("combinationName").value; // 판매가 text
+						$(row).find('.selectedPrice').text(hiddenPriceText);
+						$(row).find('.selectedPrice').attr('value', hiddenPriceValue);
+			*/
+			for (let i = 0; i < selects.length; i++) {
+				selects[i].selectedIndex = 0; // 첫 번째 option이 placeholder이므로 초기값
+			}
+
+
+			//다음선택을 위한 초기화
+			selectOptions = [];
+
 		}
 
-		// 선택되지 않은 새로운 옵션이면 추가
-		preSelectOptions.push(prodText);
 
-		const row = document.createElement("div");
-		row.innerHTML = '<div class="selectedInfo">' +
-			'<div class="selectedName"></div>' +
-			'<div class="countBox">' +
-			'<button type="button" class="button-down" disabled><i class="fa-solid fa-minus"></i></button>' +
-			'<input type="number" class="selectedAmount" name="selectedAmount" value="1">' +
-			'<button type="button" class="button-up"><i class="fa-solid fa-plus"></i></button>' +
-			'</div>' +
-			'<div class="selectedPrice"></div>' +
-			'<a href="#" class="button-delete" onclick="reset(); return false;"><i class="fa-solid fa-xmark"></i></a>' +
-			'</div>';
-		document.getElementById("selectedOption").appendChild(row);
 
-		$(row).find('.selectedName').text(prodText);
 
-		//다음선택을 위한 초기화
-		selectOptions = [];
 
-		let hiddenPriceValue = $('.getHiddenPrice').attr('value'); // 판매가 value
-		let hiddenPriceText = $('.getHiddenPrice').text(); // 판매가 text
-		$(row).find('.selectedPrice').text(hiddenPriceText);
-		$(row).find('.selectedPrice').attr('value', hiddenPriceValue);
-
-		for (let i = 0; i < selects.length; i++) {
-			selects[i].selectedIndex = 0; // 첫 번째 option이 placeholder이므로 초기값
-		}
 	}
-
-
 }
 
+/* 수량 증가 */
+$(document).on('click', '.countBox .button-up', function() { //up 버튼
+	let selectedAmount = $(this).closest('div.selectedInfo').find('input[name=selectedAmount]').val(); //input
+	//console.log("selectedAmount : " + selectedAmount);
+	let count = parseInt(selectedAmount);
+	count++;
+	if (count > 1) {
+		$(this).closest('div.selectedInfo').find('.button-down').prop('disabled', false);
+	}
+	$(this).closest('div.selectedInfo').find('input[name=selectedAmount]').val(count); //증가한 수량 대입
 
+	//수량에 따른 판매가 계산
+	let originalPrice = $('.getHiddenPrice').attr('value');
+	let price = parseInt(originalPrice);
+	let result = count * price;
+	$(this).closest('div.selectedInfo').find('.selectedPrice').attr('value', result);
+	$(this).closest('div.selectedInfo').find('.selectedPrice').text(result.toLocaleString('ko-KR') + "원"); //원화 단위로 출력
+	sumTotalPrice();
+});
 
+/* 수량 감소 */
+$(document).on('click', '.countBox .button-down', function() { //down 버튼
+	let selectedAmount = $(this).closest('div.selectedInfo').find('input[name=selectedAmount]').val(); //input
+	//console.log("selectedAmount : " + selectedAmount);
+	let count = parseInt(selectedAmount);
+	count--;
+	console.log(count);
+	if (count == 1) {
+		$(this).closest('div.selectedInfo').find('.button-down').prop('disabled', true);
+	}
+	$(this).closest('div.selectedInfo').find('input[name=selectedAmount]').val(count); //감소한 수량 대입
 
+	//수량에 따른 판매가 계산
+	let originalPrice = $('.getHiddenPrice').attr('value');
+	let price = parseInt(originalPrice);
+	let result = count * price;
+	$(this).closest('div.selectedInfo').find('.selectedPrice').attr('value', result);
+	$(this).closest('div.selectedInfo').find('.selectedPrice').text(result.toLocaleString('ko-KR') + "원"); //원화 단위로 출력
+	sumTotalPrice();
+});
 
+/* 수량 입력 */
+$(document).on('change', 'input[name=selectedAmount]', function() { //input 값 변경
+	let selectedAmount = $(this).closest('div.selectedInfo').find('input[name=selectedAmount]').val(); //input
+	let count = parseInt(selectedAmount);
+	if (count > 1) {
+		$(this).closest('div.selectedInfo').find('.button-down').prop('disabled', false);
+	} else if (count == 1) {
+		$(this).closest('div.selectedInfo').find('.button-down').prop('disabled', true);
+	}
+
+	//수량에 따른 판매가 계산
+	let originalPrice = $('.getHiddenPrice').attr('value');
+	let price = parseInt(originalPrice);
+	let result = count * price;
+	$(this).closest('div.selectedInfo').find('.selectedPrice').attr('value', result);
+	$(this).closest('div.selectedInfo').find('.selectedPrice').text(result.toLocaleString('ko-KR') + "원"); //원화 단위로 출력
+
+	sumTotalPrice();
+});
+
+function sumTotalPrice() {
+	let total = 0;
+	document.querySelectorAll('.selectedPrice').forEach(function(item) {
+		let price = parseInt(item.getAttribute('value'));
+		total += price;
+		console.log(item.getAttribute('value'));
+		console.log(total);
+	});
+	$('#totalPrice').text(total.toLocaleString('ko-KR'));
+}
+
+function reset() {
+	let btn = document.querySelector('.button-delete');
+	let div = btn.closest('.selectedInfo'); $(this).
+		div.remove();
+	sumTotalPrice(); //합계 금액 다시 계산
+};
 /* ============================================================================ */
 
 

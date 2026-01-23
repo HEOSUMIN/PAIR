@@ -33,7 +33,8 @@
 			</div>
 			<div class="title-wrapper">
 				<a href="#">[[${ detail.brand.brandNm }]] <i class="fa-solid fa-arrow-right-from-bracket"></i></a>
-				<h2 id="prodNm" style="margin-bottom: 0;">[[${ detail.prodNm }]]</h2>
+				<h2 style="margin-bottom: 0;">[[${ detail.prodNm }]]</h2>
+				<input type="hidden" id ="prodNo" th:value="${ detail.prodNo }"></input>
 			</div>
 			<div class="price-wrapper">
 				<ul>
@@ -67,6 +68,9 @@
 								<option selected disabled hidden th:text="${opt.optNameNm}"></option>
 								<option th:each="val : ${opt.values}" th:value="${val.optValueNo}" th:text="${val.optValueNm}"></option>
 							</select>
+						</div>
+						<div id="selectedOptionInfo">
+							<span id="combinationName"></span> <span id="combinationStock"></span> <span id="combinationPrice"></span>
 						</div>
 					</li>
 				</ul>

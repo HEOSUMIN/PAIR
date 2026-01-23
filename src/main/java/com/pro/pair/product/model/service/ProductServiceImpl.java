@@ -161,4 +161,14 @@ public class ProductServiceImpl implements ProductService {
 	public List<OptionDTO> getOptionListByProdNo(int prodNo) {
 		return productMapper.getOptionListByProdNo(prodNo);
 	}
+
+	@Override
+	public List<OptionCombDTO> getOptionDetailsListByProdNo(int prodNo) {
+		return productMapper.getOptionDetailsListByProdNo(prodNo);
+	}
+
+	@Override
+	public OptionCombDTO findOptionCombByName(int prodNo, String combName) {
+		    return productMapper.selectOptionCombByName(prodNo, combName);
+	}
 }
