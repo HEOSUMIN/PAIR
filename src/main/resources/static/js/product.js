@@ -2,6 +2,7 @@
 const optionCountSelect = document.getElementById("optionCount");
 const optionForm = document.getElementById("optionForm");
 const optionInputs = document.getElementById("optionInputs");
+const applyOptionBtn = document.getElementById("applyOptionBtn");
 
 /*옵션명, 옵션값 입력란 생성 */
 if (optionCountSelect) { // 엘리먼트가 있으면
@@ -86,21 +87,19 @@ function validateOptionInputs() {
 }
 
 /* 옵션목록으로 적용 버튼 클릭시 */
-document.getElementById('applyOptionBtn').addEventListener('click', () => {
+if (applyOptionBtn) { // 엘리먼트가 있으면
+	applyOptionBtn.addEventListener('click', () => {
+		if (!validateOptionInputs()) { return; }
+		const { optionNames, optionValues } = getOptionData();
 
-	if (!validateOptionInputs()) { return; }
-
-	const { optionNames, optionValues } = getOptionData();
-
-	// thead 생성
-	renderOptionTableHead(optionNames);
-
-	// tbody 생성
-	renderOptionTableBody(optionValues);
-
-	// 테이블 표시
-	document.getElementById('optionTable').style.display = 'table';
-});
+		// thead 생성
+		renderOptionTableHead(optionNames);
+		// tbody 생성
+		renderOptionTableBody(optionValues);
+		// 테이블 표시
+		document.getElementById('optionTable').style.display = 'table';
+	});
+}
 
 /* 옵션데이터 */
 function getOptionData() {
@@ -549,19 +548,33 @@ function submitEditProdForm() {
 
 /* ================================상품상세페이지================================= */
 
-let prodName = document.getElementsByClassName("prodNm") + " + ";
+let preSelectOptions = new Array();	// 이전에 담은 옵션
+let selectOptions = new Array();	// 현재 담은 옵션
+let prodName = "";
 function handleOptionChange(current) {
-	
-	var selects = document.getElementsByClassName("selector");
-	var lastSelect = selects[selects.length - 1];
+	let prodNm = document.getElementById("prodNm").value;
+	let selects = document.getElementsByClassName("selector");
+	let lastSelect = selects[selects.length - 1];
+
+	//현재 선택한 옵션값
 	let currentValue = current.options[current.selectedIndex].text;
-	console.log("currentValue:", currentValue); 
-	prodName += currentValue;
-	console.log("prodName:", prodName); 
-	//selectedOptions.push(currentValue);
-	
+	selectOptions.push(currentValue);
+
+	//마지막 select 선택시 
 	if (current === lastSelect) {
-		//마지막 select 선택시 
+		console.log("마지막 선택시 ");
+		let prodText = selectOptions.join(" + "); // "화이트 + 블랙 + 레드" 형태
+
+		// 이미 선택된 옵션인지 체크
+		if (preSelectOptions.includes(prodText)) {
+			alert("이미 선택한 옵션입니다!");
+			selectOptions = []; // 초기화
+			return;
+		}
+
+		// 선택되지 않은 새로운 옵션이면 추가
+		preSelectOptions.push(prodText);
+
 		const row = document.createElement("div");
 		row.innerHTML = '<div class="selectedInfo">' +
 			'<div class="selectedName"></div>' +
@@ -575,20 +588,22 @@ function handleOptionChange(current) {
 			'</div>';
 		document.getElementById("selectedOption").appendChild(row);
 
-		//let prodName = selectedOptions.join(" + ");
-		//console.log(prodName); // "화이트 + 블랙 + 레드" 형태
-		//$(row).find('.selectedName').text(prodName);
+		$(row).find('.selectedName').text(prodText);
+
+		//다음선택을 위한 초기화
+		selectOptions = [];
 
 		let hiddenPriceValue = $('.getHiddenPrice').attr('value'); // 판매가 value
 		let hiddenPriceText = $('.getHiddenPrice').text(); // 판매가 text
 		$(row).find('.selectedPrice').text(hiddenPriceText);
 		$(row).find('.selectedPrice').attr('value', hiddenPriceValue);
-	} else{
-		
+
+		for (let i = 0; i < selects.length; i++) {
+			selects[i].selectedIndex = 0; // 첫 번째 option이 placeholder이므로 초기값
+		}
 	}
 
 
-	
 }
 
 

@@ -314,7 +314,7 @@ select {
 	border-right: 0;
 }
 
-#selectedName {
+.selectedName {
 	width: 50%;
 	line-height: 30px;
 }
