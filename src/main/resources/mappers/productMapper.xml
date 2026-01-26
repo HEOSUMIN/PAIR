@@ -358,8 +358,15 @@
 	
 	
 	<!-- 상품별 옵션 디테일 조회 -->
-	<select id="selectOptionCombByName" resultMap="optionCombResultMap">
- 		SELECT * FROM TBL_OPTION_COMB WHERE PROD_NO = #{prodNo} AND OPT_MANAGE_NM  = #{combName}
+	<select id="findOptionCombByName" resultMap="optionCombResultMap">
+        SELECT  OPT_COMB_NO
+	        , PROD_NO
+	        , OPT_ADD_PRICE
+	        , OPT_STOCK_QTY
+	        , OPT_MANAGE_NM
+	        , OPT_SALE_STATUS
+        FROM TBL_OPTION_COMB 
+        WHERE PROD_NO = #{prodNo} AND OPT_MANAGE_NM  = #{combName}
 	</select>
 	
 	<!-- 상품 등록 -->

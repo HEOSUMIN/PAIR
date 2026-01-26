@@ -56,5 +56,5 @@ public interface ProductMapper {
 	
 	List<OptionCombDTO> getOptionDetailsListByProdNo(int prodNo);
 	
-	OptionCombDTO selectOptionCombByName(int prodNo, String combName);
+	OptionCombDTO findOptionCombByName(int prodNo, String combName);
 }

@@ -169,6 +169,6 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public OptionCombDTO findOptionCombByName(int prodNo, String combName) {
-		    return productMapper.selectOptionCombByName(prodNo, combName);
+		    return productMapper.findOptionCombByName(prodNo, combName);
 	}
 }
