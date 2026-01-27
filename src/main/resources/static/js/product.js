@@ -615,26 +615,26 @@ function handleOptionChange(current) {
 			let dbFormat = combinationStr.replace(/\s*\+\s*/g, "_");
 
 			let prodNo = document.getElementById("prodNo").value;
-			console.log("prodNo: ", prodNo);
 
 			fetch(`/product/option-combination?prodNo=${prodNo}&combName=${encodeURIComponent(dbFormat)}`)
 				.then(res => res.json())
 				.then(data => {
 					if (data) {
-						
+
 						let basePrice = parseInt($('.getHiddenPrice').attr('value')); //원래금액 
 						let addPrice = parseInt(data.optAddPrice); 	//추가금액 
-						let totalPrice = basePrice + addPrice; 
+						let totalPrice = basePrice + addPrice;
 						let combinationName = prodText; // "블랙 + M"
-						
+
+						$(row).find('.selectedInfo').data('optCombNo', data.optCombNo);	//상품+옵션 추가금액
 						$(row).find('.selectedInfo').data('totalPrice', totalPrice);	//상품+옵션 추가금액
-						
+
 						$(row).find('.selectedPrice').text(totalPrice.toLocaleString() + "원");
 						$(row).find('.selectedPrice').attr('value', totalPrice);
-						
+
 						$(row).find('.selectedName').text("- " + combinationName);
 						$(row).find('.selectedName').attr('value', combinationName);
-						
+
 						sumTotalPrice();
 
 					} else {
@@ -655,10 +655,10 @@ function handleOptionChange(current) {
 $(document).on('click', '.countBox .button-up', function() { //up 버튼
 	let selectedAmount = $(this).closest('div.selectedInfo').find('input[name=selectedAmount]').val(); //input
 	//console.log("selectedAmount : " + selectedAmount);
-	
+
 	let count = parseInt(selectedAmount);
 	count++;
-	
+
 	if (count > 1) {
 		$(this).closest('div.selectedInfo').find('.button-down').prop('disabled', false);
 	}
@@ -727,20 +727,113 @@ function sumTotalPrice() {
 }
 
 function reset(btn) {
-  const row = btn.closest('.selectedInfo');
-  const name = row.querySelector('.selectedName').getAttribute('value');
-  
-  preSelectOptions = preSelectOptions.filter(v => v !== name);
+	const row = btn.closest('.selectedInfo');
+	const name = row.querySelector('.selectedName').getAttribute('value');
 
-  row.remove();
+	preSelectOptions = preSelectOptions.filter(v => v !== name);
 
-  sumTotalPrice();
+	row.remove();
+
+	sumTotalPrice();
 }
 
 /* ============================================================================ */
+$('#cartBtn').on('click', function() {
+	if ($('.selectedInfo').length === 0) {
+		alert('옵션을 선택해주세요.');
+		return;
+	}
+
+	let optionArr = [];
+
+	$('.selectedInfo').each(function() {
+		//const optionName = $(this).find('.selectedName').attr('value');
+		const quantity = parseInt($(this).find('.selectedAmount').val());
+		const optCombNo = $(this).data('optCombNo'); // fetch에서 저장해야 함
+
+		optionArr.push({
+			prodNo: $('#prodNo').val(),
+			optCombNo: optCombNo,
+			quantity: quantity
+		});
+	});
+
+	addToCart(optionArr);
+});
 
 
+/* 장바구니 담기 */
+function addToCart(optionArr) {
+	console.log(optionArr);
 
+	if (optionArr.length == 0) {
+		Swal.fire({
+			icon: 'warning',
+			title: '1개 이상의 옵션을 선택하세요',
+			confirmButtonColor: '#00008b',
+			confirmButtonText: '확인'
+		}).then((result) => {
+			if (result.isConfirmed) { }
+		})
+	} else {
+		$.ajax({
+			url: '/cart/mycart/add',
+			type: 'post',
+			contentType: 'application/json; charset=UTF-8',
+			data: JSON.stringify(optionArr),
+			dataType: 'text',
+			success: function(result) {
+				console.log("서버에서 받은 결과:", result); // <= 꼭 확인
+				if (result == '성공') {
+					Swal.fire({
+						icon: 'success',
+						title: '장바구니에 담았습니다',
+						text: '장바구니로 이동하시겠습니까?',
+						showCloseButton: true,
+						showDenyButton: true,
+						denyButtonColor: '#6c757d',
+						denyButtonText: '취소',
+						confirmButtonColor: '#00008b',
+						confirmButtonText: '이동',
+						reverseButtons: true
+					}).then((result) => {
+						if (result.isConfirmed) {
+							window.location.href = '/cart/mycart';
+						} else {
+							window.location.reload();
+							window.history.scrollRestoration = 'manual'; //스크롤 최상단 고정
+						}
+					})
+				}else if(result === 'LOGIN_REQUIRED'){
+				            Swal.fire({
+				                icon: 'warning',
+				                title: '로그인이 필요합니다',
+				                text: '로그인 페이지로 이동할까요?',
+				                showCancelButton: true,
+				                confirmButtonText: '이동',
+				                cancelButtonText: '취소'
+				            }).then((res) => {
+				                if(res.isConfirmed){
+				                    window.location.href = '/member/signin';
+				                }
+				            });
+				            return;
+				        }else {
+					Swal.fire({
+						icon: 'warning',
+						title: result,
+						text: '해당 상품의 수량을 추가했습니다',
+						confirmButtonColor: '#00008b',
+						confirmButtonText: '확인'
+					}).then((result) => {
+						if (result.isConfirmed) { }
+					})
+				}
+			},
+			error: function(status, error) { console.log(status, error); }
+		});
+	}
+}
 
 
 

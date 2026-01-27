@@ -348,7 +348,8 @@
 	
 	<!-- 상품별 옵션 디테일 조회 -->
 	<select id="getOptionDetailsListByProdNo" resultMap="optionCombResultMap">
-         SELECT OPT_ADD_PRICE
+         SELECT OPT_COMB_NO
+         	 	, OPT_ADD_PRICE
 		         , OPT_STOCK_QTY
 		         , OPT_MANAGE_NM
 		FROM TBL_OPTION_COMB
