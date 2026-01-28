@@ -21,4 +21,9 @@ public class CartServiceImpl implements CartService {
 	public List<CartDTO> getCartList(String memberId) {
 		return cartMapper.getCartList(memberId);
 	}
+
+	@Override
+	public CartDTO getCartItemByOptionNo(String username, int optCombNo) {
+		return cartMapper.getCartItemByOptionNo(username, optCombNo);
+	}
 }

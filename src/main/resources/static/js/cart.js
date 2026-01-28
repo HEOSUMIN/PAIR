@@ -227,8 +227,8 @@ $(document).on('click', '.button-delete', function() {
 	$.ajax({
 		url: '/cart/mycart/deleteCheck',
 		type: 'post',
-		contentType: 'application/json', 
-		data: JSON.stringify(arr),       
+		contentType: 'application/json',
+		data: JSON.stringify(arr),
 		success: function(result) {
 			Swal.fire({
 				icon: 'success',
@@ -246,6 +246,33 @@ $(document).on('click', '.button-delete', function() {
 	});
 
 });
+
+/* 장바구니 상품 주문 */
+function orderAll() {
+	let checkbox = $('input[name=checkItem]');
+	let arr = new Array();
+
+	checkbox.each(function() {
+		let row = $(this).closest('tr');
+		let optCombNo = Number(row.find('.option-area').attr('value'));
+		console.log("optCombNo:", optCombNo);
+		arr.push(optCombNo);
+
+	});
+	$.ajax({
+			url : '/cart/order',
+			type : 'get',
+			traditional : true, //배열 넘기기 위한 세팅
+			dataType : 'text',
+			data : { arr : arr },
+			success : function(result){
+				console.log('주문페이지 이동');
+				window.location.replace('/cart/order'); // 히스토리 추가 안됨, 한 페이지만 이동
+				//location.href='/cart/order';
+			},
+			error : function(status, error){ console.log(status, error); }
+		});
+}
 
 
 

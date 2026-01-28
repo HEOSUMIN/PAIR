@@ -8,4 +8,7 @@ public interface CartService {
 	
 	List<CartDTO> getCartList(String memberId);
 	
+	CartDTO getCartItemByOptionNo(String username, int optCombNo);
+
+	
 }

@@ -10,6 +10,8 @@ import com.pro.pair.cart.model.dto.CartDTO;
 public interface CartMapper {
 
 	List<CartDTO> getCartList(String memberId);
+	
+	CartDTO getCartItemByOptionNo(String username, int optCombNo);
 
 	CartDTO selectCartByOption(String memberId, int prodNo, int optCombNo);
 	

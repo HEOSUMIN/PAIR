@@ -106,6 +106,31 @@
 		AND T.FILE_TYPE = 'THUMB_MAIN'
 		ORDER BY C.BRAND_NM, A.CART_NO ASC
 	</select>
+	
+	<!-- 옵션번호 기준 장바구니 단일 상품 조회 -->
+	<select id="getCartItemByOptionNo" resultMap="cartResultMap">
+		SELECT
+			   A.CART_NO
+			 , A.MEMBER_ID
+			 , A.PROD_NO
+			 , A.OPT_COMB_NO
+			 , A.QUANTITY
+			 , B.PROD_NM M
+			 , B.DISCOUNT_RATE
+			 , B.PRICE
+			 , C.BRAND_NM
+			 , T.THUMBNAIL_PATH
+			 , O.OPT_ADD_PRICE
+			 , O.OPT_STOCK_QTY
+			 , O.OPT_MANAGE_NM
+		  FROM TBL_CART A
+		  LEFT JOIN TBL_PRODUCT B ON(A.PROD_NO = B.PROD_NO)
+		  LEFT JOIN TBL_BRAND C ON(C.BRAND_CD = B.BRAND_CD)
+		  LEFT JOIN TBL_ATTACHMENT T ON(A.PROD_NO = T.REF_PROD_NO)
+		  LEFT JOIN TBL_OPTION_COMB O ON A.OPT_COMB_NO  = O.OPT_COMB_NO 
+		  WHERE O.OPT_SALE_STATUS = 'Y' AND A.MEMBER_ID = #{ username }
+		   AND A.OPT_COMB_NO = #{ optCombNo }
+	</select>
 
 	<!-- 이미 담긴 상품인지 확인 -->
 	<select id="selectCartByOption" resultMap="cartResultMap">
