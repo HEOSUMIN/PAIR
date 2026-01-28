@@ -121,14 +121,6 @@
 		AND OPT_COMB_NO = #{optCombNo}
 	</select>
 
-	<!-- 이미 담겨있는 상품인 경우 수량 증가 -->
-	<update id="updateQuantity">
-		UPDATE TBL_CART
-		SET QUANTITY = #{quantity}
-		,UPT_DT = SYSDATE
-		WHERE member_id = #{memberId} AND opt_comb_no = #{optCombNo}
-	</update>
-
 	<insert id="insertCart">
 		<selectKey resultType="_int" keyProperty="cartNo"
 			order="BEFORE">
@@ -159,4 +151,31 @@
 		, SYSDATE
 		)
 	</insert>
+	
+	<!-- 이미 담겨있는 상품인 경우 수량 증가 -->
+	<update id="updateQuantity">
+		UPDATE TBL_CART
+		SET QUANTITY = #{quantity}
+		,UPT_DT = SYSDATE
+		WHERE member_id = #{memberId} AND opt_comb_no = #{optCombNo}
+	</update>
+	
+	<!-- 장바구니 상품 행 삭제 -->
+	<delete id="deleteCartItem">
+		DELETE
+		  FROM TBL_CART
+		 WHERE OPT_COMB_NO = #{ optCombNo }
+		   AND MEMBER_ID = #{ memberId }
+	</delete>
+
+	<!-- 장바구니 상품 선택 삭제 -->
+	<delete id="deleteCartItems" parameterType="map">
+		DELETE FROM TBL_CART
+		 WHERE MEMBER_ID = #{memberId}
+		       AND OPT_COMB_NO IN
+      <foreach item="optCombNo" collection="optCombNo" open="(" separator="," close=")">
+        #{optCombNo}
+      </foreach>
+	</delete>
+	
 </mapper>

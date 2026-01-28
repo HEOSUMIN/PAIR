@@ -12,8 +12,14 @@ public interface CartMapper {
 	List<CartDTO> getCartList(String memberId);
 
 	CartDTO selectCartByOption(String memberId, int prodNo, int optCombNo);
+	
+	void insertCart(CartDTO cart);
 
-	int updateQuantity(String memberId, int prodNo, int optCombNo, int quantity);
+	void updateQuantity(String memberId, int optCombNo, int quantity);
+	
+	void deleteCartItem(String memberId, int optCombNo);
+	
+	void deleteCartItems(String memberId, List<Integer> optCombNo);
 
-	int insertCart(CartDTO cart);
+	
 }

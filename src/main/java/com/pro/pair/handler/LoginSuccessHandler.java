@@ -1,6 +1,7 @@
 package com.pro.pair.handler;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.pro.pair.cart.model.dao.CartMapper;
+import com.pro.pair.cart.model.dto.CartDTO;
 import com.pro.pair.member.model.dao.MemberMapper;
 import com.pro.pair.member.model.dto.UserImpl;
 
@@ -29,10 +32,12 @@ import lombok.extern.slf4j.Slf4j;
 public class LoginSuccessHandler implements AuthenticationSuccessHandler{
 	
 	private MemberMapper memberMapper;
+	private CartMapper cartMapper;
 	
 	@Autowired
-	public LoginSuccessHandler(MemberMapper memberMapper) {
+	public LoginSuccessHandler(MemberMapper memberMapper, CartMapper cartMapper) {
 		this.memberMapper = memberMapper;
+		this.cartMapper = cartMapper;
 	}
 
 	@Override
@@ -49,7 +54,10 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler{
 		//memberMapper.updateLatestLoginDate(username); //최근 로그인 일시 업데이트
 		
 	
+		/* 회원 장바구니 불러오기 */
 		HttpSession session = request.getSession();
+		List<CartDTO> memberCart = cartMapper.getCartList(username);
+		session.setAttribute("countCartItem", memberCart.size());
 		
 	
 		/* 3-1. 로그인 상황별 이동 경로 저장 */
@@ -72,8 +80,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler{
 		log.info("요청 uri : {}", uri);
 		
 		
-		
+		/* 3-2. 회원 권한 및 요청 상황에 따른 기본 페이지 이동 */
 		Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+		log.info("ROLE : {}", roles);
 		
 		if(roles.contains("ROLE_ADMIN")) {
 			response.sendRedirect("/admin/dashboard");

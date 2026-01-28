@@ -310,7 +310,7 @@ public class productController {
 	/*
 	 * 상품상세페이지
 	 */
-	@GetMapping("product/details")
+	@GetMapping("/product/details")
 	public void getProductDetails(@RequestParam("no") int prodNo, HttpSession session, Model model) {
 		/* 상품 상세 정보 호출 */
 		ProductDTO detail = productService.getProductDetails(prodNo); //getProductDetails()는 전역적으로 사용되고 있어 상세페이지 조회용을 별도로 구분

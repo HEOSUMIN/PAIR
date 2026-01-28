@@ -60,7 +60,6 @@
 .option-area > p {
 	color: #6c757d;
 	font-size: 14px;
-	text-align: center;
 	vertical-align: middle;
 	margin-bottom: 0 !important;
 }
@@ -107,8 +106,8 @@
 }
 
 .changeBox {
-	width: 106px;
-    font-size: 14px;
+	width: 99px;
+    font-size: 12px;
     margin: 0 auto;
 }
 
@@ -321,12 +320,13 @@ table {
 	padding-bottom: 20px;
 }
 
+td, th {
+  text-align: center;
+  vertical-align: middle;
+}
+  
 tr {
 	width: 100%;
-}
-
-th {
-	text-align: inherit;
 }
 
 td {

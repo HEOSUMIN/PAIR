@@ -34,14 +34,15 @@
                     <li class="nav-item"><a th:href="@{/member/signin}"
                         class="nav-menu nav-link link-secondary px-3">로그인</a></li>
                 </th:block>
-                <th:block sec:authorize="permitAll">
+                <th:block sec:authorize="isAuthenticated()">
                     <li class="nav-item"><a th:href="@{/cart/mycart}"
-                        class="nav-menu nav-link link-secondary px-3">장바구니 <th:block
-                                th:if="${session.countCartItem} == null">
+                        class="nav-menu nav-link link-secondary px-3">장바구니 
+                        <th:block th:if="${session.countCartItem} == null">
                                 <em class="cartCnt">0</em>
-                            </th:block> <th:block th:if="${session.countCartItem} != null">
+                        </th:block> 
+                        <th:block th:if="${session.countCartItem} != null">
                                 <em th:text="${session.countCartItem}" class="cartCnt">[[${session.countCartItem}]]</em>
-                            </th:block>
+                        </th:block>
                     </a></li>
                 </th:block>
             </ul>
