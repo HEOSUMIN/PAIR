@@ -43,25 +43,48 @@ public class OrderController {
 		
 		
 		/* 장바구니 단일 상품 주문 */
-		if(optArr != null) {
-			List<CartDTO> itemList = new ArrayList<>();
-			for(int i=0; i < memberCart.size(); i++) {
-				for(int j=0; j < optArr.length; j++) {
-					CartDTO cartDTO = new CartDTO();
-					if(memberCart.get(i).getOptCombNo() == Integer.parseInt(optArr[j])) {
-						cartDTO = cartService.getCartItemByOptionNo(user.getMemberId(), Integer.parseInt(optArr[j]));
-						log.info("item : {}", cartDTO);
-						itemList.add(cartDTO);
-					} else {
-						continue;
-					}
-				}
-			}
-			session.setAttribute("orderItem", itemList); 
+		if (optArr != null && optArr.length > 0) {
+
+		    List<CartDTO> orderItemList = new ArrayList<>();
+
+		    for (String optCombNoStr : optArr) {
+		        int optCombNo = Integer.parseInt(optCombNoStr);
+
+		        CartDTO cartItem = cartService.getCartItemByOptionNo(user.getMemberId(), optCombNo);
+
+		        if (cartItem != null) {
+		            orderItemList.add(cartItem);
+		        }
+		    }
+		    int totalPrice = 0;
+		    for (CartDTO item : orderItemList) {
+		      //  totalPrice += item.getOrderPrice(); // 할인 반영된 가격
+		    }
+		    session.setAttribute("totalPrice", totalPrice);
+
+		    session.setAttribute("orderItem", orderItemList);
 		}
 		
+//		
+//		if(optArr != null) {
+//			List<CartDTO> itemList = new ArrayList<>();
+//			for(int i=0; i < memberCart.size(); i++) {
+//				for(int j=0; j < optArr.length; j++) {
+//					CartDTO cartDTO = new CartDTO();
+//					if(memberCart.get(i).getOptCombNo() == Integer.parseInt(optArr[j])) {
+//						cartDTO = cartService.getCartItemByOptionNo(user.getMemberId(), Integer.parseInt(optArr[j]));
+//						log.info("item : {}", cartDTO);
+//						itemList.add(cartDTO);
+//					} else {
+//						continue;
+//					}
+//				}
+//			}
+//			session.setAttribute("orderItem", itemList); 
+//		}
+		
 		/* 장바구니 선택 or 전체 주문 */
-		model.addAttribute("member", user);
+	model.addAttribute("member", user);
 		
 		return "/cart/order";
 	}

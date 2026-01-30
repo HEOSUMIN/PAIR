@@ -27,49 +27,50 @@
 					<thead>
 						<tr>
 							<th><span>이미지</span></th>
-			    			<th><span>상품정보</span></th>
-			    			<th><span>판매가</span></th>
-			    			<th><span>수량</span></th>
-			    			<th><span>합계</span></th>
-			    		</tr>
+							<th><span>상품정보</span></th>
+							<th><span>판매가</span></th>
+							<th><span>수량</span></th>
+							<th><span>합계</span></th>
+						</tr>
 					</thead>
 					<tbody>
 						<tr th:each="orderItem : ${ session.orderItem }" th:if="${not #lists.isEmpty(orderItem)}">
 							<td><img th:src="${ orderItem.product.attachmentList[0].thumbnailPath }" style="width: 100px; height: 100px;"></td>
-							<td class="option-area" th:value="${ orderItem.optCombNo }">
-								<a th:href="@{/product/details(no=${orderItem.product.prodNo})}">
-								[[${ orderItem.product.prodNm }]]</a>
-								<p><span>[옵션: [[${orderItem.optionComb.optManageNm}]]]</span></p>
-							</td>
+							<td class="option-area" th:value="${ orderItem.optCombNo }"><a th:href="@{/product/details(no=${orderItem.product.prodNo})}"> [[${
+									orderItem.product.prodNm }]]</a>
+								<p><span>[옵션: [[${orderItem.optionComb.optManageNm}]]]</span></p></td>
 							<th:block th:if="${orderItem.product.discountRate} == 0">
-				    			<td>
-				    				<span class="prodPrice origPrice" th:value="${ orderItem.product.price }">[[${#numbers.formatInteger(orderItem.product.price, 3, 'COMMA')}]]원</span>
-				    			</td>
-			    			</th:block>
-			    			<th:block th:if="${orderItem.product.discountRate} > 0">
-			    				<td>
-			    					<del class="origPrice" th:value="${ orderItem.product.price }"><span>[[${#numbers.formatInteger(orderItem.product.price, 3, 'COMMA')}]]원</span></del><br>
-			    					<span class="prodPrice discounted" th:value="${ orderItem.product.price - (orderItem.product.price * orderItem.product.discountRate / 100) }">[[${#numbers.formatInteger(orderItem.product.price - (orderItem.product.price * orderItem.product.discountRate / 100), 3, 'COMMA')}]]원</span>
-				    			</td>
-			    			</th:block>
-			    			<td class="quantity-area" th:value="${ orderItem.quantity }">[[${ orderItem.quantity }]]</td>
-			    			<th:block th:if="${orderItem.product.discountRate} == 0">
-			    				<td class="orderPrice" th:value="${ orderItem.product.price * orderItem.quantity }">[[${#numbers.formatInteger((orderItem.product.price * orderItem.quantity), 3, 'COMMA')}]]원</td>
-			    			</th:block>
-			    			<th:block th:if="${orderItem.product.discountRate} > 0">
-			    				<td class="orderPrice" th:value="${ (orderItem.product.price - (orderItem.product.price * orderItem.product.discountRate / 100)) * orderItem.quantity }">[[${#numbers.formatInteger(((orderItem.product.price - (orderItem.product.price * orderItem.product.discountRate / 100)) * orderItem.quantity), 3, 'COMMA')}]]원</td>
-			    			</th:block>
+								<td><span class="prodPrice origPrice" th:value="${ orderItem.product.price }">[[${#numbers.formatInteger(orderItem.product.price,
+										3, 'COMMA')}]]원</span></td>
+							</th:block>
+							<th:block th:if="${orderItem.product.discountRate} > 0">
+								<td><del class="origPrice" th:value="${ orderItem.product.price }">
+										<span>[[${#numbers.formatInteger(orderItem.product.price, 3, 'COMMA')}]]원</span>
+									</del><br> <span class="prodPrice discounted"
+									th:value="${ orderItem.product.price - (orderItem.product.price * orderItem.product.discountRate / 100) }"
+								>[[${#numbers.formatInteger(orderItem.product.price - (orderItem.product.price * orderItem.product.discountRate / 100), 3, 'COMMA')}]]원</span></td>
+							</th:block>
+							<td class="quantity-area" th:value="${ orderItem.quantity }">[[${ orderItem.quantity }]]</td>
+							<th:block th:if="${orderItem.product.discountRate} == 0">
+								<td class="orderPrice" th:value="${ orderItem.product.price * orderItem.quantity }">[[${#numbers.formatInteger((orderItem.product.price *
+									orderItem.quantity), 3, 'COMMA')}]]원</td>
+							</th:block>
+							<th:block th:if="${orderItem.product.discountRate} > 0">
+								<td class="orderPrice"
+									th:value="${ (orderItem.product.price - (orderItem.product.price * orderItem.product.discountRate / 100)) * orderItem.quantity }"
+								>[[${#numbers.formatInteger(((orderItem.product.price - (orderItem.product.price * orderItem.product.discountRate / 100)) *
+									orderItem.quantity), 3, 'COMMA')}]]원</td>
+							</th:block>
 						</tr>
 					</tbody>
 				</table>
 				<table class="summary-table">
-				  <tbody>
-				    <tr>
-				      <td colspan="9" style="text-align: right;">
-				        상품구매금액 <b>125,000</b> + 배송비 <b>0 (무료)</b> = 합계 : <b>125,000원</b>
-				      </td>
-				    </tr>
-				  </tbody>
+					<tbody>
+						<tr>
+							<td colspan="9" style="text-align: right;">상품구매금액 <b>125,000</b> + 배송비 <b>0 (무료)</b> = 합계 : <b>125,000원</b>
+							</td>
+						</tr>
+					</tbody>
 				</table>
 				<fieldset>
 					<legend>주문 정보</legend>
@@ -88,23 +89,183 @@
 				</table>
 				<fieldset>
 					<legend>배송 정보</legend>
-					<label for="getMemberAddress"> <!-- label for 속성과 input id 연결 -->
-						<input type="checkbox" class="input-checkbox check" id="getMemberAddress" name="getMemberAddress">
-						주문자 정보와 동일
+					<label for="getMemberAddress"> <!-- label for 속성과 input id 연결 --> <input type="checkbox" class="input-checkbox check"
+							id="getMemberAddress" name="getMemberAddress"
+						> 주문자 정보와 동일
 					</label>
 				</fieldset>
 				<table class="delivery-table">
-				
+					<colgroup>
+						<col style="width: 10%;">
+						<col>
+					</colgroup>
+					<thead>
+						<tr>
+							<td colspan="2">
+								<div class="delivery-list">
+									<input type="radio" id="savedAddress" name="delivery-item">
+									<label for="savedAddress">기본 배송지</label>
+									<input type="radio" id="setNewAddress" name="delivery-item" checked>
+									<label for="setNewAddress">신규 배송지</label>
+									<input type="radio" id="getRecentAddress" name="delivery-item">
+									<label for="getRecentAddress">최근 배송지</label>
+								</div>
+							</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th>이름</th>
+							<!-- 한글만 입력 -->
+							<td><input type="text" name="hiddenName" th:value="${ member.name }" hidden="hidden"> <input type="text"
+									onKeyup="this.value = this.value.replace(/[^가-힣.]/g, '').replace(/(\..*?)\..*/g, '$1');" id="rcvrName" name="rcvrName" autocomplete="off"
+									placeholder="이름 입력" title="이름 입력" oninvalid="this.setCustomValidity('이름 입력')" oninput="setCustomValidity('')"
+								></td>
+						</tr>
+						<tr>
+							<th>휴대폰 번호</th>
+							<!-- 숫자만 입력 -->
+							<td><input type="text" name="hiddenPhone" th:value="${ member.phone }" hidden="hidden"> <input type="text"
+									onKeyup="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" id="rcvrPhone" autocomplete="off" name="rcvrPhone"
+									placeholder="숫자만 입력(-제외)" title="휴대폰 번호 입력" oninvalid="this.setCustomValidity('휴대폰 번호 입력')" oninput="setCustomValidity('')" maxlength="11"
+								></td>
+						</tr>
+						<tr>
+							<th>주소</th>
+							<td>
+								<div class="address-info">
+									<input type="text" name="hiddenAddress" th:value="${ member.address }" hidden="hidden">
+									<input type="button" onclick="DaumPostcode()" class="btn-outline-dark" id="searchPostalCode" style="width: 40%;" value="우편번호검색"></input>
+									<input type="text" id="postalCode" name="postalCode" readonly>
+									<input type="text" id="address" name="address" readonly>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<th></th>
+							<td>
+								<div class="address-detail">
+									<input type="text" id="detailAddress" name="detailAddress" placeholder="상세 주소 입력">
+								</div>
+							</td>
+						</tr>
+						<!-- DeliveryRequest ENUM 호출 -->
+						<tr>
+							<th>배송메모</th>
+							<td style="text-align: start !important;">
+								<div style="display: flex;">
+									<div id="optionSelector" class="dropdown" tabindex="0">
+										<span class="current" style="line-height: 40px;">배송메모 선택</span>
+										<div class="list">
+											<ul>
+												<li class="option" th:each="delivery : ${T(com.pro.pair.cart.model.dto.DeliveryRequest).values()}" th:text="${ delivery.getLabel() }"></li>
+												<li class="option">직접 입력</li>
+											</ul>
+										</div>
+										<i class="fa-solid fa-chevron-down"></i>
+									</div>
+									<input type="text" id="typeOwnMessage" name="typeOwnMessage" hidden="hidden">
+								</div>
+							</td>
+						</tr>
+					</tbody>
 				</table>
-				<fieldset>
-					<legend>결제 예정 금액</legend>
-				</fieldset>
-				<fieldset>
-					<legend>결제수단</legend>
-				</fieldset>
+				<div class="payment-area">
+					<div class="payment-method">
+						<fieldset>
+							<legend>적립금 사용</legend>
+						</fieldset>
+						<table>
+							<colgroup>
+								<col style="width: 10%;">
+								<col>
+							</colgroup>
+							<tbody>
+								<tr>
+									<th>적립금</th>
+									<td class="reserve-amount-td">
+										<!-- 숫자만 입력, 세 자리마다 구분자 삽입 --> <input type="text" value="0"
+											onKeyup="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');" id="reserve" autocomplete="off"
+											name="reserve" placeholder="0" title="적립금 입력" oninvalid="this.setCustomValidity('적립금 입력')" oninput="setCustomValidity('')"
+										> <label for="reserve">원</label>
+										<button type="button" class="button-apply btn btn-sm btn-dark" onclick="applyReserve()">적용</button>
+									</td>
+								</tr>
+								<tr>
+									<th>사용안내</th>
+									<td class="reserve-td"><small>최소 1,000원 이상 사용가능&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;현재까지 누적된 적립금은</small><b id="totalReserve">&nbsp;[[${
+											memberPoint }]]원</b><small>&nbsp;입니다.</small></td>
+								</tr>
+							</tbody>
+						</table>
+						<fieldset>
+							<legend>결제수단 선택</legend>
+						</fieldset>
+						<table>
+							<colgroup>
+								<col style="width: 10%;">
+								<col>
+							</colgroup>
+							<tbody>
+								<tr>
+									<th>결제방법</th>
+									<td><label> <input type="radio" name="methods" value="card" checked="checked"> <span>신용카드</span>
+									</label> <label> <input type="radio" name="methods" value="trans"> <span>실시간계좌이체</span>
+									</label> <label> <input type="radio" name="methods" value="vbank"> <span>가상계좌</span>
+									</label> <label> <input type="radio" name="methods" value="phone"> <span>휴대폰결제</span>
+									</label></td>
+								</tr>
+								<tr>
+									<th>결제안내</th>
+									<td class="interest-free-td">
+										<p class="interest-free-detail"><a data-toggle="modal" href="#interest-free">무이자할부안내</a></p>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="payment-info">
+						<fieldset>
+							<legend>결제정보</legend>
+							<div>
+								<ul>
+									<li><b>주문금액</b> <span class="order-amount"></span></li>
+									<li><b>배송비</b> <span class="delivery-fee"></span></li>
+									<li><b>적립금</b> <span class="reserve-used">0원</span></li>
+								</ul>
+							</div>
+							<legend>약관동의</legend>
+							<div>
+								<label class="label-checkbox"> <input type="checkbox" class="input-checkbox checkAll" id="checkAll"> <span>전체 동의</span>
+								</label> <label class="label-checkbox"> <input type="checkbox" name="checkTerm" class="input-checkbox term" id="term1"> <span><b
+										style="color: #ff0000;"
+									>(필수)</b>상품 설명에 명시된 내용과 사용조건을 확인하였으며, 취소/환불 규정에 동의합니다.</span>
+								</label> <label class="label-checkbox"> <input type="checkbox" name="checkTerm" class="input-checkbox term" id="term2"> <span><b
+										style="color: #ff0000;"
+									>(필수)</b>결제대행서비스 이용약관동의</span>
+									<p class="terms-detail"><a href="#" target="_blank">자세히</a></p>
+								</label> <label class="label-checkbox"> <input type="checkbox" name="checkTerm" class="input-checkbox term" id="term3"> <span><b
+										style="color: #ff0000;"
+									>(필수)</b>개인정보 수집 및 이용 동의</span>
+									<p class="terms-detail"><a href="#" target="_blank">자세히</a></p>
+								</label> <label class="label-checkbox"> <input type="checkbox" name="checkTerm" class="input-checkbox term" id="term4"> <span><b
+										style="color: #ff0000;"
+									>(필수)</b>개인정보 제공/위탁 동의</span>
+									<p class="terms-detail"><a href="#" target="_blank">자세히</a></p>
+								</label>
+								<ul class="total-price-info">
+									<li><b>총 결제금액</b> <span class="payment-amount">00,000</span> 원</li>
+								</ul>
+							</div>
+						</fieldset>
+					</div>
+				</div>
+				<div class="paymentBox">
+					<button type="button" class="cancelBtn btn" onclick="history.back()">취소</button>
+					<button type="button" class="payBtn btn btn-dark" onclick="requestPay()">주문결제</button>
+				</div>
 			</form>
 		</div>
-
 	</div>
 </body>
 </html>
