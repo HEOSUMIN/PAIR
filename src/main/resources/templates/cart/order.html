@@ -28,7 +28,7 @@
 						<tr>
 							<th><span>이미지</span></th>
 							<th><span>상품정보</span></th>
-							<th><span>판매가</span></th>
+							<th><span>상품금액</span></th>
 							<th><span>수량</span></th>
 							<th><span>합계</span></th>
 						</tr>
@@ -40,38 +40,56 @@
 									orderItem.product.prodNm }]]</a>
 								<p><span>[옵션: [[${orderItem.optionComb.optManageNm}]]]</span></p></td>
 							<th:block th:if="${orderItem.product.discountRate} == 0">
-								<td><span class="prodPrice origPrice" th:value="${ orderItem.product.price }">[[${#numbers.formatInteger(orderItem.product.price,
-										3, 'COMMA')}]]원</span></td>
+								<td><span class="prodPrice origPrice" th:value="${ orderItem.product.price + orderItem.optionComb.optAddPrice }">[[${#numbers.formatInteger(orderItem.product.price
+										+ orderItem.optionComb.optAddPrice, 3, 'COMMA')}]]원</span></td>
 							</th:block>
 							<th:block th:if="${orderItem.product.discountRate} > 0">
-								<td><del class="origPrice" th:value="${ orderItem.product.price }">
+								<td>
+									<!-- <del class="origPrice" th:value="${ orderItem.product.price }">
 										<span>[[${#numbers.formatInteger(orderItem.product.price, 3, 'COMMA')}]]원</span>
-									</del><br> <span class="prodPrice discounted"
-									th:value="${ orderItem.product.price - (orderItem.product.price * orderItem.product.discountRate / 100) }"
-								>[[${#numbers.formatInteger(orderItem.product.price - (orderItem.product.price * orderItem.product.discountRate / 100), 3, 'COMMA')}]]원</span></td>
+									</del><br>  --> <span class="prodPrice discounted"
+									th:value="${ orderItem.product.price - (orderItem.product.price * orderItem.product.discountRate / 100) + orderItem.optionComb.optAddPrice }"
+								>[[${#numbers.formatInteger(orderItem.product.price - (orderItem.product.price * orderItem.product.discountRate / 100) +
+										orderItem.optionComb.optAddPrice, 3, 'COMMA')}]]원</span>
+								</td>
 							</th:block>
 							<td class="quantity-area" th:value="${ orderItem.quantity }">[[${ orderItem.quantity }]]</td>
 							<th:block th:if="${orderItem.product.discountRate} == 0">
-								<td class="orderPrice" th:value="${ orderItem.product.price * orderItem.quantity }">[[${#numbers.formatInteger((orderItem.product.price *
-									orderItem.quantity), 3, 'COMMA')}]]원</td>
+								<td class="orderPrice" th:value="${ (orderItem.product.price + orderItem.optionComb.optAddPrice) * orderItem.quantity }">[[${#numbers.formatInteger(((orderItem.product.price
+									+ orderItem.optionComb.optAddPrice) * orderItem.quantity), 3, 'COMMA')}]]원</td>
 							</th:block>
 							<th:block th:if="${orderItem.product.discountRate} > 0">
 								<td class="orderPrice"
-									th:value="${ (orderItem.product.price - (orderItem.product.price * orderItem.product.discountRate / 100)) * orderItem.quantity }"
-								>[[${#numbers.formatInteger(((orderItem.product.price - (orderItem.product.price * orderItem.product.discountRate / 100)) *
-									orderItem.quantity), 3, 'COMMA')}]]원</td>
+									th:value="${ ((orderItem.product.price - (orderItem.product.price * orderItem.product.discountRate / 100)) + orderItem.optionComb.optAddPrice) * orderItem.quantity }"
+								>[[${#numbers.formatInteger((((orderItem.product.price - (orderItem.product.price * orderItem.product.discountRate / 100)) +
+									orderItem.optionComb.optAddPrice) * orderItem.quantity), 3, 'COMMA')}]]원</td>
 							</th:block>
 						</tr>
 					</tbody>
 				</table>
 				<table class="summary-table">
-					<tbody>
-						<tr>
-							<td colspan="9" style="text-align: right;">상품구매금액 <b>125,000</b> + 배송비 <b>0 (무료)</b> = 합계 : <b>125,000원</b>
-							</td>
-						</tr>
-					</tbody>
+				    <tbody>
+				        <tr>
+				            <td colspan="9" style="text-align: right;">
+				                <!-- 상품구매금액 -->
+				                상품구매금액 
+				                <b>[[${#numbers.formatInteger(session.totalPrice, 3, 'COMMA')}]]원</b> + 
+				                <!-- 배송비 계산 -->
+				                배송비 
+				                <b>
+				                    [[${session.totalPrice >= 50000 ? 0 : 3500}]]
+				                    (<span th:text="${session.totalPrice >= 50000 ? '무료' : '유료'}"></span>)
+				                </b> = 
+				                <!-- 합계 -->
+				                합계 : 
+				                <b>
+				                    [[${#numbers.formatInteger(session.totalPrice + (session.totalPrice >= 50000 ? 0 : 3500), 3, 'COMMA')}]]원
+				                </b>
+				            </td>
+				        </tr>
+				    </tbody>
 				</table>
+
 				<fieldset>
 					<legend>주문 정보</legend>
 				</fieldset>

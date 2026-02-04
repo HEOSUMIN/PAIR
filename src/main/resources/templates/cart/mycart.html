@@ -42,7 +42,7 @@
 				</thead>
 				<th:block sec:authorize="isAuthenticated()">
 					<tbody>
-						<tr th:each="cartItem : ${ memberCart }" th:if="${not #lists.isEmpty(cartItem)}">
+						<tr th:each="cartItem : ${ memberCart }" th:data-opt-price="${ cartItem.optionComb.optAddPrice }">
 							<td><input type="checkbox" class="input-checkbox item" name="checkItem"></td>
 							<td><img th:src="${ cartItem.product.attachmentList[0].thumbnailPath }" style="width: 100px; height: 100px;"></td>
 							<!-- 상품명(옵션) -->

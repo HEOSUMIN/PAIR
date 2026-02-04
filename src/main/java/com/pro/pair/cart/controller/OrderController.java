@@ -47,44 +47,36 @@ public class OrderController {
 
 		    List<CartDTO> orderItemList = new ArrayList<>();
 
+		    int totalPrice = 0;
+		    
 		    for (String optCombNoStr : optArr) {
+		    	
 		        int optCombNo = Integer.parseInt(optCombNoStr);
-
+		        
 		        CartDTO cartItem = cartService.getCartItemByOptionNo(user.getMemberId(), optCombNo);
-
+		       
 		        if (cartItem != null) {
+		        	int price = cartItem.getProduct().getPrice();
+			        int optAddPrice = cartItem.getOptionComb().getOptAddPrice();
+			        int discountRate = cartItem.getProduct().getDiscountRate();
+			        int quantity = cartItem.getQuantity();
+
+			        int itemTotal = (price - (price * discountRate / 100) + optAddPrice) * quantity;
+			        totalPrice += itemTotal;
+			        log.info("totalPrice:{}", totalPrice);
+			        
 		            orderItemList.add(cartItem);
+		            
 		        }
 		    }
-		    int totalPrice = 0;
-		    for (CartDTO item : orderItemList) {
-		      //  totalPrice += item.getOrderPrice(); // 할인 반영된 가격
-		    }
+		     log.info("총 totalPrice:{}", totalPrice);
+		     
 		    session.setAttribute("totalPrice", totalPrice);
-
 		    session.setAttribute("orderItem", orderItemList);
 		}
 		
-//		
-//		if(optArr != null) {
-//			List<CartDTO> itemList = new ArrayList<>();
-//			for(int i=0; i < memberCart.size(); i++) {
-//				for(int j=0; j < optArr.length; j++) {
-//					CartDTO cartDTO = new CartDTO();
-//					if(memberCart.get(i).getOptCombNo() == Integer.parseInt(optArr[j])) {
-//						cartDTO = cartService.getCartItemByOptionNo(user.getMemberId(), Integer.parseInt(optArr[j]));
-//						log.info("item : {}", cartDTO);
-//						itemList.add(cartDTO);
-//					} else {
-//						continue;
-//					}
-//				}
-//			}
-//			session.setAttribute("orderItem", itemList); 
-//		}
-		
 		/* 장바구니 선택 or 전체 주문 */
-	model.addAttribute("member", user);
+		model.addAttribute("member", user);
 		
 		return "/cart/order";
 	}

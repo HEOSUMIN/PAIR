@@ -115,7 +115,7 @@
 			 , A.PROD_NO
 			 , A.OPT_COMB_NO
 			 , A.QUANTITY
-			 , B.PROD_NM M
+			 , B.PROD_NM
 			 , B.DISCOUNT_RATE
 			 , B.PRICE
 			 , C.BRAND_NM

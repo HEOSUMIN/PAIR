@@ -118,10 +118,10 @@ $(document).on('click', '.modifyBtn', function() { //modify 버튼
 	});
 });
 
+/*
 let link = document.location.href;
 if (!link.includes('order')) {
 
-	/* 합계-상품금액 */
 	let prodPrice = document.querySelectorAll('.origPrice');
 	let orderPrice = 0;
 
@@ -134,7 +134,6 @@ if (!link.includes('order')) {
 	});
 	console.log("orderPrice:", orderPrice);
 
-	/* 합계-상품할인금액 */
 	let discounted = document.querySelectorAll('.discounted');
 	let discounts = document.querySelectorAll('del');
 	let discountAmount = 0;
@@ -150,7 +149,6 @@ if (!link.includes('order')) {
 
 	console.log("discountAmount:", discountAmount); // 총 할인금액
 
-	/* 배송비 */
 	let deliveryFee = 3500;
 
 	if (orderPrice - discountAmount >= 50000) {
@@ -159,7 +157,6 @@ if (!link.includes('order')) {
 		deliveryFee = 3500;
 	}
 
-	/* 합계 반영 */
 	let totalPrice = orderPrice - discountAmount + deliveryFee;
 	console.log("deliveryFee: ", deliveryFee);
 	console.log("totalPrice: ", totalPrice);
@@ -168,6 +165,45 @@ if (!link.includes('order')) {
 	document.querySelector('.delivery-fee').innerHTML = deliveryFee.toLocaleString('ko-KR');
 	document.querySelector('.total-price').innerHTML = totalPrice.toLocaleString('ko-KR');
 }
+*/
+let link = document.location.href;
+if (!link.includes('order')) {
+	let originalTotal = 0;
+	let discountAmount = 0;
+	
+	document.querySelectorAll('tbody tr').forEach(row => {
+		  const quantityEl = row.querySelector('.selectedAmount');
+		  if (!quantityEl) return;
+	
+		  const quantity = Number(quantityEl.value);
+		  const optAddPrice = Number(row.dataset.optPrice || 0);
+	
+		  const origEl = row.querySelector('.origPrice');    // 원래 가격
+		  const saleEl = row.querySelector('.discounted');   // 할인 적용 가격
+	
+		  const basePrice = Number(origEl.getAttribute('value'));
+		  const salePrice = saleEl ? Number(saleEl.getAttribute('value')) : basePrice; // 할인 없으면 원가
+	 	  
+		  // 원래 금액 (옵션 포함)
+          originalTotal += (basePrice + optAddPrice) * quantity;
+          // 순수 할인액 (옵션 제외)
+          discountAmount += (basePrice - salePrice) * quantity;
+      });
+
+      // 배송비
+      let deliveryFee = (originalTotal - discountAmount >= 50000) ? 0 : 3500;
+
+      // 총 결제금액
+      let totalPrice = originalTotal - discountAmount + deliveryFee;
+
+      //화면
+      document.querySelector('.order-price').innerText = originalTotal.toLocaleString('ko-KR'); // 할인 전 금액
+      document.querySelector('.discount-amount').innerText = discountAmount.toLocaleString('ko-KR'); // 순수 할인금액
+      document.querySelector('.delivery-fee').innerText = deliveryFee.toLocaleString('ko-KR'); 
+      document.querySelector('.total-price').innerText = totalPrice.toLocaleString('ko-KR');
+	  
+}
+
 
 /* 개별 상품 삭제 */
 $(document).on('click', '.deleteBtn', function() {
