@@ -612,11 +612,11 @@ table {
 }
 
 .payment-info > fieldset > div > ul {
-	list-style: none;
+	list-style: none !important;
 	padding-left: 0 !important;
 	margin-top: 10px;
 }
-
+/* 
 .payment-info > fieldset > div > ul > li {
 	position: relative;
 	line-height: 40px;
@@ -627,6 +627,20 @@ table {
 	position: absolute;
 	display: inline-block;
 	left: 0;
+} */
+.payment-info > fieldset > div > ul > li {
+	list-style-type: none !important;
+    position: relative;
+    line-height: 40px;
+    /* text-align: right; 이 부분 제거 */
+    display: flex;
+    justify-content: space-between; /* 라벨과 값 사이 공간 벌리기 */
+    align-items: center;
+}
+
+.payment-info > fieldset > div > ul > li > b {
+    position: static; /* absolute 제거 */
+    display: inline-block;
 }
 
 .payment-info > fieldset > div > .label-checkbox {

@@ -78,6 +78,8 @@ public class OrderController {
 		/* 장바구니 선택 or 전체 주문 */
 		model.addAttribute("member", user);
 		
+		log.info("user:{}", user);
+		
 		return "/cart/order";
 	}
 
