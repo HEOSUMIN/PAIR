@@ -1,0 +1,135 @@
+/**
+ * 
+ */
+function requestPay() {
+	let memberId = $('input[name=memberId]').val();
+	let memberPhone = $('input[name=phone]').val();
+	let memberEmail = $('input[name=email]').val();
+
+	let postalCode = $('input[name=postalCode]').val();
+	let address = $('input[name=address]').val() + ' ' + $('input[name=detailAddress]').val();
+	let message = $('#optionSelector .current').text();
+	if (message == '직접 입력') {
+		message = $('input[name=typeOwnMessage]').val();
+	}
+
+	let method = $('input[name=methods]:checked').val();
+	let amount = parseInt(document.querySelector('.payment-amount').innerHTML.replace(',', ''));
+	let orderName = document.querySelector('.option-area a:first-child').textContent;
+
+	let productCount = document.querySelectorAll('.product-table tbody tr').length; //주문상품 개수
+	if (productCount > 1) { //주문상품이 2개 이상인 경우
+		orderName = orderName + ' 외 ' + (productCount - 1) + '건';
+	}
+	let rcvrName = $('input[name=rcvrName]').val();
+	let rcvrPhone = $('input[name=rcvrPhone]').val();
+	/*let optionNoArr = new Array();
+		let options = document.querySelectorAll('.option-area');
+		for(let i=0; i < options.length; i++) {
+			optionNoArr.push(options[i].attributes.value.textContent);
+		}
+		let optionQtArr = new Array();
+		let quantity = document.querySelectorAll('.quantity-area');
+		for(let i=0; i < quantity.length; i++) {
+			optionQtArr.push(quantity[i].attributes.value.textContent);
+		}
+		let orderPriceArr = new Array();
+		let price = document.querySelectorAll('.orderPrice');
+		for(let i=0; i < quantity.length; i++) {
+			orderPriceArr.push(price[i].attributes.value.textContent);
+		}
+		*/
+
+	let pointAmount = $('input[name=reserve]').val().replace(',', '');
+	let deliveryFee = parseInt(document.querySelector('.delivery-fee').innerHTML.replace(',', '').slice(0, -1));
+
+	let items = [];
+	let options = document.querySelectorAll('.option-area');
+	let quantities = document.querySelectorAll('.quantity-area');
+	let prices = document.querySelectorAll('.orderPrice');
+
+	for (let i = 0; i < options.length; i++) {
+		items.push({
+			optCombNo: parseInt(options[i].dataset.optionNo),
+			quantity: parseInt(quantities[i].dataset.quantity),
+			price: parseInt(prices[i].dataset.price)
+		});
+	}
+
+	let params = {
+		items: items,
+		memberId: memberId,
+		rcvrName: rcvrName,
+		rcvrPhone: rcvrPhone,
+		rcvrPostalCode: postalCode,
+		rcvrAddress: address,
+		dlvrReqMessage: message,
+		deliveryFee: deliveryFee,
+		pointAmount: pointAmount,
+		paymentMethod: method,
+		paymentAmount: amount
+	};
+	console.log("params: ", params);
+	
+	$.ajax({
+		url: "/cart/order",
+		type: "POST",
+		traditional: true,
+		contentType: 'application/json',
+		data: JSON.stringify(params),
+		success: function(result) {
+			if (result == 'succeed') {
+				alert("여기까지됨");
+			}else{
+			  alert("실패 ");
+			}
+		},
+		error: function(err) {
+			console.log("주문 생성 실패:", err);
+		}
+	});
+}
+
+
+// 2. 결제창 호출
+
+
+/*
+			var IMP = window.IMP; 
+			IMP.init('imp42653157');
+			IMP.request_pay({
+				pg: 'html5_inicis',
+				pay_method: method,
+				merchant_uid: paymentNo,
+				name: orderName,
+				amount: amount,
+				buyer_email: memberEmail,
+				buyer_name: memberId,
+				buyer_tel: memberPhone,
+				buyer_addr: address,
+				buyer_postcode: postalCode
+			}, function(rsp) {
+				if (rsp.success) {
+					$.ajax({
+						url: "/api/payment/verify",
+						type: "POST",
+						contentType: "application/json",
+						data: JSON.stringify({
+							imp_uid: rsp.imp_uid,
+							merchant_uid: rsp.merchant_uid
+						}),
+						success: function(data) {
+							if (data.status === "PAID") {
+								alert("결제 완료");
+							} else {
+								alert("결제 검증 실패 ");
+							}
+						},
+						error: function(err) {
+							console.log("서버 검증 실패:", err);
+						}
+					});
+				} else {
+					alert("결제 실패 : " + rsp.error_msg);
+				}
+			});*/

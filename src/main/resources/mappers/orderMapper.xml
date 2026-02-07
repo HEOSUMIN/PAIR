@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pro.pair.cart.model.dao.OrderMapper">
+
+	<!-- 주문정보  -->
+	<insert id="addOrder">
+	    <selectKey keyProperty="orderNo"
+	               resultType="String"
+	               order="BEFORE">
+	        SELECT 'ORD' || LPAD(ORDER_SEQ.NEXTVAL, 10, '0')
+	        FROM DUAL
+	    </selectKey>
+		INSERT
+		  INTO TBL_ORDER
+		(
+		  ORDER_NO
+		, MEMBER_ID
+		, ORDER_DATE
+		, RCVR_NAME
+		, RCVR_PHONE
+		, RCVR_ADDRESS
+		, DLVR_REQ_MSG
+		, DLVR_STATUS
+		)
+		VALUES
+		(
+		  #{ orderNo }
+		, #{ memberId }
+		, SYSDATE
+		, #{ rcvrName }
+		, #{ rcvrPhone }
+		, #{ rcvrAddress }
+		, #{ dlvrReqMsg }
+		, #{ dlvrStatus }
+		)
+	</insert>
+	
+	<!-- 주문상품정보 -->
+	<insert id="addOrderItem">
+	    <selectKey keyProperty="orderItemNo" resultType="int" order="BEFORE">
+	        SELECT ORDER_ITEM_SEQ.NEXTVAL FROM DUAL
+	    </selectKey>
+		INSERT
+		  INTO TBL_ORDER_ITEM
+		(
+		  ORDER_ITEM_NO
+		, ORDER_NO
+		, OPT_COMB_NO
+		, ORDER_QUANTITY
+		, ORDER_AMOUNT
+		)
+		VALUES
+		(
+		  #{ orderItemNo }
+		, #{ orderNo }
+		, #{ optCombNo }
+		, #{ orderQuantity }
+		, #{ orderAmount }
+		)
+	</insert>
+	
+	<!-- 배송정보 -->
+	<insert id="addDeliveryInfo">
+		INSERT
+		  INTO TBL_DELIVERY
+		(
+		  ORDER_NO
+		, DELIVERY_FEE
+		, DELIVERY_COMPANY
+		, DISPATCH_DATE
+		, DELIVERY_DATE
+		)
+		VALUES
+		(
+		  #{ orderNo }
+		, #{ deliveryFee }
+		, #{ deliveryCompany }
+		<if test="dispatchDate != null"> <!-- dummy data 생성용 -->
+		, #{ dispatchDate }
+		, #{ deliveryDate }
+		</if>
+		<if test="dispatchDate == null">
+		, NULL
+		, NULL
+		</if>
+		)
+	</insert>
+	
+	<!-- 결제정보 -->
+	<insert id="addPaymentInfo">
+	    <selectKey keyProperty="paymentNo" resultType="String" order="BEFORE">
+	         SELECT 'PAY' || LPAD(PAYMENT_SEQ.NEXTVAL, 10, '0')
+	           FROM DUAL
+	    </selectKey>
+		INSERT
+		  INTO TBL_PAYMENT
+		(
+		  PAYMENT_NO
+		, ORDER_NO
+		, PAYMENT_METHOD
+		, PAYMENT_AMOUNT
+		, PAYMENT_DATETIME
+		)
+		VALUES
+		(
+		  #{ paymentNo }
+		, #{ orderNo }
+		, #{ paymentMethod }
+		, #{ paymentAmount }
+		, SYSDATE
+		)
+	</insert>
+	
+	<!-- 재고차감 -->
+	<update id="decreaseStockAmount">
+		UPDATE
+			   TBL_STOCK
+		   SET STOCK_QTY = STOCK_QTY - #{ orderQuantity }
+		WHERE STOCK_NO = (SELECT STOCK_NO
+									    FROM (
+									        SELECT A.STOCK_NO
+									        FROM TBL_STOCK A
+									        JOIN TBL_OPTION_COMB B ON A.STOCK_NO = B.STOCK_NO
+									        WHERE B.OPT_COMB_NO = #{optCombNo}
+									          AND A.STOCK_QTY >= #{orderQuantity}
+									        ORDER BY A.INS_DT
+									    ) 
+									    WHERE ROWNUM = 1
+									)
+	</update>
+
+</mapper>
