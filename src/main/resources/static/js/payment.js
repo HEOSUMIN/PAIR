@@ -14,7 +14,8 @@ function requestPay() {
 	}
 
 	let method = $('input[name=methods]:checked').val();
-	let amount = parseInt(document.querySelector('.payment-amount').innerHTML.replace(',', ''));
+	/*let amount = parseInt(document.querySelector('.payment-amount').innerHTML.replace(',', ''));*/
+	let amount = 1;
 	let orderName = document.querySelector('.option-area a:first-child').textContent;
 
 	let productCount = document.querySelectorAll('.product-table tbody tr').length; //주문상품 개수
@@ -23,23 +24,7 @@ function requestPay() {
 	}
 	let rcvrName = $('input[name=rcvrName]').val();
 	let rcvrPhone = $('input[name=rcvrPhone]').val();
-	/*let optionNoArr = new Array();
-		let options = document.querySelectorAll('.option-area');
-		for(let i=0; i < options.length; i++) {
-			optionNoArr.push(options[i].attributes.value.textContent);
-		}
-		let optionQtArr = new Array();
-		let quantity = document.querySelectorAll('.quantity-area');
-		for(let i=0; i < quantity.length; i++) {
-			optionQtArr.push(quantity[i].attributes.value.textContent);
-		}
-		let orderPriceArr = new Array();
-		let price = document.querySelectorAll('.orderPrice');
-		for(let i=0; i < quantity.length; i++) {
-			orderPriceArr.push(price[i].attributes.value.textContent);
-		}
-		*/
-
+	
 	let pointAmount = $('input[name=reserve]').val().replace(',', '');
 	let deliveryFee = parseInt(document.querySelector('.delivery-fee').innerHTML.replace(',', '').slice(0, -1));
 
@@ -77,9 +62,72 @@ function requestPay() {
 		traditional: true,
 		contentType: 'application/json',
 		data: JSON.stringify(params),
-		success: function(result) {
-			if (result == 'succeed') {
+		/*dataType: 'text',*/  
+		success: function(res) {
+			console.log("res.result: ", res.result);
+			if (res.result === 'succeed') {
 				alert("여기까지됨");
+				var IMP = window.IMP; 
+				IMP.init('imp42653157');
+				IMP.request_pay({
+					pg: 'html5_inicis.INIpayTest',
+					pay_method: method,
+					merchant_uid: res.orderNo,
+					name: orderName,
+					amount: amount,
+					buyer_email: memberEmail,
+					buyer_name: memberId,
+					buyer_tel: memberPhone,
+					buyer_addr: address,
+					buyer_postcode: postalCode,
+				}, function(rsp) {
+					if (rsp.success) {
+					console.log("rsp.imp_uid: ", rsp.imp_uid);
+						$.ajax({
+						  url: '/verify/' + rsp.imp_uid,
+						  type: "POST",
+						  success: function(data) {
+						    if(rsp.paid_amount == data.response.amount) {
+						      alert("결제 완료");
+							  //장바구니 목록에서 삭제
+								$.ajax({
+									url: '/cart/mycart/deleteCheck',
+							  		type: 'post',
+							  		contentType: 'application/json',
+							  		data: JSON.stringify(arr),
+							  		success: function(result) {
+										console.log('장바구니에서 주문/결제 완료 상품 삭제 완료');
+									},
+									error : function(status, error){ console.log(status, error); }
+								}).done(function() { location.href='/'; });
+							  
+						    } else {
+						      alert("결제 검증 실패");
+							   var msg = '결제에 실패하였습니다.';
+				  				msg += '에러내용 : ' + rsp.error_msg;
+				  				Swal.fire({
+				  					icon: 'error',
+				  					title: '잠시 후 다시 시도해 주세요',
+				  					text: msg,
+				  					confirmButtonColor: '#00008b',
+				  					confirmButtonText: '확인'
+				  				}).then((result) => {
+				  					if(result.isConfirmed) {
+				  						window.location.reload(); //페이지 새로고침
+				  						window.history.scrollRestoration = 'manual'; //스크롤 최상단 고정
+				  					}
+				  				})
+						    }
+						  },
+						  error: function(err) {
+						    console.log("서버 검증 실패:", err);
+						  }
+						});
+					} else {
+						alert("결제 실패 : " + rsp.error_msg);
+					}
+				});
+				
 			}else{
 			  alert("실패 ");
 			}

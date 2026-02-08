@@ -148,6 +148,7 @@ public class CartController {
 		cartMapper.deleteCartItems(loginMember, optCombNo);
 
 		List<CartDTO> memberCart = cartMapper.getCartList(loginMember);
+		log.info("선택 상품 삭제 완료된 회원용 장바구니 : {}", memberCart);
 		session.setAttribute("countCartItem", memberCart.size());
 	}
 }

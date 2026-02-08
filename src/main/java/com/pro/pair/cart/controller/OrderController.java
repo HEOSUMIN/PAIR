@@ -1,6 +1,7 @@
 package com.pro.pair.cart.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -93,9 +94,9 @@ public class OrderController {
 	 */
 	@PostMapping(value="/cart/order", produces="application/json; charset=UTF-8")
 	@ResponseBody
-	public String orderAndPay(@RequestBody Map<String, Object> params, HttpServletRequest request, HttpSession session) {
+	public Map<String, Object> orderAndPay(@RequestBody Map<String, Object> params, HttpServletRequest request, HttpSession session) {
 		log.info("Server-side 주문 및 결제 시작");
-		String result = "succeed";
+		Map<String, Object> result = new HashMap<>();
 		
 		/* 주문 품목 저장 */
 	    List<OrderItemDTO> items = ((List<Map<String, Object>>) params.get("items"))
@@ -144,11 +145,12 @@ public class OrderController {
 		
 		boolean isCommited = orderService.orderAndPay(OrderDTO, items, deliveryDTO, paymentDTO );
 
-		if(isCommited) {
-			log.info("주문/배송/결제 정보 DB 저장 완료");
-		} else {
-			result = "failed";
-		}
+		if (isCommited) {
+	        result.put("result", "succeed");
+	        result.put("orderNo", OrderDTO.getOrderNo());
+	    } else {
+	        result.put("result", "failed");
+	    }
 		log.info("result : {}", result);
 		return result;
 	}

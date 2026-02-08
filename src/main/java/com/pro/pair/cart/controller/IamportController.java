@@ -1,0 +1,51 @@
+package com.pro.pair.cart.controller;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/verify")
+public class IamportController {
+	private final IamportClient iamportClient;
+	private static final String API_KEY = "3463738332864466";
+	private static final String API_SECRET = "G1KxppWl29DqnV4pV4N3fAlvXwvz3kr7IDm4MOlAMLYIiTXA5qTGQj7z8hQmKhcck63SK7tW56foWYYe";
+	
+
+	public IamportController() {
+		this.iamportClient = new IamportClient(API_KEY, API_SECRET);
+	}
+	
+	@PostMapping("/{imp_uid}")
+	@ResponseBody
+	public IamportResponse<Payment> paymentByImpUid(@PathVariable(value="imp_uid") String imp_uid) throws IamportResponseException, IOException {
+		log.info("paymentByImpUid:{}" , imp_uid);
+		return iamportClient.paymentByImpUid(imp_uid);
+	}
+//	
+//	@PostMapping("/{imp_uid}")
+//	@ResponseBody
+//	public Map<String, Object> verifyTest(@PathVariable String imp_uid) {
+//	    // 테스트 결제라고 가정
+//	    Map<String, Object> response = new HashMap<>();
+//	    response.put("success", true);
+//	    response.put("amount", 1000); // 테스트 금액
+//	    response.put("imp_uid", imp_uid);
+//	    return response;
+//	}
+//	
+}

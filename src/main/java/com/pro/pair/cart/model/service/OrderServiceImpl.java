@@ -37,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
 		int countAdd = 0;
 		int countDecrease = 0;
 		for (OrderItemDTO item : items) {
-			log.info("getOrderNo: ",orderDTO.getOrderNo());
+			log.info("getOrderNo: {}   ",orderDTO.getOrderNo());
 		    item.setOrderNo(orderDTO.getOrderNo()); // 주문번호 세팅
 		    
 		    // 주문 품목 insert
@@ -54,6 +54,12 @@ public class OrderServiceImpl implements OrderService {
 		//결제정보 insert
 		paymentDTO.setOrderNo(orderDTO.getOrderNo());
 		int addPaymentInfo = orderMapper.addPaymentInfo(paymentDTO);
+		
+		log.info("addOrderDetail: {} ",addOrderDetail);
+		log.info("countAdd: {}  ",countAdd);
+		log.info("countDecrease: {}  ",countDecrease);
+		log.info("addDeliveryInfo: {}  ",addDeliveryInfo);
+		log.info("addPaymentInfo: {}  ",addPaymentInfo);
 		
 		if(addOrderDetail == 1 && countAdd == items.size() && countDecrease == items.size()
 				&& addDeliveryInfo == 1 && addPaymentInfo ==1) {
