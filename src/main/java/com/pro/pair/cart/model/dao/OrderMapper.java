@@ -19,4 +19,6 @@ public interface OrderMapper {
 	int addDeliveryInfo(DeliveryDTO deliveryDTO);
 	
 	int addPaymentInfo(PaymentDTO paymanetDTO);
+	
+	int getTheNumberOfEachOrder(String orderNo);
 }

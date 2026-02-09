@@ -11,5 +11,6 @@ public interface OrderService {
 	
 	boolean orderAndPay(OrderDTO orderDTO, List<OrderItemDTO> items, DeliveryDTO deliveryDTO, PaymentDTO paymentDTO);
 	
+	int getTheNumberOfEachOrder(String orderNo);
 
 }

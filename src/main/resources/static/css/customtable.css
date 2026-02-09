@@ -56,7 +56,8 @@ h1 {
 	width: 100%;
 	height: 30px;
 	align-items: center;
-}
+	
+} 
 
 .td input[type="text"], input[type="number"], input[type="email"],
 	selectm {

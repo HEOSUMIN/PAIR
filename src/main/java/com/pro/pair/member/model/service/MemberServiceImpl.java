@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pro.pair.cart.model.dto.OrderDTO;
 import com.pro.pair.member.model.dao.MemberMapper;
 import com.pro.pair.member.model.dto.AuthorityDTO;
 import com.pro.pair.member.model.dto.MemberDTO;
@@ -100,6 +101,16 @@ public class MemberServiceImpl implements MemberService {
 		log.info("user : {}", user);
 		
 		return user;
+	}
+
+	@Override
+	public List<OrderDTO> getMemberOrderList(String memberId) {
+		return memberMapper.getMemberOrderList(memberId);
+	}
+
+	@Override
+	public int getMemberOrderCountByDlvrStatus(String memberId, String dlvrStatus) {
+		return memberMapper.getMemberOrderCountByDlvrStatus(memberId, dlvrStatus);
 	}
 
 	

@@ -117,7 +117,7 @@ public class CartController {
 	/*
 	 * 장바구니 행 삭제
 	 */
-	@PostMapping(value = "cart/mycart/delete", produces = "application/json; charset=UTF-8")
+	@PostMapping(value = "/cart/mycart/delete", produces = "application/json; charset=UTF-8")
 	@ResponseBody
 	public void deleteCartItem(@RequestBody Map<String, String> param, HttpSession session) {
 		String optCombNo = param.get("optCombNo");
@@ -140,7 +140,7 @@ public class CartController {
 	/*
 	 * 장바구니 선택 삭제
 	 */
-	@PostMapping(value = "cart/mycart/deleteCheck", produces = "application/json; charset=UTF-8")
+	@PostMapping(value = "/cart/mycart/deleteCheck", produces = "application/json; charset=UTF-8")
 	@ResponseBody
 	public void deleteCheckCartItem(@RequestBody List<Integer> optCombNo, HttpSession session) {
 		String loginMember = (String) session.getAttribute("loginMember");

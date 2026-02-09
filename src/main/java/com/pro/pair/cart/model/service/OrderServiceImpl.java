@@ -43,6 +43,7 @@ public class OrderServiceImpl implements OrderService {
 		    // 주문 품목 insert
 		    countAdd += orderMapper.addOrderItem(item);
 		    
+		    log.info("items: {}" ,items);
 		    //주문 품목 재고 차감 
 		    countDecrease += orderMapper.decreaseStockAmount(item.getOptCombNo(), item.getOrderQuantity());
 		}
@@ -66,5 +67,10 @@ public class OrderServiceImpl implements OrderService {
 			result = true;
 		}
 		return result;
+	}
+
+	@Override
+	public int getTheNumberOfEachOrder(String orderNo) {
+		return orderMapper.getTheNumberOfEachOrder(orderNo);
 	}
 }

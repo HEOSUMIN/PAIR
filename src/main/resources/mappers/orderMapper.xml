@@ -128,5 +128,14 @@
 									    WHERE ROWNUM = 1
 									)
 	</update>
+	
+	<!-- 주문상세서 작성용 건별 개수 *총 n건 표기* -->
+	<select id="getTheNumberOfEachOrder" resultType="_int">
+		SELECT
+			   COUNT(A.OPT_COMB_NO)
+		  FROM TBL_ORDER_ITEM A
+		  LEFT JOIN TBL_ORDER B ON(A.ORDER_NO = B.ORDER_NO)
+		 WHERE A.ORDER_NO = #{ orderNo }
+	</select>
 
 </mapper>

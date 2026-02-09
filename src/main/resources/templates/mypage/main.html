@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/default}">
+<head>
+	<meta charset="UTF-8">
+	<title>마이페이지</title>
+</head>
+<body th:replace="~{/fragments/mypage.html :: mypage}">
+	<div layout:fragment="mypageContent">
+		<nav class="mypage-breadcrumb" aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="/">HOME</a></li>
+			    <li class="breadcrumb-item active" aria-current="page">마이페이지</li>
+			</ol>
+		</nav>
+		<div class="mypage-area">
+			<fieldset>
+				<legend>최근 주문내역<small style="color: #b7b7b7;">&nbsp;&nbsp;최근 3개월</small></legend>
+			</fieldset>
+			<div class="latest-orders">
+				<ul>
+					<li>
+						<a th:href="@{/mypage/order}">입금대기<br><b>0</b></a>
+					</li>
+					<li>
+						<a th:href="@{/mypage/order}">결제완료<br><b>0</b></a>
+					</li>
+					<li>
+						<a th:href="@{/mypage/order}">상품준비중<br><b>[[${ preparingOrderCount }]]</b></a>
+					</li>
+					<li>
+						<a th:href="@{/mypage/order}">배송중<br><b>[[${ dispatchedOrderCount }]]</b></a>
+					</li>
+					<li>
+						<a th:href="@{/mypage/order}">배송완료<br><b>[[${ deliveredOrderCount }]]</b></a>
+					</li>
+				</ul>
+		    </div>
+		    <fieldset>
+				<legend>최근 본 상품</legend>
+			</fieldset>
+			<div class="browsing-history">
+				
+			    <section class="recently-viewed" th:unless="${ recentlyViewedItems }">
+			    	<div class="noitemViewed">
+						<div><i class="fa-solid fa-circle-exclamation" style="font-size: 300%;"></i></div>
+		                <div>조회된 상품이 없습니다.</div>
+					</div>
+			    </section>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

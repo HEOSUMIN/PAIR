@@ -2,6 +2,8 @@ package com.pro.pair.cart.model.dto;
 
 import java.sql.Date;
 
+import com.pro.pair.product.model.dto.ProductDTO;
+
 import lombok.Data;
 
 @Data
@@ -16,6 +18,7 @@ public class OrderDTO {
 	private String dlvrStatus;
 	
 	private OrderItemDTO orderItem;
+	private ProductDTO product;
 	
 	
 }

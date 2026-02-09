@@ -1,7 +1,10 @@
 package com.pro.pair.member.model.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
+import com.pro.pair.cart.model.dto.OrderDTO;
 import com.pro.pair.member.model.dto.MemberDTO;
 import com.pro.pair.member.model.dto.RoleDTO;
 
@@ -19,4 +22,8 @@ public interface MemberMapper {
 	void updateLatestLoginDate(String username);  //성공 시 최근 로그인 일시 업데이트
 	
 	MemberDTO findMemberById(String username); 
+	
+	List<OrderDTO> getMemberOrderList(String memberId);
+	
+	int getMemberOrderCountByDlvrStatus(String memberId, String dlvrStatus);
 }

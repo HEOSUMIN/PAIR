@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,11 +21,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/verify")
+@RequestMapping("/verifyiamport")
 public class IamportController {
 	private final IamportClient iamportClient;
 	private static final String API_KEY = "3463738332864466";
-	private static final String API_SECRET = "G1KxppWl29DqnV4pV4N3fAlvXwvz3kr7IDm4MOlAMLYIiTXA5qTGQj7z8hQmKhcck63SK7tW56foWYYe";
+	private static final String API_SECRET = "KhQaD4x7TSjUz3Fz0JbjpwvUJ3nks2fJTlZabIgxf1KrViHW69TJKYMaH0hZQMpSuqzg8g8tDsC8gmvy";
 	
 
 	public IamportController() {
@@ -36,6 +38,7 @@ public class IamportController {
 		log.info("paymentByImpUid:{}" , imp_uid);
 		return iamportClient.paymentByImpUid(imp_uid);
 	}
+	
 //	
 //	@PostMapping("/{imp_uid}")
 //	@ResponseBody

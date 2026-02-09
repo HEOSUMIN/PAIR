@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/default}">
+<head>
+<meta charset="UTF-8">
+<title>마이페이지 | 주문상세</title>
+<!-- CSS -->
+<link th:href="@{/css/dashboard.css}" rel="stylesheet">
+<th:block layout:fragment="css">
+	<link th:href="@{/css/customtable.css}" rel="stylesheet">
+	<style>
+	.table-hover>tbody>tr:hover>*, .dataTable-table>tbody>tr:hover>* {
+	--bs-table-accent-bg: none !important;
+	border-bottom: 0 !important;
+	cursor: default;
+}
+</style>
+</th:block>
+</head>
+<body th:replace="~{/fragments/mypage.html :: mypage}">
+	<div layout:fragment="mypageContent">
+		<nav class="mypage-breadcrumb" aria-label="breadcrumb" th:object="${ memberOrderDetails }">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="/">HOME</a></li>
+				<li class="breadcrumb-item"><a th:href="@{/mypage/main}">마이페이지</a></li>
+			    <li class="breadcrumb-item"><a th:href="@{/mypage/order}">주문/배송목록</a></li>
+			    <li class="breadcrumb-item active" aria-current="page" th:text="|주문번호 *{ orderNo }|"></li>
+			</ol>
+		</nav>
+		<div class="mypage-area">
+		</div>
+	</div>
+</body>
+</html>

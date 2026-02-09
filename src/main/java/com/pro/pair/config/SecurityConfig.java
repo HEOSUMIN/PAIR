@@ -31,7 +31,9 @@ public class SecurityConfig {
 		http.csrf((csrfConfig) -> csrfConfig.disable())
 				.authorizeHttpRequests(auto -> auto.requestMatchers("/", "/member/**").permitAll()
 						.requestMatchers("/admin/**").permitAll().requestMatchers("/member/mypage")
-						.hasAnyRole("MEMBER", "ADMIN").anyRequest().permitAll()) // 기본 로그인 페이지 나오지 않도록 설정
+						.hasAnyRole("MEMBER", "ADMIN") // 기본 로그인 페이지 나오지 않도록 설정
+						.requestMatchers("/order/**").authenticated()
+						.anyRequest().permitAll()) //마지막이어야함
 				// 로그인
 				.formLogin(formLogin -> formLogin.loginPage("/member/signin").loginProcessingUrl("/member/signin")
 						.defaultSuccessUrl("/").successHandler(loginSuccessHandler) // 로그인 성공시
@@ -59,6 +61,6 @@ public class SecurityConfig {
 
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
-		return (web) -> web.ignoring().requestMatchers("/css/**", "/js/**", "/image/**", "/api/payment/**");
+		return (web) -> web.ignoring().requestMatchers("/css/**", "/js/**", "/image/**", "/verify/**" );
 	}
 }
