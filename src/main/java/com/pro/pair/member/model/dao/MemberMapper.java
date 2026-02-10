@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.pro.pair.cart.model.dto.OrderDTO;
+import com.pro.pair.cart.model.dto.OrderItemDTO;
 import com.pro.pair.member.model.dto.MemberDTO;
 import com.pro.pair.member.model.dto.RoleDTO;
 
@@ -26,4 +27,10 @@ public interface MemberMapper {
 	List<OrderDTO> getMemberOrderList(String memberId);
 	
 	int getMemberOrderCountByDlvrStatus(String memberId, String dlvrStatus);
+	
+	OrderDTO getMemberOrderDetails(String memberId, String orderNo);
+
+	List<OrderItemDTO> getOptionListByOrderNo(String orderNo);
+	
+	int getTotalOrderAmountByOrderNo(String orderNo);
 }

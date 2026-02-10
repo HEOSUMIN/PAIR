@@ -30,6 +30,13 @@
 		<result property="authDesc" column="AUTHORITY_DESC"/>
 	</resultMap>
 
+	<!-- 브랜드 조회용 -->
+	<resultMap id="brandResultMap"
+		type="com.pro.pair.product.model.dto.BrandDTO">
+		<id property="brandCd" column="BRAND_CD" />
+		<result property="brandNm" column="BRAND_NM" />
+	</resultMap>
+
 	<!-- 카테고리 조회용 -->
 	<resultMap id="categoryResultMap"
 		type="com.pro.pair.product.model.dto.CategoryDTO">
@@ -41,7 +48,7 @@
 		<result property="useYn" column="USE_YN" />
 	</resultMap>
 	
-<!-- 썸네일 조회용 -->
+	<!-- 썸네일 조회용 -->
 	<resultMap id="thumbnailResultMap"
 		type="com.pro.pair.upload.model.dto.AttachmentDTO">
 		<id property="attachmentNo" column="ATTACHMENT_NO" />
@@ -70,9 +77,18 @@
 		<result property="uptDt" column="UPT_DT" />
 		<result property="useYn" column="USE_YN" />
 		<association property="category" resultMap="categoryResultMap" /> <!-- 1:1 -->
-		<!-- <association property="brand" resultMap="brandResultMap" /> 1:1 -->
+		<association property="brand" resultMap="brandResultMap" /> 
 		<association property="attachmentList" resultMap="thumbnailResultMap" />
-		<!-- <collection property="option" resultMap="optionResultMap"/> 1:N -->
+	</resultMap>
+	
+	<!-- 옵션조합 조회용 -->
+	<resultMap id="optionCombResultMap" type="com.pro.pair.product.model.dto.OptionCombDTO">
+		<id property="optCombNo" column="OPT_COMB_NO"/>
+		<result property="prodNo" column="PROD_NO"/>
+		<result property="optAddPrice" column="OPT_ADD_PRICE"/>
+		<result property="optStockQty" column="OPT_STOCK_QTY"/>
+		<result property="optManageNm" column="OPT_MANAGE_NM"/>
+		<result property="saleStatus" column="SALE_STATUS"/>
 	</resultMap>
 
 	<!-- 주문배송정보 조회용 -->
@@ -87,13 +103,12 @@
 		<result property="dlvrStatus" column="DLVR_STATUS"/>
 		<association property="orderItem" resultMap="orderItemResultMap"/> <!-- 1:1 -->
 		<association property="product" resultMap="productResultMap"/> <!-- 1:1 -->
-		<!-- <association property="payment" resultMap="paymentResultMap"/> 1:1
-		<association property="delivery" resultMap="deliveryResultMap"/> 1:1
-		<association property="point" resultMap="pointResultMap"/> 1:1
-		<association property="product" resultMap="productResultMap"/> 1:1
-		<association property="brand" resultMap="brandResultMap"/> 1:1
-		<association property="attachmentList" resultMap="thumbnailResultMap"/> 1:1
-		<collection property="option" resultMap="optionResultMap"/> 1:N -->
+		<association property="payment" resultMap="paymentResultMap"/> 
+		<association property="delivery" resultMap="deliveryResultMap"/> 
+		<association property="brand" resultMap="brandResultMap"/>
+		<association property="attachmentList" resultMap="thumbnailResultMap"/> 
+		<collection property="optionComb" resultMap="optionCombResultMap"/>
+	<!--<association property="point" resultMap="pointResultMap"/> 1:1 -->
 	</resultMap>
 	
 	<!-- 주문상품정보 조회용 -->
@@ -103,12 +118,28 @@
 		<result property="optCombNo" column="OPT_COMB_NO"/>
 		<result property="orderQuantity" column="ORDER_QUANTITY"/>
 		<result property="orderAmount" column="ORDER_AMOUNT"/>
-		<!-- <association property="order" resultMap="orderResultMap"/>
-		<association property="delivery" resultMap="deliveryResultMap"/>
 		<association property="product" resultMap="productResultMap"/>
 		<association property="brand" resultMap="brandResultMap"/>
 		<association property="attachmentList" resultMap="thumbnailResultMap"/>
-		<collection property="option" resultMap="optionResultMap"/> -->
+		<collection property="optionComb" resultMap="optionCombResultMap"/>
+	</resultMap>
+	
+	<!-- 주문결제정보 조회용 -->
+	<resultMap id="paymentResultMap" type="com.pro.pair.cart.model.dto.PaymentDTO">
+		<id property="paymentNo" column="PAYMENT_NO"/>
+		<result property="orderNo" column="ORDER_NO"/>
+		<result property="paymentMethod" column="PAYMENT_METHOD"/>
+		<result property="paymentAmount" column="PAYMENT_AMOUNT"/>
+		<result property="paymentDateTime" column="PAYMENT_DATETIME"/>
+	</resultMap>
+	
+	<!-- 배송정보 조회용 -->
+	<resultMap id="deliveryResultMap" type="com.pro.pair.cart.model.dto.DeliveryDTO">
+		<result property="orderNo" column="ORDER_NO"/>
+		<result property="deliveryFee" column="DELIVERY_FEE"/>
+		<result property="deliveryCompany" column="DELIVERY_COMPANY"/>
+		<result property="dispatchDate" column="DISPATCH_DATE"/>
+		<result property="deliveryDate" column="DELIVERY_DATE"/>
 	</resultMap>
 	
  	<select id="findMemberById" resultMap="memberResultMap">
@@ -207,6 +238,78 @@
 		, #{ phone }
 		)
 	</insert>
+	
+	<!-- 주문/배송목록 상세정보조회 -->
+	<select id="getMemberOrderDetails" resultMap="orderResultMap">
+		SELECT
+			   A.ORDER_NO
+			 , A.ORDER_DATE
+			 , A.RCVR_NAME
+			 , A.RCVR_PHONE
+			 , A.RCVR_ADDRESS
+			 , A.DLVR_REQ_MSG
+			 , A.DLVR_STATUS
+			 , B.OPT_COMB_NO
+			 , B.ORDER_QUANTITY
+			 , B.ORDER_AMOUNT
+			 , C.PAYMENT_NO
+			 , C.PAYMENT_METHOD
+			 , C.PAYMENT_AMOUNT
+			 , C.PAYMENT_DATETIME
+			 , L.DELIVERY_FEE
+			 , L.DELIVERY_COMPANY
+			 , L.DISPATCH_DATE
+			 , L.DELIVERY_DATE
+			 , O.OPT_ADD_PRICE
+			 , O.OPT_MANAGE_NM
+			 , P.PROD_NO
+			 , P.PROD_NM
+			 , D.BRAND_NM
+			 , T.THUMBNAIL_PATH
+		  FROM TBL_ORDER A
+		  LEFT JOIN TBL_ORDER_ITEM B ON(A.ORDER_NO = B.ORDER_NO)
+		  LEFT JOIN TBL_PAYMENT C ON(B.ORDER_NO = C.ORDER_NO)
+		  LEFT JOIN TBL_DELIVERY L ON(C.ORDER_NO = L.ORDER_NO)
+		  LEFT JOIN TBL_OPTION_COMB O ON(B.OPT_COMB_NO = O.OPT_COMB_NO)
+		  LEFT JOIN TBL_PRODUCT P ON(O.PROD_NO = P.PROD_NO)
+		  LEFT JOIN TBL_BRAND D ON(P.BRAND_CD = D.BRAND_CD)
+		  LEFT JOIN TBL_ATTACHMENT T ON(P.PROD_NO = T.REF_PROD_NO)
+		 WHERE A.MEMBER_ID = #{ memberId }
+		   AND T.FILE_TYPE = 'THUMB_MAIN'
+		   AND A.ORDER_NO =  #{ orderNo }
+		 ORDER BY P.PRICE DESC
+	</select>
+	
+	<!-- 주문번호별 상품 옵션 조회 -->
+	<select id="getOptionListByOrderNo" resultMap="orderItemResultMap">
+		SELECT
+			 A.OPT_COMB_NO
+			 , A.ORDER_QUANTITY
+			 , A.ORDER_AMOUNT
+			 , O.OPT_MANAGE_NM
+			 , O.OPT_ADD_PRICE
+			 , P.PROD_NO
+			 , P.PROD_NM
+			 , B.BRAND_NM
+			 , T.THUMBNAIL_PATH
+		  FROM TBL_ORDER_ITEM A
+		  LEFT JOIN TBL_OPTION_COMB O ON(A.OPT_COMB_NO = O.OPT_COMB_NO)
+		  LEFT JOIN TBL_PRODUCT P ON(O.PROD_NO = P.PROD_NO)
+		  LEFT JOIN TBL_BRAND B ON(P.BRAND_CD = B.BRAND_CD)
+		  LEFT JOIN TBL_ATTACHMENT T ON(P.PROD_NO = T.REF_PROD_NO)
+		 WHERE A.ORDER_NO = #{ orderNo }
+		   AND T.FILE_TYPE = 'THUMB_MAIN'
+		   AND A.ORDER_NO = #{ orderNo }
+		 ORDER BY P.PRICE DESC
+	</select>
+	
+	<!-- 주문번호별 주문금액 합계 조회 -->
+	<select id="getTotalOrderAmountByOrderNo" resultType="_int">
+		SELECT
+			   SUM(ORDER_AMOUNT)
+		  FROM TBL_ORDER_ITEM
+		 WHERE ORDER_NO = #{ orderNo }
+	</select>
 	
 	<insert id="insertRole">
 		INSERT

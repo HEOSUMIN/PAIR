@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pro.pair.cart.model.dto.OrderDTO;
+import com.pro.pair.cart.model.dto.OrderItemDTO;
 import com.pro.pair.member.model.dao.MemberMapper;
 import com.pro.pair.member.model.dto.AuthorityDTO;
 import com.pro.pair.member.model.dto.MemberDTO;
@@ -111,6 +112,21 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public int getMemberOrderCountByDlvrStatus(String memberId, String dlvrStatus) {
 		return memberMapper.getMemberOrderCountByDlvrStatus(memberId, dlvrStatus);
+	}
+
+	@Override
+	public OrderDTO getMemberOrderDetails(String memberId, String orderNo) {
+		return memberMapper.getMemberOrderDetails(memberId, orderNo);
+	}
+
+	@Override
+	public List<OrderItemDTO> getOptionListByOrderNo(String orderNo) {
+		return memberMapper.getOptionListByOrderNo(orderNo);
+	}
+
+	@Override
+	public int getTotalOrderAmountByOrderNo(String orderNo) {
+		return memberMapper.getTotalOrderAmountByOrderNo(orderNo);
 	}
 
 	

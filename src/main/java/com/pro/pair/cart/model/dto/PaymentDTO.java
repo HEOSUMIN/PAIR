@@ -11,5 +11,5 @@ public class PaymentDTO {
 	private String orderNo;
 	private String paymentMethod;
 	private int paymentAmount;
-	private Date paymentDateTime;
+	private String paymentDateTime;
 }

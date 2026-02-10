@@ -10,8 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.pro.pair.cart.model.dto.OrderDTO;
+import com.pro.pair.cart.model.dto.OrderItemDTO;
 import com.pro.pair.cart.model.service.OrderService;
 import com.pro.pair.member.model.dto.UserImpl;
 import com.pro.pair.member.model.service.MemberService;
@@ -61,5 +63,31 @@ public class MypageController {
 		model.addAttribute("dispatchedOrderCount", memberService.getMemberOrderCountByDlvrStatus(user.getMemberId(), "배송중")); //최근 3개월 주문내역(배송중)
 		model.addAttribute("numberOfEachOrder", numberOfEachOrder);
 		model.addAttribute("memberOrderList", memberOrderList);
+	}
+	
+	/*
+	 * 마이페이지 주문/배송 상세 조회
+	 */
+	@GetMapping("/order/details")
+	public void getOrderListDetails(@RequestParam("no") String orderNo, @AuthenticationPrincipal UserImpl user, Model model) {
+		log.info("상세조회 요청 주문번호 : {}", orderNo);
+		OrderDTO memberOrderDetails = memberService.getMemberOrderDetails(user.getMemberId(), orderNo);
+		String method = memberOrderDetails.getPayment().getPaymentMethod();
+		switch(method) {
+		case "card": method = "신용카드"; break;
+		case "trans": method = "실시간계좌이체"; break;
+		case "vbank": method = "가상계좌"; break;
+		case "phone": method = "휴대폰결제"; break;
+		}
+		memberOrderDetails.getPayment().setPaymentMethod(method);
+		
+		List<OrderItemDTO> orderOptionList = memberService.getOptionListByOrderNo(orderNo);
+		
+		int totalOrderAmount = memberService.getTotalOrderAmountByOrderNo(orderNo);
+		
+		model.addAttribute("memberOrderDetails", memberOrderDetails);
+		model.addAttribute("orderOptionList", orderOptionList);
+		model.addAttribute("totalOrderAmount", totalOrderAmount);
+		
 	}
 }

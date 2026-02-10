@@ -2,7 +2,10 @@ package com.pro.pair.cart.model.dto;
 
 import java.sql.Date;
 
+import com.pro.pair.product.model.dto.BrandDTO;
+import com.pro.pair.product.model.dto.OptionCombDTO;
 import com.pro.pair.product.model.dto.ProductDTO;
+import com.pro.pair.upload.model.dto.AttachmentDTO;
 
 import lombok.Data;
 
@@ -19,6 +22,12 @@ public class OrderDTO {
 	
 	private OrderItemDTO orderItem;
 	private ProductDTO product;
+	private PaymentDTO payment;
+	private DeliveryDTO delivery;
+	private BrandDTO brand;
+	private AttachmentDTO attachmentList;
+	private OptionCombDTO optionComb;
+	
 	
 	
 }

@@ -369,6 +369,7 @@
         FROM TBL_OPTION_COMB 
         WHERE PROD_NO = #{prodNo} AND OPT_MANAGE_NM  = #{combName}
 	</select>
+
 	
 	<!-- 상품 등록 -->
 	<insert id="addProduct">
