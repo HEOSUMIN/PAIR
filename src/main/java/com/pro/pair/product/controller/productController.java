@@ -312,6 +312,20 @@ public class productController {
 	 */
 	@GetMapping("/product/details")
 	public void getProductDetails(@RequestParam("no") int prodNo, HttpSession session, Model model) {
+		/* 최근 본 상품 */
+		List<Integer> recentlyViewed = (List<Integer>) session.getAttribute("recentlyViewed");
+		if(recentlyViewed == null) recentlyViewed = new ArrayList<>();
+		if(recentlyViewed.size() == 0) {
+			recentlyViewed.add(prodNo);
+		} else {
+			if(recentlyViewed.indexOf(prodNo)== -1) recentlyViewed.add(prodNo); //중복 방지
+		}
+		log.info("recently viewed items: {}", recentlyViewed);
+		session.removeAttribute("recentlyViewed");
+		session.setAttribute("recentlyViewed", recentlyViewed);
+		
+		session.removeAttribute("orderItem");	//주문 요청 시마다 주문목록 session 갱신
+		
 		/* 상품 상세 정보 호출 */
 		ProductDTO detail = productService.getProductDetails(prodNo); //getProductDetails()는 전역적으로 사용되고 있어 상세페이지 조회용을 별도로 구분
 		
@@ -325,10 +339,8 @@ public class productController {
 		/* 옵션 상세 조회 */
 		List<OptionCombDTO> optionDetails = productService.getOptionDetailsListByProdNo(prodNo);
 		
-		
 		log.info("option: {}" ,option);
 		log.info("optionDetails: {}" ,optionDetails);
-		
 		
 		model.addAttribute("detail", detail);
 		model.addAttribute("mainThumb", mainThumb);

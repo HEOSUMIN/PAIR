@@ -1,5 +1,6 @@
 package com.pro.pair.mypage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,9 @@ import com.pro.pair.cart.model.dto.OrderItemDTO;
 import com.pro.pair.cart.model.service.OrderService;
 import com.pro.pair.member.model.dto.UserImpl;
 import com.pro.pair.member.model.service.MemberService;
+import com.pro.pair.product.model.dto.ProductDTO;
+import com.pro.pair.product.model.service.ProductService;
+import com.pro.pair.upload.model.dto.AttachmentDTO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -28,11 +32,13 @@ public class MypageController {
 	
 	private MemberService memberService;
 	private OrderService orderService;
+	private ProductService productService;
 	
 	@Autowired
-	public MypageController(MemberService memberService, OrderService orderService) {
+	public MypageController(MemberService memberService, OrderService orderService, ProductService productService) {
 		this.memberService = memberService;
 		this.orderService = orderService;
+		this.productService = productService;
 	}
 
 	/*
@@ -40,9 +46,26 @@ public class MypageController {
 	 */
 	@GetMapping("/main")
 	public void getMypage(@AuthenticationPrincipal UserImpl user, HttpSession session, Model model) {
-		model.addAttribute("preparingOrderCount", 0); //최근 3개월 주문내역(상품준비중)
-		model.addAttribute("dispatchedOrderCount", 0);
-		model.addAttribute("deliveredOrderCount", 0);
+		log.info("id;{}",user.getMemberId());
+		List<Integer> recentlyViewed = (List<Integer>) session.getAttribute("recentlyViewed");
+		if(recentlyViewed != null) {
+			List<ProductDTO> recentlyViewedItems = new ArrayList<>();
+			List<AttachmentDTO> recentlyViewedThumbnailList = new ArrayList<>();
+			
+			for(int i=0; i < recentlyViewed.size(); i++) { //출력용 상품 이름, 메인썸네일
+				int prodNo = recentlyViewed.get(i);
+				ProductDTO productDTO = productService.getProductDetails(prodNo);
+				recentlyViewedItems.add(productDTO);
+				AttachmentDTO mainThumb = productService.getMainThumbnailByProdNo(prodNo);
+				recentlyViewedThumbnailList.add(mainThumb);
+			}
+			model.addAttribute("recentlyViewedItems", recentlyViewedItems); //최근 본 상품
+			model.addAttribute("recentlyViewedThumbnailList", recentlyViewedThumbnailList);
+		}
+		
+		model.addAttribute("preparingOrderCount", memberService.getMemberOrderCountByDlvrStatus(user.getMemberId(), "상품준비중")); //최근 3개월 주문내역(상품준비중)
+		model.addAttribute("dispatchedOrderCount", memberService.getMemberOrderCountByDlvrStatus(user.getMemberId(), "배송중"));
+		model.addAttribute("deliveredOrderCount", memberService.getMemberOrderCountByDlvrStatus(user.getMemberId(), "배송완료"));
 	}
 	
 	/*

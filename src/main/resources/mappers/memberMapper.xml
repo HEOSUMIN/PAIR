@@ -205,7 +205,7 @@
 		  FROM TBL_ORDER
 		 WHERE MEMBER_ID = #{ memberId }
 		   AND DLVR_STATUS = #{ dlvrStatus }
-		   AND TO_DATE(ORDER_DATE, 'YYYY.MM.DD AM HH:MI:SS') >= ADD_MONTHS(TRUNC(SYSDATE), -3)
+		   AND ORDER_DATE >= ADD_MONTHS(TRUNC(SYSDATE), -3)
 	</select>
 	
 	<!-- 회원가입 -->

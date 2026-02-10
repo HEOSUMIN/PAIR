@@ -39,7 +39,39 @@
 				<legend>최근 본 상품</legend>
 			</fieldset>
 			<div class="browsing-history">
-				
+				<section class="recently-viewed"  th:if="${ recentlyViewedItems }">
+					<div class="container">
+						<div class="row gx-4 row-cols-2 row-cols-md-3 row-cols-xl-4">
+							 <div class="col" th:each="product : ${ recentlyViewedItems }">
+							 	<div class="card">
+							 		 <a th:href="@{/product/details(no=${product.prodNo})}"></a>
+							 		 <div class="card-img-wrapper" th:each="thumbnail : ${ recentlyViewedThumbnailList }" th:if="${product.prodNo == thumbnail.refProdNo}">
+							 		 	<img class="card-img-top" th:src="${ thumbnail.thumbnailPath }">
+							 		 </div>
+							 		 <div class="card-body">
+							 		 	<div class="text-left">
+							 		 		<small>[[${ product.brand.brandNm }]]</small>
+			                                <h6>[[${ product.prodNm }]]</h6>
+			                                 <!-- 판매가A. 할인 대상이 아닌 경우 원가 그대로 출력 -->
+											<th:block th:if="${product.discountRate} == 0">
+												<b class="price">[[${#numbers.formatInteger(product.price, 3, 'COMMA')}]]원</b>
+											</th:block>
+											<!-- 판매가B. 적용된 할인율이 0% 이상인 경우 판매가 산정하여 출력 -->
+												<th:block th:if="${product.discountRate} > 0">
+													<b class="price">
+														[[${#numbers.formatInteger(product.price - (product.price * product.discountRate / 100), 3, 'COMMA')}]]원
+													</b>
+													<del>[[${#numbers.formatInteger(product.price, 3, 'COMMA')}]]</del>
+													<b>&nbsp;[[${ product.discountRate }]]%</b>
+												</th:block>
+			                                </div>
+							 		 	</div>
+							 		 </div>
+							 	</div>
+							 </div>
+						</div>
+					</div>
+				</section>
 			    <section class="recently-viewed" th:unless="${ recentlyViewedItems }">
 			    	<div class="noitemViewed">
 						<div><i class="fa-solid fa-circle-exclamation" style="font-size: 300%;"></i></div>
