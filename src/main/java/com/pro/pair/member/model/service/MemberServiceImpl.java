@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pro.pair.cart.model.dto.OrderDTO;
-import com.pro.pair.cart.model.dto.OrderItemDTO;
 import com.pro.pair.member.model.dao.MemberMapper;
 import com.pro.pair.member.model.dto.AuthorityDTO;
 import com.pro.pair.member.model.dto.MemberDTO;
 import com.pro.pair.member.model.dto.RoleDTO;
 import com.pro.pair.member.model.dto.UserImpl;
+import com.pro.pair.review.model.dto.ReviewDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -120,13 +120,33 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<OrderItemDTO> getOptionListByOrderNo(String orderNo) {
+	public List<OrderDTO> getOptionListByOrderNo(String orderNo) {
 		return memberMapper.getOptionListByOrderNo(orderNo);
 	}
 
 	@Override
 	public int getTotalOrderAmountByOrderNo(String orderNo) {
 		return memberMapper.getTotalOrderAmountByOrderNo(orderNo);
+	}
+
+	@Override
+	public List<OrderDTO> getItemsToPostAReview(String memberId) {
+		return memberMapper.getItemsToPostAReview(memberId);
+	}
+
+	@Override
+	public List<ReviewDTO> getMemberReviewPosts(String memberId) {
+		return memberMapper.getMemberReviewPosts(memberId);
+	}
+
+	@Override
+	public OrderDTO getOrderInfoToReview(String memberId, int orderItemNo, int optCombNo) {
+		return memberMapper.getOrderInfoToReview(memberId, orderItemNo, optCombNo);
+	}
+
+	@Override
+	public int getWritableReviewCount(String memberId) {
+		return memberMapper.getWritableReviewCount(memberId);
 	}
 
 	

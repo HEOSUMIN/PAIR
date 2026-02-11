@@ -5,9 +5,9 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.pro.pair.cart.model.dto.OrderDTO;
-import com.pro.pair.cart.model.dto.OrderItemDTO;
 import com.pro.pair.member.model.dto.MemberDTO;
 import com.pro.pair.member.model.dto.RoleDTO;
+import com.pro.pair.review.model.dto.ReviewDTO;
 
 @Mapper
 public interface MemberMapper {
@@ -30,7 +30,15 @@ public interface MemberMapper {
 	
 	OrderDTO getMemberOrderDetails(String memberId, String orderNo);
 
-	List<OrderItemDTO> getOptionListByOrderNo(String orderNo);
+	List<OrderDTO> getOptionListByOrderNo(String orderNo);
 	
 	int getTotalOrderAmountByOrderNo(String orderNo);
+	
+	List<OrderDTO> getItemsToPostAReview(String memberId);
+	
+	List<ReviewDTO> getMemberReviewPosts(String memberId);
+	
+	OrderDTO getOrderInfoToReview(String memberId, int orderItemNo, int optCombNo);
+	
+	int getWritableReviewCount(String memberId);
 }

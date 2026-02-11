@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.pro.pair.cart.model.dto.OrderDTO;
-import com.pro.pair.cart.model.dto.OrderItemDTO;
 import com.pro.pair.cart.model.service.OrderService;
 import com.pro.pair.member.model.dto.UserImpl;
 import com.pro.pair.member.model.service.MemberService;
 import com.pro.pair.product.model.dto.ProductDTO;
 import com.pro.pair.product.model.service.ProductService;
+import com.pro.pair.review.model.dto.ReviewDTO;
 import com.pro.pair.upload.model.dto.AttachmentDTO;
 
 import jakarta.servlet.http.HttpSession;
@@ -48,6 +48,9 @@ public class MypageController {
 	public void getMypage(@AuthenticationPrincipal UserImpl user, HttpSession session, Model model) {
 		log.info("id;{}",user.getMemberId());
 		List<Integer> recentlyViewed = (List<Integer>) session.getAttribute("recentlyViewed");
+		
+		int writableRevwCnt = memberService.getWritableReviewCount(user.getMemberId());
+		
 		if(recentlyViewed != null) {
 			List<ProductDTO> recentlyViewedItems = new ArrayList<>();
 			List<AttachmentDTO> recentlyViewedThumbnailList = new ArrayList<>();
@@ -63,6 +66,8 @@ public class MypageController {
 			model.addAttribute("recentlyViewedThumbnailList", recentlyViewedThumbnailList);
 		}
 		
+		
+		model.addAttribute("writableRevwCnt", writableRevwCnt);		//작성 가능한 리뷰 개수 
 		model.addAttribute("preparingOrderCount", memberService.getMemberOrderCountByDlvrStatus(user.getMemberId(), "상품준비중")); //최근 3개월 주문내역(상품준비중)
 		model.addAttribute("dispatchedOrderCount", memberService.getMemberOrderCountByDlvrStatus(user.getMemberId(), "배송중"));
 		model.addAttribute("deliveredOrderCount", memberService.getMemberOrderCountByDlvrStatus(user.getMemberId(), "배송완료"));
@@ -104,7 +109,7 @@ public class MypageController {
 		}
 		memberOrderDetails.getPayment().setPaymentMethod(method);
 		
-		List<OrderItemDTO> orderOptionList = memberService.getOptionListByOrderNo(orderNo);
+		List<OrderDTO> orderOptionList = memberService.getOptionListByOrderNo(orderNo);
 		
 		int totalOrderAmount = memberService.getTotalOrderAmountByOrderNo(orderNo);
 		
@@ -113,4 +118,28 @@ public class MypageController {
 		model.addAttribute("totalOrderAmount", totalOrderAmount);
 		
 	}
+	
+	/*
+	 * 상품리뷰
+	 */
+	@GetMapping("/review")
+	public void getReviewList(@AuthenticationPrincipal UserImpl user, HttpSession session, Model model) {
+		/* 작성 가능한 리뷰 */
+		List<OrderDTO> itemList = memberService.getItemsToPostAReview(user.getMemberId());
+	
+		/* 작성한 리뷰 */
+		List<ReviewDTO> postList = memberService.getMemberReviewPosts(user.getMemberId());
+		
+		model.addAttribute("itemList", itemList);
+		model.addAttribute("postList", postList);
+	}
 }
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pro.pair.review.model.dao.ReviewMapper">
+
+
+	<!-- 리뷰 작성 -->
+	<insert id="postAReview">
+		INSERT
+		  INTO TBL_REVIEW
+		(
+		  REVIEW_NO
+		, OPT_COMB_NO
+		, ORDER_ITEM_NO
+		, MEMBER_ID
+		, REVW_CONTENT
+		, REVW_REG_DATE
+		, REVW_RATINGS
+		)
+		VALUES
+		(
+		  SEQ_REVIEW_NO.NEXTVAL
+		, #{ optCombNo }
+		, #{ orderItemNo }
+		, #{ memberId }
+		, #{ revwContent }
+		, SYSDATE
+		, #{ revwRatings }
+		)
+	</insert>
+	
+	<!-- 현재 리뷰번호 조회 -->
+	<select id="checkCurrReviewNo" resultType="_int">
+		SELECT
+			   SEQ_REVIEW_NO.CURRVAL
+		  FROM DUAL
+	</select>
+	
+	<!-- 리뷰 이미지 등록 -->
+	<insert id="attachReviewImages">
+		INSERT
+		  INTO TBL_ATTACHMENT
+		(
+		  ATTACHMENT_NO
+		, REF_PROD_NO
+		, REF_REVW_NO
+		, ORIG_FILE_NM
+		, SAVE_FILE_NM
+		, SAVE_PATH
+		, THUMBNAIL_PATH
+		, FILE_TYPE
+		, ATTACH_STATUS_YN
+		)
+		VALUES
+		(
+		  SEQ_ATTACH_NO.NEXTVAL
+		, NULL
+		, #{ refRevwNo }
+		, #{ origFileNm }
+		, #{ saveFileNm }
+		, #{ savePath }
+		, #{ thumbnailPath }
+		, #{ fileType }
+		, DEFAULT
+		)
+	</insert>
+	
+</mapper>

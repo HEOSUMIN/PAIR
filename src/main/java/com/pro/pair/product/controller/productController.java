@@ -34,6 +34,7 @@ import com.pro.pair.product.model.dto.OptionCombDTO;
 import com.pro.pair.product.model.dto.OptionDTO;
 import com.pro.pair.product.model.dto.ProductDTO;
 import com.pro.pair.product.model.service.ProductService;
+import com.pro.pair.review.model.dto.ReviewDTO;
 import com.pro.pair.upload.model.dto.AttachmentDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -339,6 +340,11 @@ public class productController {
 		/* 옵션 상세 조회 */
 		List<OptionCombDTO> optionDetails = productService.getOptionDetailsListByProdNo(prodNo);
 		
+		/* 리뷰 */
+		List<ReviewDTO> reviewList = productService.getReviewListByProdNo(prodNo);
+		
+		
+		
 		log.info("option: {}" ,option);
 		log.info("optionDetails: {}" ,optionDetails);
 		
@@ -347,6 +353,7 @@ public class productController {
 		model.addAttribute("subThumb", subThumb);
 		model.addAttribute("option", option);
 		model.addAttribute("optionDetails", optionDetails);
+		model.addAttribute("reviewList", reviewList);
 		
 	}
 	

@@ -16,6 +16,7 @@ import com.pro.pair.product.model.dto.OptionCombDTO;
 import com.pro.pair.product.model.dto.OptionDTO;
 import com.pro.pair.product.model.dto.OptionValueDTO;
 import com.pro.pair.product.model.dto.ProductDTO;
+import com.pro.pair.review.model.dto.ReviewDTO;
 import com.pro.pair.upload.model.dto.AttachmentDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -169,6 +170,11 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public OptionCombDTO findOptionCombByName(int prodNo, String combName) {
-		    return productMapper.findOptionCombByName(prodNo, combName);
+	    return productMapper.findOptionCombByName(prodNo, combName);
+	}
+
+	@Override
+	public List<ReviewDTO> getReviewListByProdNo(int prodNo) {
+		 return productMapper.getReviewListByProdNo(prodNo);
 	}
 }

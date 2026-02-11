@@ -108,6 +108,7 @@
 		<association property="brand" resultMap="brandResultMap"/>
 		<association property="attachmentList" resultMap="thumbnailResultMap"/> 
 		<collection property="optionComb" resultMap="optionCombResultMap"/>
+		
 	<!--<association property="point" resultMap="pointResultMap"/> 1:1 -->
 	</resultMap>
 	
@@ -118,10 +119,6 @@
 		<result property="optCombNo" column="OPT_COMB_NO"/>
 		<result property="orderQuantity" column="ORDER_QUANTITY"/>
 		<result property="orderAmount" column="ORDER_AMOUNT"/>
-		<association property="product" resultMap="productResultMap"/>
-		<association property="brand" resultMap="brandResultMap"/>
-		<association property="attachmentList" resultMap="thumbnailResultMap"/>
-		<collection property="optionComb" resultMap="optionCombResultMap"/>
 	</resultMap>
 	
 	<!-- 주문결제정보 조회용 -->
@@ -140,6 +137,20 @@
 		<result property="deliveryCompany" column="DELIVERY_COMPANY"/>
 		<result property="dispatchDate" column="DISPATCH_DATE"/>
 		<result property="deliveryDate" column="DELIVERY_DATE"/>
+	</resultMap>
+	
+	<!-- 리뷰 조회용 -->
+	<resultMap id="reviewResultMap" type="com.pro.pair.review.model.dto.ReviewDTO">
+		<id property="reviewNo" column="REVIEW_NO"/>
+		<result property="optCombNo" column="OPT_COMB_NO"/>
+		<result property="orderItemNo" column="ORDER_ITEM_NO"/>
+		<result property="memberId" column="MEMBER_ID"/>
+		<result property="revwContent" column="REVW_CONTENT"/>
+		<result property="revwRegDate" column="REVW_REG_DATE"/>
+		<result property="revwRatings" column="REVW_RATINGS"/>
+		<association property="optionComb" resultMap="optionCombResultMap"/>
+		<association property="product" resultMap="productResultMap"/>
+		<collection property="attachmentList" resultMap="thumbnailResultMap"/>
 	</resultMap>
 	
  	<select id="findMemberById" resultMap="memberResultMap">
@@ -281,9 +292,10 @@
 	</select>
 	
 	<!-- 주문번호별 상품 옵션 조회 -->
-	<select id="getOptionListByOrderNo" resultMap="orderItemResultMap">
+	<select id="getOptionListByOrderNo" resultMap="orderResultMap">
 		SELECT
-			 A.OPT_COMB_NO
+			A.ORDER_ITEM_NO
+			 , A.OPT_COMB_NO
 			 , A.ORDER_QUANTITY
 			 , A.ORDER_AMOUNT
 			 , O.OPT_MANAGE_NM
@@ -301,6 +313,93 @@
 		   AND T.FILE_TYPE = 'THUMB_MAIN'
 		   AND A.ORDER_NO = #{ orderNo }
 		 ORDER BY P.PRICE DESC
+	</select>
+	
+	<!-- 작성 가능한 리뷰 개수 조회 -->
+	<select id="getWritableReviewCount" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+			  FROM TBL_ORDER_ITEM A
+			  LEFT JOIN TBL_ORDER B ON(A.ORDER_NO = B.ORDER_NO)
+			  LEFT JOIN TBL_DELIVERY D ON(A.ORDER_NO = D.ORDER_NO)
+			 WHERE B.MEMBER_ID = #{memberId}
+			   AND (A.ORDER_ITEM_NO, A.OPT_COMB_NO) NOT IN (SELECT ORDER_ITEM_NO, OPT_COMB_NO FROM TBL_REVIEW)
+			   AND D.DELIVERY_DATE IS NOT NULL
+	</select>
+		   
+	
+	<!-- 작성 가능한 리뷰 조회 -->
+	<select id="getItemsToPostAReview" resultMap="orderResultMap">
+		SELECT
+			   A.ORDER_NO
+			 , A.ORDER_ITEM_NO
+			 , A.OPT_COMB_NO
+			 , B.ORDER_DATE
+			 , O.OPT_ADD_PRICE
+			 , O.OPT_MANAGE_NM
+			 , P.PROD_NO
+			 , P.PROD_NM
+			 , B.BRAND_NM
+			 , T.THUMBNAIL_PATH
+		  FROM TBL_ORDER_ITEM A
+		  LEFT JOIN TBL_ORDER B ON(A.ORDER_NO = B.ORDER_NO)
+		  LEFT JOIN TBL_DELIVERY D ON(A.ORDER_NO = D.ORDER_NO)
+		  LEFT JOIN TBL_OPTION_COMB O ON(A.OPT_COMB_NO = O.OPT_COMB_NO)
+		  LEFT JOIN TBL_PRODUCT P ON(O.PROD_NO = P.PROD_NO)
+		  LEFT JOIN TBL_BRAND B ON(P.BRAND_CD = B.BRAND_CD)
+		  LEFT JOIN TBL_ATTACHMENT T ON(P.PROD_NO = T.REF_PROD_NO)
+		 WHERE B.MEMBER_ID = #{memberId}
+		   AND (A.ORDER_ITEM_NO, A.OPT_COMB_NO) NOT IN (SELECT ORDER_ITEM_NO, OPT_COMB_NO FROM TBL_REVIEW)
+		   AND D.DELIVERY_DATE IS NOT NULL
+		 ORDER BY D.DELIVERY_DATE DESC
+	</select>
+	
+	<!-- 작성한 모든 리뷰 조회 -->
+	<select id="getMemberReviewPosts" resultMap="reviewResultMap">
+		SELECT
+			   A.REVIEW_NO
+			 , A.OPT_COMB_NO
+			 , A.ORDER_ITEM_NO
+			 , SUBSTR(A.MEMBER_ID, 1, 4) || RPAD('*', LENGTH(A.MEMBER_ID)-4, '*') MEMBER_ID
+			 , A.REVW_CONTENT
+			 , A.REVW_REG_DATE
+			 , A.REVW_RATINGS
+			 , B.THUMBNAIL_PATH
+			 , C.PROD_NO
+			 , C.OPT_ADD_PRICE
+			 , C.OPT_MANAGE_NM
+			 , D.PROD_NM
+		  FROM TBL_REVIEW A
+		  LEFT JOIN TBL_ATTACHMENT B ON(A.REVIEW_NO = B.REF_REVW_NO)
+		  LEFT JOIN TBL_OPTION_COMB C ON(A.OPT_COMB_NO = C.OPT_COMB_NO)
+		  LEFT JOIN TBL_PRODUCT D ON(C.PROD_NO = D.PROD_NO)
+		 WHERE A.MEMBER_ID = #{memberId}
+		 ORDER BY A.REVW_REG_DATE
+	</select>
+	
+	<!-- 리뷰 작성용 주문정보 조회 -->
+	<select id="getOrderInfoToReview" resultMap="orderResultMap">
+		SELECT
+			   A.ORDER_NO
+			 , A.ORDER_ITEM_NO
+			 , A.OPT_COMB_NO
+			 , B.ORDER_DATE
+			 , L.DELIVERY_DATE
+			 , O.OPT_ADD_PRICE
+			 , O.OPT_MANAGE_NM
+			 , P.PROD_NO
+			 , P.PROD_NM
+			 , B.BRAND_NM
+			 , T.THUMBNAIL_PATH
+		  FROM TBL_ORDER_ITEM A
+		  LEFT JOIN TBL_ORDER B ON(A.ORDER_NO = B.ORDER_NO)
+		  LEFT JOIN TBL_DELIVERY L ON(B.ORDER_NO = L.ORDER_NO)
+		  LEFT JOIN TBL_OPTION_COMB O ON(A.OPT_COMB_NO = O.OPT_COMB_NO)
+		  LEFT JOIN TBL_PRODUCT P ON(O.PROD_NO = P.PROD_NO)
+		  LEFT JOIN TBL_BRAND B ON(P.BRAND_CD = B.BRAND_CD)
+		  LEFT JOIN TBL_ATTACHMENT T ON(P.PROD_NO = T.REF_PROD_NO)
+		 WHERE B.MEMBER_ID = #{ memberId }
+		   AND A.ORDER_ITEM_NO = #{ orderItemNo }
+		   AND A.OPT_COMB_NO = #{ optCombNo }
 	</select>
 	
 	<!-- 주문번호별 주문금액 합계 조회 -->

@@ -12,6 +12,7 @@ import com.pro.pair.product.model.dto.OptionCombDTO;
 import com.pro.pair.product.model.dto.OptionDTO;
 import com.pro.pair.product.model.dto.OptionValueDTO;
 import com.pro.pair.product.model.dto.ProductDTO;
+import com.pro.pair.review.model.dto.ReviewDTO;
 import com.pro.pair.upload.model.dto.AttachmentDTO;
 
 @Mapper
@@ -57,4 +58,6 @@ public interface ProductMapper {
 	List<OptionCombDTO> getOptionDetailsListByProdNo(int prodNo);
 	
 	OptionCombDTO findOptionCombByName(int prodNo, String combName);
+	
+	List<ReviewDTO> getReviewListByProdNo(int prodNo);
 }

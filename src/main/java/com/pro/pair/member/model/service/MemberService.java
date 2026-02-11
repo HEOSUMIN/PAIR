@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import com.pro.pair.cart.model.dto.OrderDTO;
-import com.pro.pair.cart.model.dto.OrderItemDTO;
 import com.pro.pair.member.model.dto.MemberDTO;
+import com.pro.pair.review.model.dto.ReviewDTO;
 
 public interface MemberService extends UserDetailsService  {
 	
@@ -22,7 +22,15 @@ public interface MemberService extends UserDetailsService  {
 	
 	OrderDTO getMemberOrderDetails(String memberId, String orderNo);
 
-	List<OrderItemDTO> getOptionListByOrderNo(String orderNo);
+	List<OrderDTO> getOptionListByOrderNo(String orderNo);
 	
 	int getTotalOrderAmountByOrderNo(String orderNo);
+	
+	List<OrderDTO> getItemsToPostAReview(String memberId);
+	
+	List<ReviewDTO> getMemberReviewPosts(String memberId);
+	
+	OrderDTO getOrderInfoToReview(String memberId, int orderItemNo, int optCombNo);
+	
+	int getWritableReviewCount(String memberId); 
 }

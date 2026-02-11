@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+	<meta charset="UTF-8">
+	<title>content details modal</title>
+</head>
+<body>
+	<!--/* review details */-->
+	<div th:id="'review-content' + ${ postList.reviewNo }" class="modal fade" tabindex="-1" role="dialog" th:fragment="reviewModal">
+		<div class="modal-lg modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+      			<div class="modal-header">
+      				<div class="product">
+      					<h3>
+							<a th:href="@{/product/details(no=*{ postList.optionComb.ProdNo })}" style="text-decoration: none; color: inherit;">[[${postList.product.prodNm}]]</a>
+						</h3>
+      				</div>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+				</div>
+				<div class="modal-body">
+					<th:block th:if="${postList.attachmentList != null and !#lists.isEmpty(postList.attachmentList) and postList.attachmentList[0].thumbnailPath != null}">
+					<div class="body">
+						<div id="carouselIndicators" class="carousel slide" data-bs-ride="true">
+							<div class="carousel-indicators">
+								<th:block th:if="${#lists.size(postList.attachmentList) >= 1}">
+									<button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+								</th:block>
+								<th:block th:if="${#lists.size(postList.attachmentList) >= 2}">
+									<button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+								</th:block>
+								<th:block th:if="${#lists.size(postList.attachmentList) >= 3}">
+									<button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+								</th:block>
+							</div>
+							<div class="carousel-inner">
+								<th:block th:if="${#lists.size(postList.attachmentList) >= 1}">
+									<div class="carousel-item active">
+										<img th:src="${ postList.attachmentList[0].thumbnailPath }" class="d-block w-100" alt="attachment 1">
+									</div>
+								</th:block>
+								<th:block th:if="${#lists.size(postList.attachmentList) >= 2}">
+									<div class="carousel-item">
+										<img th:src="${ postList.attachmentList[1].thumbnailPath }" class="d-block w-100" alt="attachment 2">
+									</div>
+								</th:block>
+								<th:block th:if="${#lists.size(postList.attachmentList) >= 3}">
+									<div class="carousel-item">
+										<img th:src="${ postList.attachmentList[2].thumbnailPath }" class="d-block w-100" alt="attachment 3">
+									</div>
+								</th:block>
+							</div>
+							<button class="carousel-control-prev" type="button" data-bs-target="#carouselIndicators" data-bs-slide="prev">
+								<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+								<span class="visually-hidden">Previous</span>
+							</button>
+							<button class="carousel-control-next" type="button" data-bs-target="#carouselIndicators" data-bs-slide="next">
+								<span class="carousel-control-next-icon" aria-hidden="true"></span>
+								<span class="visually-hidden">Next</span>
+							</button>
+						</div>
+					</div>
+					</th:block>
+					 <th:block th:if="${postList.attachmentList == null or #lists.isEmpty(postList.attachmentList) or postList.attachmentList[0].thumbnailPath == null}">
+						<div id="imageNotFound"><span class="fs-4">PAIR</span></div>
+					</div>
+					</th:block>
+					<div class="body">
+						<br>
+						<div class="info">
+							<i class="fa-solid fa-user"></i><span>&nbsp;[[${ postList.memberId }]]&nbsp;|&nbsp;</span>
+							<span>[[${#dates.format(postList.revwRegDate, 'yyyy.MM.dd')}]]</span>
+						</div>	
+						<div class="star">
+							<span th:value="${ postList.revwRatings }"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span>
+						</div>
+						<div class="option">
+		    				<p>옵션&nbsp;: 
+		    					<span th:text="|&nbsp;${ postList.optionComb.optManageNm }|"></span>
+			    			</p>
+						</div>
+						<hr>
+						<div class="content">
+							<span>[(${ postList.revwContent })]</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</body>
+</html>

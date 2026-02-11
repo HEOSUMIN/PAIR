@@ -28,4 +28,5 @@ public class ProductDTO {
 	private BrandDTO brand;
 	
 	private List<AttachmentDTO> attachmentList;
+	private OptionCombDTO optionComb;
 }

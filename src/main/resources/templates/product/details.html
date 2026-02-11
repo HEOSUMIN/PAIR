@@ -92,6 +92,17 @@
 			</form>
 		</div>
 	</div>
+	<div class="container content-wrapper">
+		<ul class="nav nav-tabs" id="infoTab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<button class="nav-link active" id="detail-tab" data-bs-toggle="tab" data-bs-target="#detail" type="button" role="tab" aria-controls="detail" aria-selected="true">상품상세정보</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="review-tab" data-bs-toggle="tab" data-bs-target="#review" type="button" role="tab" aria-controls="review" aria-selected="false">상품리뷰([[${#lists.size(reviewList)}]])</button>
+			</li>
+		</ul>
+		
+	</div>
 	<!-- JS -->
 	<th:block layout:fragment="script">
 		<script th:src="@{/js/product.js}" type="text/javascript"></script>

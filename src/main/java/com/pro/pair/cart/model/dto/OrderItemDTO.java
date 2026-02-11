@@ -14,10 +14,4 @@ public class OrderItemDTO {
 	private int optCombNo;
 	private int orderQuantity;
 	private int orderAmount;
-	
-	private ProductDTO product;
-	private BrandDTO brand;
-	private AttachmentDTO attachmentList;
-	private OptionCombDTO optionComb;
-	
 }
