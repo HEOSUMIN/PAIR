@@ -21,9 +21,10 @@
 					<li class="td"><select id="category" name="category" class="dataTable-selector selector" onchange="changeCategory();">
 							<option selected disabled hidden>선택</option>
 							<option th:each="category : ${ category }" th:if="${category.lvl == 1}" th:value="${category.categoryNo }" th:text="${ category.categoryNm }"></option>
-					</sect>le <select id="subCategory" name="subCategory" class="dataTable-selector selector">
+							</select> <select id="subCategory" name="subCategory" class="dataTable-selector selector">
 							<option selected disabled hidden>선택</option>
-					</select></li>
+					</select>
+					</li>
 				</ul>
 				<ul>
 					<li class="th">

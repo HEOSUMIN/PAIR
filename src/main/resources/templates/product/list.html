@@ -85,7 +85,9 @@
 							<div class="card-body">
 								<div class="text-left" th:value="${ product.price - (product.price * product.discountRate / 100) }">
 									<small>[[${ product.brand.brandNm }]]</small>
+									<br>
 									<h6>[[${ product.prodNm }]]</h6>
+									<br>
 									<!-- 판매가A. 할인 대상이 아닌 경우 원가 그대로 출력 -->
 									<th:block th:if="${product.discountRate} == 0">
 										<b class="price">[[${#numbers.formatInteger(product.price, 3, 'COMMA')}]]원</b>

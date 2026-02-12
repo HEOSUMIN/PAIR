@@ -1076,10 +1076,10 @@ a:hover {
     color: #424242;
     text-decoration: none;
 }
-
+/* 
 .card > a > .card-body {
 	display: inline-flex;
-}
+} */
 
 .card > a > .card-body > .text-left > b,
 .card > a > .card-body > .text-left > span > b {
@@ -1096,8 +1096,6 @@ a:hover {
 
 .card > a > .card-body > .text-left > h6 {
 	display: inline-block;
-	width: 180px;
-	max-width: 180px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
