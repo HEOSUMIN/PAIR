@@ -23,10 +23,39 @@ public class ProductDTO {
 	private Date insDt;					//상품등록일자 
 	private Date uptDt;					//상품수정일자	
 	private char useYn;					//사용여부
+	private String tag;					//추천음식태그 
 	
 	private CategoryDTO category;
 	private BrandDTO brand;
 	
 	private List<AttachmentDTO> attachmentList;
 	private OptionCombDTO optionComb;
+	
+	private List<ProductDTO> prodCombs; 	//추천조합상품
+//	
+//	
+//	public ProductDTO() {}
+//	
+//	public ProductDTO(ProductDTO prod, List<ProductDTO> prodCombs) {
+//		this.prodNo = prod.getProdNo();
+//		this.prodNm = prod.getProdNm();
+//		this.brandCd = prod.getBrandCd();
+//		this.brandNm = prod.getBrandNm();
+//		this.categoryNo = prod.getCategoryNo();
+//		this.discountRate = prod.getDiscountRate();
+//		this.salePrice = prod.getSalePrice();
+//		this.prodDesc = prod.getProdDesc();
+//		this.prodDetailContent = prod.getProdDetailContent();
+//		this.insDt = prod.getInsDt();
+//		this.uptDt = prod.getUptDt();
+//		this.useYn = prod.getUseYn();
+//		this.tag = prod.getTag();
+//		
+//		this.category = prod.getCategory();
+//		this.brand = prod.getBrand();
+//		this.attachmentList = prod.getAttachmentList();
+//		this.optionComb = prod.getOptionComb();
+//		this.prodCombs = prodCombs;
+//		
+//	}
 }

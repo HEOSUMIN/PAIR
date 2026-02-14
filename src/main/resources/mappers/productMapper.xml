@@ -405,7 +405,54 @@
 		 WHERE C.PROD_NO = #{prodNo}
 		 ORDER BY A.REVW_REG_DATE DESC
 	</select>
-
+	
+	<!-- 조합 2개 이상인 상품 목록 추출 -->
+	<select id="findProductsWithMultipleCombinations" parameterType="int">
+		SELECT A.PROD_NO
+		FROM TBL_PRODUCT A
+		INNER JOIN TBL_PRODUCT_COMB B ON
+		A.PROD_NO = B.PROD_NO
+		GROUP BY A.PROD_NO, A.PROD_NM, A.CATEGORY_NO
+		HAVING COUNT(B.PROD_COMB_NO) >= 2
+	</select>
+	
+		<!-- 상품 상세정보 조회 -->
+	<select id="getProductDetailsWithThumbnail" resultMap="productResultMap">
+		SELECT B.PROD_NO
+		     , B.PROD_NM
+		     , B.BRAND_CD
+		     , C.BRAND_NM
+		     , B.PRICE
+		     , B.DISCOUNT_RATE
+		     , B.PROD_DESC
+		     , B.TAG
+		     , D.SAVE_PATH
+		     , D.THUMBNAIL_PATH
+		FROM TBL_PRODUCT B
+		INNER JOIN TBL_BRAND C ON B.BRAND_CD = C.BRAND_CD
+		LEFT JOIN TBL_ATTACHMENT D ON B.PROD_NO = D.REF_PROD_NO AND D.FILE_TYPE = 'THUMB_MAIN'
+		WHERE B.PROD_NO = #{ prodNo }
+	</select>
+	
+	<!-- 조합 상품 상세 리스트 출력  -->
+	<select id="findCombinationsByProducNo" resultMap="productResultMap">
+		SELECT B.PROD_NO
+			, B.PROD_NM
+			, B.BRAND_CD
+			, C.BRAND_NM
+			, B.PRICE
+			, B.DISCOUNT_RATE
+			, B.PROD_DESC
+			, B.TAG
+			, D.SAVE_PATH
+			, D.THUMBNAIL_PATH
+		FROM TBL_PRODUCT_COMB A
+		INNER JOIN TBL_PRODUCT B ON A.PROD_COMB_NO = B.PROD_NO
+		INNER JOIN TBL_BRAND C ON B.BRAND_CD = C.BRAND_CD
+		LEFT JOIN TBL_ATTACHMENT D ON b.PROD_NO = D.REF_PROD_NO AND D.FILE_TYPE = 'THUMB_MAIN'
+		WHERE B.USE_YN = 'Y' AND A.PROD_NO = #{ prodNo }
+	</select>
+		
 	
 	<!-- 상품 등록 -->
 	<insert id="addProduct">

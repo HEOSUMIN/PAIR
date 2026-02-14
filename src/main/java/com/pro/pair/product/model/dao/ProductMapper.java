@@ -60,4 +60,10 @@ public interface ProductMapper {
 	OptionCombDTO findOptionCombByName(int prodNo, String combName);
 	
 	List<ReviewDTO> getReviewListByProdNo(int prodNo);
+	
+	List<Integer> findProductsWithMultipleCombinations();
+	
+	ProductDTO getProductDetailsWithThumbnail(int prodNo);
+	
+	List<ProductDTO> findCombinationsByProducNo(int prodNo);
 }

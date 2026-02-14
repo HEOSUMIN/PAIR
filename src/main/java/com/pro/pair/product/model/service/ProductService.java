@@ -54,4 +54,6 @@ public interface ProductService {
 	OptionCombDTO findOptionCombByName(int prodNo, String combName);
 	
 	List<ReviewDTO> getReviewListByProdNo(int prodNo);
+	
+	List<ProductDTO> getTodayRecommendation(int limit);
 }

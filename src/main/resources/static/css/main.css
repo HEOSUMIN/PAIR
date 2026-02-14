@@ -1,0 +1,25 @@
+@charset "UTF-8";
+.today-recommend {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+.recommend-item {
+    margin-bottom: 60px;
+}
+
+.combination-wrapper {
+    display: flex;
+    gap: 20px;
+}
+
+.combo-item {
+    width: 160px;
+    text-align: center;
+}
+
+.main-product img,
+.combo-item img {
+    width: 100%;
+    border-radius: 8px;
+}
