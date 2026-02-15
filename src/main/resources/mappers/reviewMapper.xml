@@ -9,6 +9,7 @@
 		  INTO TBL_REVIEW
 		(
 		  REVIEW_NO
+		, PROD_NO
 		, OPT_COMB_NO
 		, ORDER_ITEM_NO
 		, MEMBER_ID
@@ -19,6 +20,7 @@
 		VALUES
 		(
 		  SEQ_REVIEW_NO.NEXTVAL
+		, #{ prodNo }
 		, #{ optCombNo }
 		, #{ orderItemNo }
 		, #{ memberId }

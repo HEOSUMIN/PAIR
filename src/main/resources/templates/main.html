@@ -9,45 +9,49 @@
 </th:block>
 </head>
 <body layout:fragment="content">
-	<header class="py-5 bg-image-full" th:style="|background-image: url('@{/images/main_banner.png}')|">
+	<header class="py-5 bg-image-full" th:style="|background-image: url('@{/images/banner.jpeg}')|">
 		<div class="text-center my-5">
-			<img class="img-fluid rounded-circle mb-4" src="https://dummyimage.com/150x150/6c757d/dee2e6.jpg" alt="..." />
+			<!-- <img class="img-fluid rounded-circle mb-4" src="https://dummyimage.com/150x150/6c757d/dee2e6.jpg" alt="..." /> -->
 			<h1 class="text-white fs-3 fw-bolder">Make your pair</h1>
 			<p class="text-white-50 mb-0">Landing Page Template</p>
 		</div>
 	</header>
 	<!-- Content section-->
-	<section class="container my-5">
-		<h2 class="text-center mb-5">오늘의 추천 식기 조합</h2>
-		<div class="col-lg-8 d-flex justify-content-center">
-			<div id="recommendCarousel" class="carousel slide w-75" data-bs-ride="carousel">
-				<div class="carousel-inner">
-					<!-- recommendProdList 한 개가 슬라이드 한 장 -->
-					<div class="carousel-item" th:each="product, stat : ${recommendProdList}" th:classappend="${stat.index == 0} ? ' active'">
-						<div class="d-flex justify-content-center align-items-center gap-4">
-							<div class="card main-card shadow">
-								<img th:src="@{${product.attachmentList[0].thumbnailPath}}" class="card-img-top">
-
-								<div class="card-body text-center">
-									<h5 th:text="${product.prodNm}"></h5>
-									<p th:text="|${product.price}원|"></p>
-								</div>
-							</div>
-							<div th:each="combo : ${product.prodCombs}" class="card sub-card shadow-sm">
-								<img th:src="@{${combo.attachmentList[0].thumbnailPath}}" class="card-img-top">
-								<div class="card-body text-center">
-									<p th:text="${combo.prodNm}"></p>
+	<section class="py-5">
+		<div class="container my-5">
+			<h2 class="text-center mb-5">오늘의 추천 식기 조합 🍽️</h2>
+			<div class="row">
+				<div class="col-lg-8 mx-auto">
+					<div id="recommendCarousel" class="carousel slide" data-bs-ride="carousel">
+						<div class="carousel-inner">
+							<div class="carousel-item" th:each="product, stat : ${recommendProdList}" th:classappend="${stat.index == 0} ? ' active'">
+								<div class="d-flex justify-content-center align-items-center gap-4">
+									<!-- 메인 상품 -->
+									<div class="card main-card shadow">
+										<img th:src="@{${product.attachmentList[0].thumbnailPath}}" class="card-img-top">
+										<div class="card-body text-center">
+											<p th:text="${product.prodNm}"></p>
+										</div>
+									</div>
+									<!-- 조합 상품 -->
+									<div th:each="combo : ${product.prodCombs}" class="card sub-card shadow-sm">
+										<img th:src="@{${combo.attachmentList[0].thumbnailPath}}" class="card-img-top">
+										<div class="card-body text-center">
+											<p th:text="${combo.prodNm}"></p>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
+						<button class="carousel-control-prev" type="button" data-bs-target="#recommendCarousel" data-bs-slide="prev">
+							<span class="carousel-control-prev-icon"></span>
+						</button>
+
+						<button class="carousel-control-next" type="button" data-bs-target="#recommendCarousel" data-bs-slide="next">
+							<span class="carousel-control-next-icon"></span>
+						</button>
 					</div>
 				</div>
-				<button class="carousel-control-prev" type="button" data-bs-target="#recommendCarousel" data-bs-slide="prev">
-					<span class="carousel-control-prev-icon"></span>
-				</button>
-				<button class="carousel-control-next" type="button" data-bs-target="#recommendCarousel" data-bs-slide="next">
-					<span class="carousel-control-next-icon"></span>
-				</button>
 			</div>
 		</div>
 	</section>
@@ -59,24 +63,6 @@
 					<p class="lead">A single, lightweight helper class allows you to add engaging, full width background images to sections of your page.</p>
 					<p class="mb-0">The universe is almost 14 billion years old, and, wow! Life had no problem starting here on Earth! I think it would be
 						inexcusably egocentric of us to suggest that we're alone in the universe.</p>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Image element - set the background image for the header in the line below-->
-	<div class="py-5 bg-image-full" style="background-image: url('https://source.unsplash.com/4ulffa6qoKA/1200x800')">
-		<!-- Put anything you want here! The spacer below with inline CSS is just for demo purposes!-->
-		<div style="height: 20rem"></div>
-	</div>
-	<!-- Content section-->
-	<section class="py-5">
-		<div class="container my-5">
-			<div class="row justify-content-center">
-				<div class="col-lg-6">
-					<h2>Engaging Background Images</h2>
-					<p class="lead">The background images used in this template are sourced from Unsplash and are open source and free to use.</p>
-					<p class="mb-0">I can't tell you how many people say they were turned off from science because of a science teacher that completely sucked
-						out all the inspiration and enthusiasm they had for the course.</p>
 				</div>
 			</div>
 		</div>

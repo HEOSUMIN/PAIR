@@ -28,6 +28,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import com.pro.pair.paging.model.dto.Criteria;
 import com.pro.pair.paging.model.dto.ItemCriteria;
+import com.pro.pair.paging.model.dto.PageDTO;
 import com.pro.pair.product.model.dto.BrandDTO;
 import com.pro.pair.product.model.dto.CategoryDTO;
 import com.pro.pair.product.model.dto.OptionCombDTO;
@@ -279,11 +280,15 @@ public class productController {
 	 * 상품목록
 	 */
 	@GetMapping("/product/list")
-	public void getProductListByCategory(@Valid @ModelAttribute("itemCriteria") ItemCriteria itemCriteria, HttpSession session, Model model) {
+	public void getProductListByCategory(@Valid @ModelAttribute("itemCriteria") ItemCriteria itemCriteria, HttpServletRequest request, HttpSession session, Model model) {
 		String section = itemCriteria.getSection();
 		log.info("요첨 section : {}", section);
 		log.info("요첨 itemCriteria : {}", itemCriteria);
 		itemCriteria.setSection(section); //대분류 카테고리 섹션
+		
+		/* 상품 수 */
+		int total = productService.getTotalNumberByCriteria(itemCriteria); 
+		
 		
 		List<ProductDTO> sortedList = productService.getProductListByCategorySection(itemCriteria);
 		List<ProductDTO> productList = new ArrayList<>();
@@ -301,10 +306,11 @@ public class productController {
 		
 		
 		model.addAttribute("section", section == null || section == "" ? "전체 상품" : section);
-		model.addAttribute("total",10);
+		model.addAttribute("total", total);
 		model.addAttribute("productList",productList);
 		model.addAttribute("thumbnailList",thumbnailList);
-		
+		model.addAttribute("requestURI", request.getRequestURI());
+		model.addAttribute("pageMaker", new PageDTO(total, 10, itemCriteria));
 
 	}
 	

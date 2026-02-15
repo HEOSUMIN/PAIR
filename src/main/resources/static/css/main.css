@@ -1,25 +1,72 @@
 @charset "UTF-8";
-.today-recommend {
-    width: 1000px;
-    margin: 0 auto;
-}
 
-.recommend-item {
-    margin-bottom: 60px;
-}
-
-.combination-wrapper {
-    display: flex;
-    gap: 20px;
-}
-
-.combo-item {
-    width: 160px;
+h2 {
+	font-size: 20px !important;
     text-align: center;
 }
 
-.main-product img,
-.combo-item img {
-    width: 100%;
-    border-radius: 8px;
+p{
+	font-size: 12px !important;
+    text-align: center;
+}
+
+.today-recommend {
+	width: 1000px;
+	margin: 0 auto;
+}
+
+.recommend-item {
+	margin-bottom: 60px;
+}
+
+.combination-wrapper {
+	display: flex;
+	gap: 20px;
+}
+
+.combo-item {
+	width: 160px;
+	text-align: center;
+}
+
+.main-product img, .combo-item img {
+	width: 100%;
+	border-radius: 8px;
+}
+
+/* 메인, 서브 카드 동일한 크기 */
+.main-card, .sub-card {
+	width: 200px; 
+	height: 300px; 
+	flex-shrink: 0; 
+}
+
+/* 카드 간격 유지 */
+.carousel-item .d-flex {
+	gap: 1rem; 
+	justify-content: start; 
+}
+
+/* 화살표 색상 연한 회색 */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(200, 200, 200, 0.7); /* 연한 회색 */
+    border-radius: 50%; /* 원형으로 */
+    width: 40px; 
+    height: 40px;
+    background-size: 100%, 100%;
+    background-image: none; /* 기존 SVG 제거 */
+}
+
+/* 커스텀 화살표 아이콘 만들기 */
+.carousel-control-prev-icon::after {
+    content: '\2039'; /* ‹ */
+    color: #ccc; /* 연한 회색 */
+    font-size: 30px;
+}
+
+.carousel-control-next-icon::after {
+    content: '\203A'; /* › */
+    color: #ccc; /* 연한 회색 */
+    font-size: 30px;
 }

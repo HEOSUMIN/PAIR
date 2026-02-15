@@ -31,6 +31,8 @@ public interface ProductService {
 	
 	int getOnSaleNumber(Criteria criteria);		//판매중인상품개수
 	
+	int getTotalNumberByCriteria(ItemCriteria itemCriteria);		//필터별 상품개수
+	
 	//상품목록조회 
 	List<ProductDTO> getProductList(Criteria criteria);
 		

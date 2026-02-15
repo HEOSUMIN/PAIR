@@ -13,6 +13,7 @@ import lombok.Data;
 public class ReviewDTO {
 	private int reviewNo;
 	private int optCombNo;
+	private int prodNo;
 	private String orderItemNo;
 	private String memberId;
 	private String revwContent;

@@ -142,6 +142,7 @@
 	<!-- 리뷰 조회용 -->
 	<resultMap id="reviewResultMap" type="com.pro.pair.review.model.dto.ReviewDTO">
 		<id property="reviewNo" column="REVIEW_NO"/>
+		<result property="prodNo" column="PROD_NO"/>
 		<result property="optCombNo" column="OPT_COMB_NO"/>
 		<result property="orderItemNo" column="ORDER_ITEM_NO"/>
 		<result property="memberId" column="MEMBER_ID"/>
@@ -364,7 +365,7 @@
 			 , A.REVW_REG_DATE
 			 , A.REVW_RATINGS
 			 , B.THUMBNAIL_PATH
-			 , C.PROD_NO
+			 , A.PROD_NO
 			 , C.OPT_ADD_PRICE
 			 , C.OPT_MANAGE_NM
 			 , D.PROD_NM

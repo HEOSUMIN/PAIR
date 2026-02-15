@@ -17,13 +17,7 @@
 				<li class="breadcrumb-item active" aria-current="page">[[${ section }]]</li>
 			</ol>
 		</nav>
-		<!-- 카테고리별 소분류 목록 -->
-		<th:block th:unless="${ section == '전체 상품' }">
-			<div class="classification">
-				<h2 class="classify-title">[[${ section }]]</h2>
-				<div class="classify-list"></div>
-			</div>
-		</th:block>
+		<br>
 		<div class="sorting">
 			<form id="sortingForm" name="sortingForm" class="sorting-form" th:object="${itemCriteria}" th:action="@{/product/list}" method="get">
 				<!--/* 폼 제출용 */-->
@@ -114,6 +108,9 @@
 				</div>
 			</div>
 		</section>
+		<th:block layout:fragment="paging">
+		<nav th:replace="/fragments/paging.html :: paging"></nav>
+	</th:block>
 	</div>
 </body>
 </html>

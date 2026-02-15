@@ -31,6 +31,8 @@ public interface ProductMapper {
 	
 	int getTotalNumber(Criteria criteria);
 	
+	int getTotalNumberByCriteria(ItemCriteria itemCriteria);
+	
 	int getOnSaleNumber(Criteria criteria);
 	
 	List<ProductDTO> getProductList(Criteria criteria);

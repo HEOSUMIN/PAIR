@@ -71,6 +71,11 @@ public class ProductServiceImpl implements ProductService {
 	public int getTotalNumber(Criteria criteria) {
 		return productMapper.getTotalNumber(criteria);
 	}
+	
+	@Override
+	public int getTotalNumberByCriteria(ItemCriteria itemCriteria) {
+		return productMapper.getTotalNumberByCriteria(itemCriteria);
+	}
 
 	@Override
 	public int getOnSaleNumber(Criteria criteria) {
@@ -222,4 +227,5 @@ public class ProductServiceImpl implements ProductService {
 
 		return result;
 	}
+
 }
