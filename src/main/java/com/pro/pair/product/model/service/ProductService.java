@@ -58,4 +58,8 @@ public interface ProductService {
 	List<ReviewDTO> getReviewListByProdNo(int prodNo);
 	
 	List<ProductDTO> getTodayRecommendation(int limit);
+	
+	int getTotalNumberOfReviews(int prodNo);
+	
+	double averageReviewRating(int prodNo);
 }

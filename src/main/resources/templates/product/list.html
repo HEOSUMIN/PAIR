@@ -92,7 +92,8 @@
 										<del>[[${#numbers.formatInteger(product.price, 3, 'COMMA')}]]</del>
 										<b>&nbsp;[[${ product.discountRate }]]%</b>
 									</th:block>
-									<span> 리뷰수&nbsp;<b>[리뷰수]</b>&nbsp;&#8729; 평점&nbsp;<b>[평점]</b>/<b>5</b>
+									<span> 리뷰수&nbsp;<b>[[${ reviewNumberMap.get(product.prodNo) }]]</b>&nbsp;&#8729; 
+										   평점&nbsp;<b>[[${ reviewRatingMap.get(product.prodNo) }]]</b>/<b>5</b>
 									</span>
 								</div>
 								<div class="text-right" th:unless="${ memberWishItem }">

@@ -294,21 +294,36 @@ public class productController {
 		List<ProductDTO> productList = new ArrayList<>();
 		List<AttachmentDTO> thumbnailList = new ArrayList<>();
 		
+		Map<Integer, Integer> reviewNumberMap = new HashMap<>();
+		Map<Integer, Double> reviewRatingMap = new HashMap<>();
+		
 		for(int i=0; i<sortedList.size(); i++) {
 			int prodNo = sortedList.get(i).getProdNo();
 			ProductDTO prodDetails = productService.getProductDetails(prodNo);
 			productList.add(prodDetails);
 			AttachmentDTO mainThumb = productService.getMainThumbnailByProdNo(prodNo);
 			thumbnailList.add(mainThumb);
+			
+			//상품별 리뷰 개수  
+			int number = productService.getTotalNumberOfReviews(prodNo);
+			reviewNumberMap.put(prodNo, number);
+			if(number > 0) {
+				//상품별 평점
+				double averageRating = productService.averageReviewRating(prodNo);
+				reviewRatingMap.put(prodNo, averageRating);
+			} else {
+				reviewRatingMap.put(prodNo, 0.0);
+			}
 		}
 		
 		log.info("productList : {}", productList);
 		
-		
-		model.addAttribute("section", section == null || section == "" ? "전체 상품" : section);
+		model.addAttribute("section", section);
 		model.addAttribute("total", total);
 		model.addAttribute("productList",productList);
 		model.addAttribute("thumbnailList",thumbnailList);
+		model.addAttribute("reviewNumberMap", reviewNumberMap);
+		model.addAttribute("reviewRatingMap", reviewRatingMap);
 		model.addAttribute("requestURI", request.getRequestURI());
 		model.addAttribute("pageMaker", new PageDTO(total, 10, itemCriteria));
 

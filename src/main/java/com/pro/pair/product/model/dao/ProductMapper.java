@@ -68,4 +68,8 @@ public interface ProductMapper {
 	ProductDTO getProductDetailsWithThumbnail(int prodNo);
 	
 	List<ProductDTO> findCombinationsByProducNo(int prodNo);
+	
+	int getTotalNumberOfReviews(int prodNo);
+	
+	double averageReviewRating(int prodNo);
 }

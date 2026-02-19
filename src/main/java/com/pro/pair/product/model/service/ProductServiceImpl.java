@@ -228,4 +228,14 @@ public class ProductServiceImpl implements ProductService {
 		return result;
 	}
 
+	@Override
+	public int getTotalNumberOfReviews(int prodNo) {
+		return productMapper.getTotalNumberOfReviews(prodNo);
+	}
+
+	@Override
+	public double averageReviewRating(int prodNo) {
+		return productMapper.averageReviewRating(prodNo);
+	}
+
 }

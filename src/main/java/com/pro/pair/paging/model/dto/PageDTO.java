@@ -2,7 +2,9 @@ package com.pro.pair.paging.model.dto;
 
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Data
 public class PageDTO {
 	private int pageSize;
@@ -45,6 +47,9 @@ public class PageDTO {
 		this.startPage = lastPage - (pageSize-1);
 		
 		this.latest = (int)(Math.ceil(totalRecordCount*1.0 / itemCriteria.getItems()));
+		
+		log.info("startPage: {}", startPage);
+		log.info("lastPage: {}", lastPage);
 		
 		if(lastPage > latest) {
 			this.lastPage = latest == 0 ? 1 : latest;
