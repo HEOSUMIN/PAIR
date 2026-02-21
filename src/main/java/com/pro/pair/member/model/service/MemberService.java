@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import com.pro.pair.cart.model.dto.OrderDTO;
 import com.pro.pair.member.model.dto.MemberDTO;
+import com.pro.pair.member.model.dto.WishListDTO;
 import com.pro.pair.review.model.dto.ReviewDTO;
 
 public interface MemberService extends UserDetailsService  {
@@ -33,4 +34,10 @@ public interface MemberService extends UserDetailsService  {
 	OrderDTO getOrderInfoToReview(String memberId, int orderItemNo, int optCombNo);
 	
 	int getWritableReviewCount(String memberId); 
+	
+	List<WishListDTO> getMemberWishList(String memberId);
+	
+	int deleteItemFromWishList(String memberId, int prodNo);
+	
+	List<Integer> getProdNoFromWishList(String memberId);
 }

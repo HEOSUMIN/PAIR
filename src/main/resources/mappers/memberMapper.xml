@@ -108,7 +108,6 @@
 		<association property="brand" resultMap="brandResultMap"/>
 		<association property="attachmentList" resultMap="thumbnailResultMap"/> 
 		<collection property="optionComb" resultMap="optionCombResultMap"/>
-		
 	<!--<association property="point" resultMap="pointResultMap"/> 1:1 -->
 	</resultMap>
 	
@@ -152,6 +151,16 @@
 		<association property="optionComb" resultMap="optionCombResultMap"/>
 		<association property="product" resultMap="productResultMap"/>
 		<collection property="attachmentList" resultMap="thumbnailResultMap"/>
+	</resultMap>
+	
+	<!-- 위시리스트 조회용 -->
+	<resultMap id="wishListResultMap" type="com.pro.pair.member.model.dto.WishListDTO">
+		<result property="memberId" column="MEMBER_ID"/>
+		<result property="prodNo" column="PROD_NO"/>
+		<association property="product" resultMap="productResultMap"/> <!-- 1:1 -->
+		<association property="category" resultMap="categoryResultMap"/> <!-- 1:1 -->
+		<association property="brand" resultMap="brandResultMap"/> <!-- 1:1 -->
+		<association property="attachmentList" resultMap="thumbnailResultMap"/> <!-- 1:1 -->
 	</resultMap>
 	
  	<select id="findMemberById" resultMap="memberResultMap">
@@ -411,6 +420,33 @@
 		 WHERE ORDER_NO = #{ orderNo }
 	</select>
 	
+	<!-- 현재 위시리스트 조회 -->
+	<select id="getMemberWishList" resultMap="wishListResultMap">
+	 	SELECT A.MEMBER_ID
+			 , A.PROD_NO
+			 , B.PROD_NM
+			 , B.DISCOUNT_RATE
+			 , C.BRAND_NM
+			 , T.THUMBNAIL_PATH
+		 FROM TBL_WISHLIST A
+			 LEFT JOIN TBL_PRODUCT B ON A.PROD_NO = B.PROD_NO 
+			 LEFT JOIN TBL_BRAND C ON B.BRAND_CD  = C.BRAND_CD 
+			 LEFT JOIN TBL_ATTACHMENT T ON(B.PROD_NO = T.REF_PROD_NO)
+		 WHERE A.MEMBER_ID = #{ memberId }
+	</select>
+	
+	<!-- 위시리스트 상품번호 조회 -->
+	<select id="getProdNoFromWishList" resultType="_int">
+		SELECT
+			   DISTINCT(B.PROD_NO)
+		  FROM TBL_WISHLIST A
+		  LEFT JOIN TBL_PRODUCT B ON(A.PROD_NO = B.PROD_NO)
+		  LEFT JOIN TBL_BRAND C ON(C.BRAND_CD  = B.BRAND_CD)
+		  LEFT JOIN TBL_ATTACHMENT T ON(B.PROD_NO = T.REF_PROD_NO)
+		 WHERE A.MEMBER_ID = #{ memberId }
+	</select>
+	
+	
 	<insert id="insertRole">
 		INSERT
 		INTO TBL_ROLE
@@ -431,6 +467,13 @@
 		   SET LATEST_LOGIN_DT = SYSDATE
 		 WHERE MEMBER_ID = #{ memberId }
 	</update>
-
+	
+	<!-- 위시리스트 항목 삭제 -->
+	<delete id="deleteItemFromWishList">
+		DELETE
+		  FROM TBL_WISHLIST
+		 WHERE MEMBER_ID = #{ memberId }
+		   AND PROD_NO = #{ prodNo }
+	</delete>
 
 </mapper>

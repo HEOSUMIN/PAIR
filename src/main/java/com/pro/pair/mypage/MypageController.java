@@ -6,22 +6,28 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pro.pair.cart.model.dto.OrderDTO;
 import com.pro.pair.cart.model.service.OrderService;
 import com.pro.pair.member.model.dto.UserImpl;
+import com.pro.pair.member.model.dto.WishListDTO;
 import com.pro.pair.member.model.service.MemberService;
 import com.pro.pair.product.model.dto.ProductDTO;
 import com.pro.pair.product.model.service.ProductService;
 import com.pro.pair.review.model.dto.ReviewDTO;
 import com.pro.pair.upload.model.dto.AttachmentDTO;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
@@ -132,6 +138,21 @@ public class MypageController {
 		
 		model.addAttribute("itemList", itemList);
 		model.addAttribute("postList", postList);
+	}
+	
+	
+	
+	/*
+	 * 위시리스트 삭제 
+	 */
+	@PostMapping("/wishlist/delete")
+	public ResponseEntity<Void> deleteWishList(@RequestParam("prodNo") int prodNo, HttpServletRequest request, HttpSession session, Model model) {
+		log.info("prodNo : {}", prodNo);
+		
+		String loginMember = (String) session.getAttribute("loginMember");
+		memberService.deleteItemFromWishList(loginMember, prodNo);
+
+		return ResponseEntity.ok().build();
 	}
 }
 

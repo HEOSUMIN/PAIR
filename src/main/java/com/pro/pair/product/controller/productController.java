@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import com.pro.pair.member.model.service.MemberService;
 import com.pro.pair.paging.model.dto.Criteria;
 import com.pro.pair.paging.model.dto.ItemCriteria;
 import com.pro.pair.paging.model.dto.PageDTO;
@@ -54,10 +55,12 @@ public class productController {
 	public static final int THUMB_HEIGHT_SIZE = 540;
 
 	private final ProductService productService;
+	private final MemberService memberService;
 	private final MessageSource messageSource;
 
-	public productController(ProductService productService, MessageSource messageSource) {
+	public productController(ProductService productService, MemberService memberService, MessageSource messageSource) {
 		this.productService = productService;
+		this.memberService = memberService;
 		this.messageSource = messageSource;
 	}
 
@@ -289,7 +292,6 @@ public class productController {
 		/* 상품 수 */
 		int total = productService.getTotalNumberByCriteria(itemCriteria); 
 		
-		
 		List<ProductDTO> sortedList = productService.getProductListByCategorySection(itemCriteria);
 		List<ProductDTO> productList = new ArrayList<>();
 		List<AttachmentDTO> thumbnailList = new ArrayList<>();
@@ -314,6 +316,14 @@ public class productController {
 			} else {
 				reviewRatingMap.put(prodNo, 0.0);
 			}
+		}
+		
+		/* 위시리스트 여부*/
+		String loginMember = (String) session.getAttribute("loginMember");
+		if(loginMember != null) {
+			log.info("loginMember : {}", loginMember);
+			List<Integer> memberWishItem = memberService.getProdNoFromWishList(loginMember);
+			model.addAttribute("memberWishItem", memberWishItem);
 		}
 		
 		log.info("productList : {}", productList);
@@ -363,11 +373,14 @@ public class productController {
 		
 		/* 리뷰 */
 		List<ReviewDTO> reviewList = productService.getReviewListByProdNo(prodNo);
-		
-		
-		
-		log.info("option: {}" ,option);
-		log.info("optionDetails: {}" ,optionDetails);
+
+		/* 위시리스트 여부*/
+		String loginMember = (String) session.getAttribute("loginMember");
+		if(loginMember != null) {
+			log.info("loginMember : {}", loginMember);
+			List<Integer> memberWishItem = memberService.getProdNoFromWishList(loginMember);
+			model.addAttribute("memberWishItem", memberWishItem);
+		}
 		
 		model.addAttribute("detail", detail);
 		model.addAttribute("mainThumb", mainThumb);

@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.pro.pair.cart.model.dto.OrderDTO;
 import com.pro.pair.member.model.dto.MemberDTO;
 import com.pro.pair.member.model.dto.RoleDTO;
+import com.pro.pair.member.model.dto.WishListDTO;
 import com.pro.pair.review.model.dto.ReviewDTO;
 
 @Mapper
@@ -41,4 +42,10 @@ public interface MemberMapper {
 	OrderDTO getOrderInfoToReview(String memberId, int orderItemNo, int optCombNo);
 	
 	int getWritableReviewCount(String memberId);
+	
+	List<WishListDTO> getMemberWishList(String memberId);
+	
+	int deleteItemFromWishList(String memberId, int prodNo);
+	
+	List<Integer> getProdNoFromWishList(String memberId);
 }

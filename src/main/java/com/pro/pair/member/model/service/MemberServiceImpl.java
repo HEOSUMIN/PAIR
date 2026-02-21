@@ -18,6 +18,7 @@ import com.pro.pair.member.model.dto.AuthorityDTO;
 import com.pro.pair.member.model.dto.MemberDTO;
 import com.pro.pair.member.model.dto.RoleDTO;
 import com.pro.pair.member.model.dto.UserImpl;
+import com.pro.pair.member.model.dto.WishListDTO;
 import com.pro.pair.review.model.dto.ReviewDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -149,7 +150,20 @@ public class MemberServiceImpl implements MemberService {
 		return memberMapper.getWritableReviewCount(memberId);
 	}
 
-	
+	@Override
+	public List<WishListDTO> getMemberWishList(String memberId) {
+		return memberMapper.getMemberWishList(memberId);
+	}
+
+	@Override
+	public int deleteItemFromWishList(String memberId, int prodNo) {
+		return memberMapper.deleteItemFromWishList(memberId, prodNo);
+	}
+
+	@Override
+	public List<Integer> getProdNoFromWishList(String memberId) {
+		return memberMapper.getProdNoFromWishList(memberId);
+	}
 
 }
 

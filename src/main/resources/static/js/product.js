@@ -737,7 +737,6 @@ function reset(btn) {
 	sumTotalPrice();
 }
 
-/* ============================================================================ */
 $('#cartBtn').on('click', function() {
 	if ($('.selectedInfo').length === 0) {
 		alert('옵션을 선택해주세요.');
@@ -804,21 +803,21 @@ function addToCart(optionArr) {
 							window.history.scrollRestoration = 'manual'; //스크롤 최상단 고정
 						}
 					})
-				}else if(result === 'LOGIN_REQUIRED'){
-				            Swal.fire({
-				                icon: 'warning',
-				                title: '로그인이 필요합니다',
-				                text: '로그인 페이지로 이동할까요?',
-				                showCancelButton: true,
-				                confirmButtonText: '이동',
-				                cancelButtonText: '취소'
-				            }).then((res) => {
-				                if(res.isConfirmed){
-				                    window.location.href = '/member/signin';
-				                }
-				            });
-				            return;
-				        }else {
+				} else if (result === 'LOGIN_REQUIRED') {
+					Swal.fire({
+						icon: 'warning',
+						title: '로그인이 필요합니다',
+						text: '로그인 페이지로 이동할까요?',
+						showCancelButton: true,
+						confirmButtonText: '이동',
+						cancelButtonText: '취소'
+					}).then((res) => {
+						if (res.isConfirmed) {
+							window.location.href = '/member/signin';
+						}
+					});
+					return;
+				} else {
 					Swal.fire({
 						icon: 'warning',
 						title: result,
@@ -836,8 +835,108 @@ function addToCart(optionArr) {
 }
 
 
+/* 찜 버튼 */
+function addToWishList() {
 
+	console.log("찜 버튼 !!");
+	let heart = event.target.className;
+	if (heart == 'fa-solid fa-heart') {	// 찜하기 해제 시 
+		Swal.fire({
+			icon: 'warning',
+			title: '위시리스트에서 삭제할까요?',
+			confirmButtonColor: '#00008b',
+			confirmButtonText: '확인'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				let prodNo = document.getElementById('prodNo').value;
+				$.ajax({
+					url: '/mypage/wishlist/delete',
+					type: 'post',
+					data: { prodNo: prodNo },
+					success: function(res) {
+						Swal.fire({
+							icon: 'success',
+							title: '위시리스트에서 삭제되었습니다',
+							confirmButtonColor: '#00008b',
+							confirmButtonText: '확인'
+						}).then((result) => {
+							if (result.isConfirmed) {
+								window.location.reload(); //페이지 새로고침
+								window.history.scrollRestoration = 'manual'; //스크롤 최상단 고정
+							}
+						})
+					},
+					error: function(status, error) { console.log(status, error); }
+				});
+			}
+		})
+	} else {
+		//로그인 여부 확인 
+		if (!document.getElementById('isLoggedInAs')) {
+			$.ajax({
+				url: '/member/signin',
+				type: 'post',
+				traditional: true,
+				dataType: 'text',
+				data: {
+					wishListOptionNo: orderOptionNo,
+				},
+				success: function(result) {
+					console.log('로그인 요청');
+					Swal.fire({
+						icon: 'warning',
+						title: '로그인이 필요합니다',
+						confirmButtonColor: '#00008b',
+						confirmButtonText: '확인'
+					}).then((result) => {
+						if (result.isConfirmed) {
+							location.href = '/member/signin';
+						}
+					})
+				},
+				error: function(status, error) { console.log(status, error); }
+			});
+		} else {
+			$.ajax({
+				url: '/mypage/wishlist/add',
+				type: 'post',
+				traditional: true, //배열 넘기기 위한 세팅
+				dataType: 'text',
+				data: { wishListOptionNo: orderOptionNo },
+				success: function(result) {
+					if (result == '성공') {
+						Swal.fire({
+							icon: 'success',
+							title: '찜하기가 완료되었습니다',
+							confirmButtonColor: '#00008b',
+							confirmButtonText: '확인'
+						}).then((result) => {
+							if (result.isConfirmed) {
+								window.location.reload(); //페이지 새로고침
+								window.history.scrollRestoration = 'manual'; //스크롤 최상단 고정
+							}
+						})
+					} else {
+						Swal.fire({
+							icon: 'error',
+							title: '이미 찜한 상품입니다',
+							confirmButtonColor: '#00008b',
+							confirmButtonText: '확인'
+						}).then((result) => {
+							if (result.isConfirmed) {
+								window.location.reload(); //페이지 새로고침
+								window.history.scrollRestoration = 'manual'; //스크롤 최상단 고정
+							}
+						})
+					}
+				},
+				error: function(status, error) { console.log(status, error); }
+			});
+		}
+	}
+}
 
+/* ============================================================================ */
 
 
 
