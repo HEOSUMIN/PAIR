@@ -2,45 +2,34 @@
 
 ## 프로젝트 소개
 
-식기류를 판매하는 쇼핑몰 웹 애플리케이션입니다.
-사용자는 상품을 조회하고 장바구니에 담아 주문할 수 있으며, 관리자는 상품을 등록 및 관리할 수 있습니다.
-본 프로젝트는 Spring 기반 MVC 아키텍처로 설계되었으며
-회원 인증, 장바구니, 주문 처리 등의 쇼핑몰 핵심 기능을 구현했습니다.
+**“식탁위의 완벽한 조화, 테이블웨어 큐레이션 커머스”**
 
----
-
-## 프로젝트 목적
-Spring 기반 웹 애플리케이션 아키텍처 이해
-쇼핑몰 서비스의 핵심 기능 구현
-인증 및 권한 관리 경험
-데이터베이스 기반 서비스 설계 경험
+**기획 의도 및 목표**
+어떤 식기에 무엇을 담을지, 식기 간의 디자인 조합은 어떠한지 고민하는 사용자를 위해 맞춤형 테이블 세팅을 제안하는 것을 목표로 기획하였습니다. 
+특히 이커머스의 전 과정을 직접 설계하고 구현하는 과정을 경험함으로써, 실무적인 시스템 통합 능력을 갖추고자 프로젝트를 진행하게 되었습니다.
 
 ---
 
 ## 기술 스택
-Backend
-- Spring Boot
-- Spring Security
-- MyBatis
-
-Frontend
-- Thymeleaf
-- JavaScript
-- HTML / CSS
-
-Database
-- Oracle
-
-Infrastructure
-Docker
+Back-end: Java 17, Spring Boot 3.3.3, Spring Security 6
+Front-end: HTML5/CSS3, Thymeleaf, JavaScript, Bootstrap
+Database: Oracle, MyBatis
 
 ---
 
 
-## 프로젝트 아키텍처 
-Client
- ↓
-Spring Boot
-(Controller / Service / MyBatis)
- ↓
-Oracle DB (Docker)
+## 기능
+- 회원 관리: Spring Security 기반 로그인/회원가입 및 사용자와 관리자 권한 분리
+- 상품 시스템: Paging 및 정렬 기능을 포함한 상품 목록, 위시리스트, 평점, 실시간 재고 관리
+- 주문/결제: PortOne API 연동을 통한 실제 결제 프로세스 구현 및 주문 처리
+- 장바구니: 상품 담기 및 실시간 수량 및 금액 계산
+- 마이페이지: 최근 본 상품, 주문 내역 조회, 구매 상품 리뷰 작성
+- 관리자 시스템: 상품 등록 및 수정
+
+---
+
+##ERD
+![ERD.png](attachment:92df9abc-d4b1-4d84-8e58-8183259d6080:ERD.png)
+
+--
+
