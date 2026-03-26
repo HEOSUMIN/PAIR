@@ -1,7 +1,6 @@
-## PAIR - Tableware Shopping Mall
+# PAIR - Tableware Shopping Mall
 
-#### 프로젝트 소개
-
+## **프로젝트 소개**
 **“식탁위의 완벽한 조화, 테이블웨어 큐레이션 커머스”**
 
 **기획 의도 및 목표**
@@ -10,21 +9,8 @@
 특히 이커머스의 전 과정을 직접 설계하고 구현하는 과정을 경험함으로써, 실무적인 시스템 통합 능력을 갖추고자 프로젝트를 진행하게 되었습니다.
 
 
----
 
-
-#### 기술 스택
-Back-end: Java 17, Spring Boot 3.3.3, Spring Security 6
-
-Front-end: HTML5/CSS3, Thymeleaf, JavaScript, Bootstrap
-
-Database: Oracle, MyBatis
-
-
----
-
-
-#### 기능
+## **기능**
 - 회원 관리: Spring Security 기반 로그인/회원가입 및 사용자와 관리자 권한 분리
   
 - 상품 시스템: Paging 및 정렬 기능을 포함한 상품 목록, 위시리스트, 평점, 실시간 재고 관리
@@ -36,13 +22,56 @@ Database: Oracle, MyBatis
 - 마이페이지: 최근 본 상품, 주문 내역 조회, 구매 상품 리뷰 작성
   
 - 관리자 시스템: 상품 등록 및 수정
+  
 
 
----
+## **기술 스택**
+Back-end: Java 17, Spring Boot 3.3.3, Spring Security 6
+
+Front-end: HTML5/CSS3, Thymeleaf, JavaScript, Bootstrap
+
+Database: Oracle, MyBatis
 
 
-####ERD
-![ERD.png](attachment:92df9abc-d4b1-4d84-8e58-8183259d6080:ERD.png)
 
---
+## **ERD**
+<img width="1206" height="763" alt="ERD" src="https://github.com/user-attachments/assets/91f63f55-b092-4d31-b925-6cce8370d6c8" />
+
+
+
+## **트러블 슈팅**
+**1. Spring Security 6 설정 방식 변경 대응**
+- **문제 상황**
+    - Spring Boot 3.3.3 버전에서 기존에 사용하던 WebSecurityConfigurerAdapter 상속 방식이 완전히 제거되어 보안 설정 코드가 작동하지 않고 에러 발생
+- **원인**
+    - Spring Security 6부터는 컴포넌트 기반 보안 설정이 강제됨에 따라 상속 구조가 폐기됨. 또한, 기존의 .and() 메서드 방식 대신 람다 구조로 개편되어 설정 방식의 전면적인 수정 필요
+- **해결**
+    - **Bean 등록 방식으로 전환:** SecurityFilterChain을 직접 Bean으로 등록하는 방식으로 아키텍처를 변경하여 최신 규격에 맞게 적용
+    - **람다 표현식 적용:** .and() 방식 대신 람다식을 사용하여 각 보안 설정의 범위를 명확히 하고 코드 가독성을 높임
+    - **권한 제어 최신화:** 변경된 requestMatchers를 적용하여 관리자(ROLE_ADMIN)와 사용자(ROLE_USER)의 접근 권한 분리
+ 
+    
+**2. 가변적 옵션 조합을 위한 동적 재귀 알고리즘 구현**
+- **문제 상황**
+    - 상품마다 옵션의 종류와 개수가 제각각이라 고정된 컬럼으로는 대응이 불가능하며, 다중 옵션 선택 시 발생하는 수많은 조합을 체계적으로 관리해야 함
+    - 여러 개의 옵션 조합을 관리자가 일일이 수동 등록해야 하는 번거로움과 데이터 누락 위험 확인
+- **원인**
+    - 단일 테이블 구조로는 다차원 옵션 데이터를 체계적으로 관리하기 어려움
+- **해결**
+    - **옵션 테이블 구조 설계:** TBL_OPTION_NAME(옵션명) / TBL_OPTION_VALUE(옵션값) / TBL_OPTION_COMB(옵션조합) 테이블을 3단계 계층 구조로 나눠 옵션이 추가 되더라도 유연하게 대응할 수 있도록 설계
+    - **재귀적 조합 알고리즘 구현:** 입력받은 다차원 배열을 순회하며 빈 배열부터 순차적으로 결합해 나가는 로직을 구현하여, 옵션 개수와 상관없이 모든 경우의 수를 자동 추출하도록 개선
+    - **동적 UI 렌더링:** 생성된 조합을 테이블 형태로 시각화하여, 각 조합별 재고와 추가 금액을 직관적으로 관리할 수 있는 인터페이스 제공
+ 
+
+
+## **시연 영상**
+**관리자**
+
+https://youtu.be/UKCOrYb93iY
+
+**일반사용자**
+
+https://youtu.be/ZduHqGySd0U
+
+
 
