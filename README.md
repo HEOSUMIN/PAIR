@@ -1,10 +1,13 @@
-# PAIR - Tableware Shopping Mall
+# PAIR
+
+<img width="1241" height="792" alt="메인" src="https://github.com/user-attachments/assets/c289b6a2-04fe-464b-a59f-89728708e8e0" />
+
 
 ## **프로젝트 소개**
 **“식탁위의 완벽한 조화, 테이블웨어 큐레이션 커머스”**
 
-Spring Boot 기반 커머스 서비스로  
-상품 옵션, 결제, 관리자 기능을 구현한 프로젝트입니다.
+Spring Boot 기반 커머스 서비스로 상품 옵션, 결제, 관리자 기능을 구현한 프로젝트입니다.
+
 
 **기획 의도 및 목표**
 
